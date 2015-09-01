@@ -1,0 +1,6 @@
+.idea/workspace.xml
+target
+
+# To prevent from constant modifications because of the changing timestamp of the snapshot
+.idea/libraries/Maven__org_jetbrains_kotlin_kotlin_runtime_0_1_SNAPSHOT.xml
+.idea/libraries/Maven__org_jetbrains_kotlin_kotlin_stdlib_0_1_SNAPSHOT.xml
