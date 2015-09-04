@@ -13,6 +13,7 @@
         <kotlin.version>0.1-SNAPSHOT</kotlin.version>
         <junit.version>4.12</junit.version>
         <protobuf.version>2.5.0</protobuf.version>
+        <proguard.plugin.version>2.0.11</proguard.plugin.version>
     </properties>
 
     <dependencies>
@@ -63,6 +64,33 @@
                             <sourceDirs>
                                 <source>src/test/java</source>
                             </sourceDirs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>${proguard.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>process-classes-with-proguard</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
+                        <configuration>
+                            <maxMemory>1G</maxMemory>
+                            <injar>${project.build.finalName}.jar</injar>
+                            <outjar>${project.build.finalName}-small.jar</outjar>
+                            <attach>true</attach>
+                            <addMavenDescriptor>false</addMavenDescriptor>
+                            <proguardInclude>${project.basedir}/reflect-lite.pro</proguardInclude>
+                            <libs>
+                                <lib>${java.home}/lib/rt.jar</lib>
+                            </libs>
+                            <proguardVersion>5.2</proguardVersion>
                         </configuration>
                     </execution>
                 </executions>

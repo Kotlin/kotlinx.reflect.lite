@@ -1,6 +1,10 @@
-package kotlinx.reflect.lite
+package kotlinx.reflect.lite.impl
 
 import com.google.protobuf.ExtensionRegistryLite
+import kotlinx.reflect.lite.ClassMetadata
+import kotlinx.reflect.lite.FunctionMetadata
+import kotlinx.reflect.lite.ParameterMetadata
+import kotlinx.reflect.lite.TypeMetadata
 import org.jetbrains.kotlin.serialization.ProtoBuf
 import org.jetbrains.kotlin.serialization.jvm.BitEncoding
 import org.jetbrains.kotlin.serialization.jvm.JvmProtoBuf

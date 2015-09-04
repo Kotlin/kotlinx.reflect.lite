@@ -1,5 +1,6 @@
 package kotlinx.reflect.lite
 
+import kotlinx.reflect.lite.impl.ReflectionLiteImpl
 import java.lang.reflect.Method
 
 interface ClassMetadata {

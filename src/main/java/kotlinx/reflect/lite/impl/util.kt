@@ -1,4 +1,4 @@
-package kotlinx.reflect.lite
+package kotlinx.reflect.lite.impl
 
 import java.lang.ref.SoftReference
 

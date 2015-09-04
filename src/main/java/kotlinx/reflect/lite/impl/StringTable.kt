@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package kotlinx.reflect.lite
+package kotlinx.reflect.lite.impl
 
 import org.jetbrains.kotlin.serialization.ProtoBuf
 import java.io.InputStream
