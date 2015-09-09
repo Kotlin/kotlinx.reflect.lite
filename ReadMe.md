@@ -1,4 +1,4 @@
-# kotlinx.reflect-lite
+# kotlinx.reflect.lite
 
 This library provides an API to introspect Kotlin symbols at runtime. Its main feature is the small size which makes it possible to use it on memory-constrained devices.
 
