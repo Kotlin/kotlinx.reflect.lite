@@ -2,7 +2,7 @@ package kotlinx.reflect.lite.test
 
 import kotlinx.reflect.lite.ReflectionLite
 import kotlin.test.assertEquals
-import org.junit.Test as test
+import org.junit.Test
 
 class Subject {
     class Nested {
@@ -11,7 +11,7 @@ class Subject {
 }
 
 class SmokeTest {
-    test fun testParameterNamesAndNullability() {
+    @Test fun testParameterNamesAndNullability() {
         val klass = Subject.Nested::class.java
         val classMetadata = ReflectionLite.loadClassMetadata(klass) ?: error("No class metadata found for $klass")
 
