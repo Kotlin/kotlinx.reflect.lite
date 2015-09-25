@@ -108,7 +108,7 @@
                         <configuration>
                             <maxMemory>1G</maxMemory>
                             <injar>${project.build.finalName}.jar</injar>
-                            <outjar>${project.build.finalName}-small.jar</outjar>
+                            <appendClassifier>false</appendClassifier>
                             <attach>true</attach>
                             <addMavenDescriptor>false</addMavenDescriptor>
                             <proguardInclude>${project.basedir}/reflect-lite.pro</proguardInclude>
