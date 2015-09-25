@@ -6,11 +6,12 @@
 
     <groupId>org.jetbrains.kotlinx</groupId>
     <artifactId>kotlinx.reflect.lite</artifactId>
-    <version>0.13.870</version>
+    <version>${kotlin.version}</version>
     <packaging>jar</packaging>
+    <url>https://github.com/Kotlin/kotlinx.reflect.lite</url>
 
     <properties>
-        <kotlin.version>0.1-SNAPSHOT</kotlin.version>
+        <kotlin.version>0.13.1514</kotlin.version>
         <junit.version>4.12</junit.version>
         <protobuf.version>2.5.0</protobuf.version>
         <proguard.plugin.version>2.0.11</proguard.plugin.version>
@@ -70,6 +71,30 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.4</version>
+
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.2</version>
+
+                <configuration>
+                    <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <groupId>com.github.wvengen</groupId>
                 <artifactId>proguard-maven-plugin</artifactId>
                 <version>${proguard.plugin.version}</version>
@@ -98,32 +123,16 @@
         </plugins>
     </build>
 
-    <repositories>
+    <distributionManagement>
         <repository>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>sonatype.oss.snapshots</id>
-            <name>Sonatype OSS Snapshot Repository</name>
-            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+            <id>bintray</id>
+            <url>https://api.bintray.com/maven/kotlin/kotlinx.reflect.lite/kotlinx.reflect.lite</url>
         </repository>
-    </repositories>
+    </distributionManagement>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>sonatype.oss.snapshots</id>
-            <name>Sonatype OSS Snapshot Repository</name>
-            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
-        </pluginRepository>
-    </pluginRepositories>
-
+    <scm>
+        <connection>scm:git:https://github.com/Kotlin/kotlinx.reflect.lite.git</connection>
+        <url>https://github.com/Kotlin/kotlinx.reflect.lite</url>
+        <tag>HEAD</tag>
+    </scm>
 </project>
