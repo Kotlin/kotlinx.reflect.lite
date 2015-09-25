@@ -2,6 +2,33 @@
 
 This library provides an API to introspect Kotlin symbols at runtime. Its main feature is the small size which makes it possible to use it on memory-constrained devices.
 
+[ ![Download](https://api.bintray.com/packages/kotlin/kotlinx.reflect.lite/kotlinx.reflect.lite/images/download.svg) ](https://bintray.com/kotlin/kotlinx.reflect.lite/kotlinx.reflect.lite/_latestVersion)
+
+## Maven
+
+Add a repository
+
+```
+<repository>
+    <snapshots>
+        <enabled>false</enabled>
+    </snapshots>
+    <id>bintray-kotlin-kotlinx.reflect.lite</id>
+    <name>bintray</name>
+    <url>http://dl.bintray.com/kotlin/kotlinx.reflect.lite</url>
+</repository>
+```
+
+Add a dependency:
+
+```
+<dependency>
+    <groupId>org.jetbrains.kotlinx</groupId>
+    <artifactId>kotlinx.reflect.lite</artifactId>
+    <version>0.13.1514</version>
+</dependency>
+```
+
 ## FAQ
 
 #### Why not just use Java reflection instead?
