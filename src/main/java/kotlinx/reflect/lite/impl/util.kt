@@ -1,6 +1,7 @@
 package kotlinx.reflect.lite.impl
 
 import java.lang.ref.SoftReference
+import java.lang.reflect.Array
 
 internal fun lazySoft<T>(initializer: () -> T) = LazySoftImpl(initializer)
 
@@ -13,4 +14,9 @@ private class LazySoftImpl<out T>(private val initializer: () -> T) {
 
         return initializer().apply { value = SoftReference(this) }
     }
+}
+
+fun Class<*>.desc(): String {
+    if (this == Void.TYPE) return "V"
+    return Array.newInstance(this, 0).javaClass.name.substring(1).replace('.', '/')
 }

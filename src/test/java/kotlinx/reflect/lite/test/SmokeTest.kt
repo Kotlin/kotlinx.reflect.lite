@@ -1,17 +1,19 @@
 package kotlinx.reflect.lite.test
 
 import kotlinx.reflect.lite.ReflectionLite
-import kotlin.test.assertEquals
 import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
-class Subject {
+class Subject(param: Int) {
     class Nested {
         fun method(nullableString: String?, nonNullIntArray: IntArray, nullableNested: Nested?): Int = 0
     }
 }
 
 class SmokeTest {
-    @Test fun testParameterNamesAndNullability() {
+    @Test
+    fun testParameterNamesAndNullability() {
         val klass = Subject.Nested::class.java
         val classMetadata = ReflectionLite.loadClassMetadata(klass) ?: error("No class metadata found for $klass")
 
@@ -21,5 +23,18 @@ class SmokeTest {
 
         assertEquals(listOf(true, false, true), parameters.map { it.type.isNullable })
         assertEquals(listOf("nullableString", "nonNullIntArray", "nullableNested"), parameters.map { it.name })
+    }
+
+    @Test
+    fun testConstructor() {
+        val klass = Subject::class.java
+        val classMetadata = ReflectionLite.loadClassMetadata(klass) ?: error("No class metadata found for $klass")
+
+        val constructor = klass.declaredConstructors.single()
+        val constructorMetadata = classMetadata.getConstructor(constructor) ?: error("No constructor metadata found for $constructor")
+        val parameter = constructorMetadata.parameters.single()
+
+        assertEquals("param", parameter.name)
+        assertFalse(parameter.type.isNullable)
     }
 }

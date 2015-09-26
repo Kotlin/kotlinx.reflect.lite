@@ -1,15 +1,13 @@
 package kotlinx.reflect.lite.impl
 
 import com.google.protobuf.ExtensionRegistryLite
-import kotlinx.reflect.lite.ClassMetadata
-import kotlinx.reflect.lite.FunctionMetadata
-import kotlinx.reflect.lite.ParameterMetadata
-import kotlinx.reflect.lite.TypeMetadata
+import kotlinx.reflect.lite.*
 import org.jetbrains.kotlin.serialization.ProtoBuf
 import org.jetbrains.kotlin.serialization.jvm.BitEncoding
 import org.jetbrains.kotlin.serialization.jvm.JvmProtoBuf
 import org.jetbrains.kotlin.serialization.jvm.JvmProtoBuf.registerAllExtensions
 import java.io.ByteArrayInputStream
+import java.lang.reflect.Constructor
 import java.lang.reflect.Method
 import kotlin.jvm.internal.KotlinClass
 import java.lang.reflect.Array as ReflectArray
@@ -19,16 +17,21 @@ internal class ClassMetadataImpl(
         private val nameResolver: StringTable
 ) : ClassMetadata {
     private val map: Map<String, ProtoBuf.Callable> by lazySoft {
-        proto.memberList.map { callable ->
-            callable.getExtension(JvmProtoBuf.methodSignature)?.let { methodSignature ->
-                fun JvmProtoBuf.JvmType.typeDesc(): String {
-                    return "[".repeat(arrayDimension) +
-                            if (hasPrimitiveType())
-                                "VZCBSIFJD"[primitiveType.ordinal()]
-                            else
-                                "L" + nameResolver.getInternalName(classFqName) + ";"
-                }
+        fun JvmProtoBuf.JvmType.typeDesc(): String {
+            return "[".repeat(arrayDimension) +
+                    if (hasPrimitiveType())
+                        "VZCBSIFJD"[primitiveType.ordinal()]
+                    else
+                        "L" + nameResolver.getInternalName(classFqName) + ";"
+        }
 
+        val members =
+                proto.memberList +
+                proto.secondaryConstructorList +
+                listOf(proto.primaryConstructor?.data).filterNotNull()
+
+        members.map { callable ->
+            callable.getExtension(JvmProtoBuf.methodSignature)?.let { methodSignature ->
                 val string = StringBuilder {
                     append(nameResolver.getString(methodSignature.name))
                     methodSignature.parameterTypeList.joinTo(this, separator = "", prefix = "(", postfix = ")", transform = JvmProtoBuf.JvmType::typeDesc)
@@ -41,15 +44,16 @@ internal class ClassMetadataImpl(
     }
 
     override fun getFunction(method: Method): FunctionMetadata? {
-        return map[method.signature()]?.let { FunctionMetadataImpl(it, nameResolver) }
+        return map[signature(method.name, method.parameterTypes, method.returnType)]
+                ?.let { FunctionMetadataImpl(it, nameResolver) }
     }
 
-    private fun Method.signature(): String {
-        fun Class<*>.desc(): String {
-            if (this == Void.TYPE) return "V"
-            return ReflectArray.newInstance(this, 0).javaClass.name.substring(1).replace('.', '/')
-        }
+    override fun getConstructor(constructor: Constructor<*>): ConstructorMetadata? {
+        return map[signature("<init>", constructor.parameterTypes, Void.TYPE)]
+                ?.let { ConstructorMetadataImpl(it, nameResolver) }
+    }
 
+    private fun signature(name: String, parameterTypes: Array<Class<*>>, returnType: Class<*>): String {
         return StringBuilder {
             append(name)
             parameterTypes.joinTo(this, separator = "", prefix = "(", postfix = ")", transform = Class<*>::desc)
@@ -58,14 +62,23 @@ internal class ClassMetadataImpl(
     }
 }
 
-internal class FunctionMetadataImpl(
+internal abstract class CallableMetadataImpl(
         private val proto: ProtoBuf.Callable,
         private val nameResolver: StringTable
-) : FunctionMetadata {
+) : CallableMetadata {
     override val parameters: List<ParameterMetadata>
         get() = proto.valueParameterList.map { ParameterMetadataImpl(it, nameResolver) }
-
 }
+
+internal class FunctionMetadataImpl(
+        proto: ProtoBuf.Callable,
+        nameResolver: StringTable
+) : CallableMetadataImpl(proto, nameResolver), FunctionMetadata
+
+internal class ConstructorMetadataImpl(
+        proto: ProtoBuf.Callable,
+        nameResolver: StringTable
+) : CallableMetadataImpl(proto, nameResolver), ConstructorMetadata
 
 internal class ParameterMetadataImpl(
         private val proto: ProtoBuf.Callable.ValueParameter,
