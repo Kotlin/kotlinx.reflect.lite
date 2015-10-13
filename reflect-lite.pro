@@ -2,6 +2,8 @@
     public protected *;
 }
 
+-keepattributes *Annotation*
+
 #-dontshrink
 #-dontoptimize
 #-dontobfuscate
