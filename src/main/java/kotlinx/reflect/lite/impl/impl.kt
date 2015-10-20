@@ -5,7 +5,6 @@ import kotlinx.reflect.lite.*
 import org.jetbrains.kotlin.serialization.ProtoBuf
 import org.jetbrains.kotlin.serialization.jvm.BitEncoding
 import org.jetbrains.kotlin.serialization.jvm.JvmProtoBuf
-import org.jetbrains.kotlin.serialization.jvm.JvmProtoBuf.registerAllExtensions
 import java.io.ByteArrayInputStream
 import java.lang.reflect.Constructor
 import java.lang.reflect.Method
@@ -20,7 +19,7 @@ internal class ClassMetadataImpl(
         fun JvmProtoBuf.JvmType.typeDesc(): String {
             return "[".repeat(arrayDimension) +
                     if (hasPrimitiveType())
-                        "VZCBSIFJD"[primitiveType.ordinal()]
+                        "VZCBSIFJD"[primitiveType.ordinal]
                     else
                         "L" + nameResolver.getInternalName(classFqName) + ";"
         }
@@ -32,11 +31,11 @@ internal class ClassMetadataImpl(
 
         members.map { callable ->
             callable.getExtension(JvmProtoBuf.methodSignature)?.let { methodSignature ->
-                val string = StringBuilder {
+                val string = buildString {
                     append(nameResolver.getString(methodSignature.name))
                     methodSignature.parameterTypeList.joinTo(this, separator = "", prefix = "(", postfix = ")", transform = JvmProtoBuf.JvmType::typeDesc)
                     append(methodSignature.returnType.typeDesc())
-                }.toString()
+                }
 
                 string to callable
             }
@@ -54,11 +53,11 @@ internal class ClassMetadataImpl(
     }
 
     private fun signature(name: String, parameterTypes: Array<Class<*>>, returnType: Class<*>): String {
-        return StringBuilder {
+        return buildString {
             append(name)
             parameterTypes.joinTo(this, separator = "", prefix = "(", postfix = ")", transform = Class<*>::desc)
             append(returnType.desc())
-        }.toString()
+        }
     }
 }
 

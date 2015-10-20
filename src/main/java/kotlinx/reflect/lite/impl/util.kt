@@ -2,14 +2,15 @@ package kotlinx.reflect.lite.impl
 
 import java.lang.ref.SoftReference
 import java.lang.reflect.Array
+import kotlin.reflect.KProperty
 
-internal fun lazySoft<T>(initializer: () -> T) = LazySoftImpl(initializer)
+internal fun <T> lazySoft(initializer: () -> T) = LazySoftImpl(initializer)
 
 @Suppress("UNCHECKED_CAST")
-private class LazySoftImpl<out T>(private val initializer: () -> T) {
+internal class LazySoftImpl<out T>(private val initializer: () -> T) {
     @Volatile private var value: Any? = null
 
-    fun get(thisRef: Any?, property: PropertyMetadata): T {
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
         (value as? SoftReference<T>)?.get()?.let { return it }
 
         return initializer().apply { value = SoftReference(this) }
