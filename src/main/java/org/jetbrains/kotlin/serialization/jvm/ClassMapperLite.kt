@@ -36,18 +36,19 @@ object ClassMapperLite {
 
             add("Any", "java/lang/Object")
             add("Nothing", "java/lang/Void")
+            add("Annotation", "java/lang/annotation/Annotation")
 
-            for (klass in listOf(
-                    "String", "CharSequence", "Throwable", "Cloneable", "Number", "Comparable",
-                    "Enum", "Annotation", "Iterable", "MutableIterable"
-            )) {
+            for (klass in listOf("String", "CharSequence", "Throwable", "Cloneable", "Number", "Comparable", "Enum")) {
                 add("$klass", "java/lang/$klass")
             }
 
             for (klass in listOf("Iterator", "Collection", "List", "Set", "Map", "ListIterator")) {
                 add("$klass", "java/util/$klass")
+                add("Mutable$klass", "java/util/$klass")
             }
 
+            add("Iterable", "java/lang/Iterable")
+            add("MutableIterable", "java/lang/Iterable")
             add("Map\$Entry", "java/util/Map\$Entry")
             add("MutableMap\$MutableEntry", "java/util/Map\$Entry")
 
