@@ -11,7 +11,7 @@
     <url>https://github.com/Kotlin/kotlinx.reflect.lite</url>
 
     <properties>
-        <kotlin.version>1.0.0-beta-1038</kotlin.version>
+        <kotlin.version>1.0.0-beta-4583</kotlin.version>
         <junit.version>4.12</junit.version>
         <protobuf.version>2.5.0</protobuf.version>
         <proguard.plugin.version>2.0.11</proguard.plugin.version>
@@ -27,6 +27,12 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
             <version>${kotlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test</artifactId>
+            <version>${kotlin.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
