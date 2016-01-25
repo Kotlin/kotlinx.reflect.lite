@@ -44,14 +44,14 @@ object ClassMapperLite {
             }
 
             for (klass in listOf("Iterator", "Collection", "List", "Set", "Map", "ListIterator")) {
-                add("$klass", "java/util/$klass")
-                add("Mutable$klass", "java/util/$klass")
+                add("collections/$klass", "java/util/$klass")
+                add("collections/Mutable$klass", "java/util/$klass")
             }
 
-            add("Iterable", "java/lang/Iterable")
-            add("MutableIterable", "java/lang/Iterable")
-            add("Map\$Entry", "java/util/Map\$Entry")
-            add("MutableMap\$MutableEntry", "java/util/Map\$Entry")
+            add("collections/Iterable", "java/lang/Iterable")
+            add("collections/MutableIterable", "java/lang/Iterable")
+            add("collections/Map\$Entry", "java/util/Map\$Entry")
+            add("collections/MutableMap\$MutableEntry", "java/util/Map\$Entry")
 
             for (i in 0..22) {
                 add("Function$i", "kotlin/jvm/functions/Function$i")

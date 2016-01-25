@@ -115,15 +115,15 @@ class JvmNameResolver(
                 "kotlin/Cloneable",
                 "kotlin/Annotation",
 
-                "kotlin/Iterable", "kotlin/MutableIterable",
-                "kotlin/Collection", "kotlin/MutableCollection",
-                "kotlin/List", "kotlin/MutableList",
-                "kotlin/Set", "kotlin/MutableSet",
-                "kotlin/Map", "kotlin/MutableMap",
-                "kotlin/Map.Entry", "kotlin/MutableMap.MutableEntry",
+                "kotlin/collections/Iterable", "kotlin/collections/MutableIterable",
+                "kotlin/collections/Collection", "kotlin/collections/MutableCollection",
+                "kotlin/collections/List", "kotlin/collections/MutableList",
+                "kotlin/collections/Set", "kotlin/collections/MutableSet",
+                "kotlin/collections/Map", "kotlin/collections/MutableMap",
+                "kotlin/collections/Map.Entry", "kotlin/collections/MutableMap.MutableEntry",
 
-                "kotlin/Iterator", "kotlin/MutableIterator",
-                "kotlin/ListIterator", "kotlin/MutableListIterator"
+                "kotlin/collections/Iterator", "kotlin/collections/MutableIterator",
+                "kotlin/collections/ListIterator", "kotlin/collections/MutableListIterator"
         )
     }
 }

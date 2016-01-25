@@ -5,9 +5,10 @@ import org.jetbrains.kotlin.serialization.ProtoBuf
 import org.jetbrains.kotlin.serialization.deserialization.NameResolver
 import org.jetbrains.kotlin.serialization.deserialization.TypeTable
 import org.jetbrains.kotlin.serialization.jvm.JvmProtoBufUtil
+import java.lang.ref.WeakReference
 import java.lang.reflect.Constructor
 import java.lang.reflect.Method
-import kotlin.jvm.internal.KotlinClass
+import java.util.*
 import java.lang.reflect.Array as ReflectArray
 
 internal class ClassMetadataImpl(
@@ -88,9 +89,34 @@ internal class TypeMetadataImpl(
 
 
 internal object ReflectionLiteImpl {
+    private val metadataFqName = "kotlin.Metadata"
+
+    private val methods = WeakHashMap<Class<*>, WeakReference<MethodCache>>()
+
+    @Suppress("UNCHECKED_CAST")
+    private class MethodCache(val klass: Class<*>) {
+        val k = klass.getDeclaredMethod("k").let { method ->
+            { instance: Annotation -> method(instance) as Int }
+        }
+        val d1 = klass.getDeclaredMethod("d1").let { method ->
+            { instance: Annotation -> method(instance) as Array<String> }
+        }
+        val d2 = klass.getDeclaredMethod("d2").let { method ->
+            { instance: Annotation -> method(instance) as Array<String> }
+        }
+    }
+
     fun loadClassMetadata(klass: Class<*>): ClassMetadata? {
-        val annotation = klass.declaredAnnotations.singleOrNull { it.annotationClass.java == KotlinClass::class.java } as KotlinClass? ?: return null
-        val (nameResolver, classProto) = JvmProtoBufUtil.readClassDataFrom(annotation.data, annotation.strings)
+        val annotation = klass.declaredAnnotations.singleOrNull { it.annotationClass.java.name == metadataFqName } ?: return null
+        val metadataClass = annotation.annotationClass.java
+        val methods = methods[metadataClass]?.get() ?: MethodCache(metadataClass).apply {
+            methods[metadataClass] = WeakReference(this)
+        }
+
+        // Should be a class (kind = 1)
+        if (methods.k(annotation) != 1) return null
+
+        val (nameResolver, classProto) = JvmProtoBufUtil.readClassDataFrom(methods.d1(annotation), methods.d2(annotation))
         return ClassMetadataImpl(classProto, nameResolver)
     }
 }

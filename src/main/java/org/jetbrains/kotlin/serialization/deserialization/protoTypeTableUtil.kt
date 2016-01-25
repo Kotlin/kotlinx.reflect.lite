@@ -47,6 +47,8 @@ fun ProtoBuf.Function.returnType(typeTable: TypeTable): ProtoBuf.Type {
     return if (hasReturnType()) returnType else typeTable[returnTypeId]
 }
 
+fun ProtoBuf.Function.hasReceiver(): Boolean = hasReceiverType() || hasReceiverTypeId()
+
 fun ProtoBuf.Function.receiverType(typeTable: TypeTable): ProtoBuf.Type? {
     return when {
         hasReceiverType() -> receiverType
@@ -58,6 +60,8 @@ fun ProtoBuf.Function.receiverType(typeTable: TypeTable): ProtoBuf.Type? {
 fun ProtoBuf.Property.returnType(typeTable: TypeTable): ProtoBuf.Type {
     return if (hasReturnType()) returnType else typeTable[returnTypeId]
 }
+
+fun ProtoBuf.Property.hasReceiver(): Boolean = hasReceiverType() || hasReceiverTypeId()
 
 fun ProtoBuf.Property.receiverType(typeTable: TypeTable): ProtoBuf.Type? {
     return when {
@@ -75,6 +79,14 @@ fun ProtoBuf.ValueParameter.varargElementType(typeTable: TypeTable): ProtoBuf.Ty
     return when {
         hasVarargElementType() -> varargElementType
         hasVarargElementTypeId() -> typeTable[varargElementTypeId]
+        else -> null
+    }
+}
+
+fun ProtoBuf.Type.outerType(typeTable: TypeTable): ProtoBuf.Type? {
+    return when {
+        hasOuterType() -> outerType
+        hasOuterTypeId() -> typeTable[outerTypeId]
         else -> null
     }
 }

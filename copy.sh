@@ -12,4 +12,4 @@ mkdir -p $CUR/{serialization/deserialization,serialization/jvm,load/kotlin}
 cp $S/serialization/{ProtoBuf.java,ProtoDatas.kt} $CUR/serialization/
 cp $S/serialization/deserialization/{NameResolver.java,TypeTable.kt,protoTypeTableUtil.kt} $CUR/serialization/deserialization/
 cp $J/load/kotlin/JvmNameResolver.kt $CUR/load/kotlin/
-cp $J/serialization/jvm/{BitEncoding.java,JvmProtoBuf.java,JvmProtoBufUtil.kt} $CUR/serialization/jvm/
+cp $J/serialization/jvm/{BitEncoding.java,utfEncoding.kt,JvmProtoBuf.java,JvmProtoBufUtil.kt} $CUR/serialization/jvm/
