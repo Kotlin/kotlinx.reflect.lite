@@ -1,6 +1,7 @@
 package org.jetbrains.kotlin.serialization.jvm
 
 import org.jetbrains.kotlin.name.ClassId
+import java.util.*
 
 object ClassMapperLite {
     val map: Map<String, String>
@@ -29,7 +30,7 @@ object ClassMapperLite {
 
         map = (0..primitives.lastIndex).step(2).map {
             i -> "kotlin/${primitives[i]}" to primitives[i + 1]
-        }.toMap().toLinkedMap().apply {
+        }.toMap(LinkedHashMap()).apply {
             fun add(kotlinSimpleName: String, javaInternalName: String) {
                 put("kotlin/$kotlinSimpleName", "L$javaInternalName;")
             }

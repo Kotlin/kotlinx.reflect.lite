@@ -89,7 +89,7 @@ internal class TypeMetadataImpl(
 
 internal object ReflectionLiteImpl {
     fun loadClassMetadata(klass: Class<*>): ClassMetadata? {
-        val annotation = klass.declaredAnnotations.singleOrNull { it.annotationType() == KotlinClass::class.java } as KotlinClass? ?: return null
+        val annotation = klass.declaredAnnotations.singleOrNull { it.annotationClass.java == KotlinClass::class.java } as KotlinClass? ?: return null
         val (nameResolver, classProto) = JvmProtoBufUtil.readClassDataFrom(annotation.data, annotation.strings)
         return ClassMetadataImpl(classProto, nameResolver)
     }
