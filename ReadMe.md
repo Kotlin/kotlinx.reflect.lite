@@ -28,7 +28,7 @@ Add a dependency:
 <dependency>
     <groupId>org.jetbrains.kotlinx</groupId>
     <artifactId>kotlinx.reflect.lite</artifactId>
-    <version>1.0.0-beta-1038</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
