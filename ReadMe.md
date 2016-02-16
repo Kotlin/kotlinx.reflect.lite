@@ -9,27 +9,43 @@ This library provides an API to introspect Kotlin symbols at runtime. Its main f
 
 ## Maven
 
-Add a repository
+Add jcenter repository (if you don't have it yet)
 
-```
+```xml
 <repository>
     <snapshots>
         <enabled>false</enabled>
     </snapshots>
-    <id>bintray-kotlin-kotlinx.reflect.lite</id>
+    <id>central</id>
     <name>bintray</name>
-    <url>http://dl.bintray.com/kotlin/kotlinx.reflect.lite</url>
+    <url>http://jcenter.bintray.com</url>
 </repository>
 ```
 
 Add a dependency:
 
-```
+```xml
 <dependency>
     <groupId>org.jetbrains.kotlinx</groupId>
     <artifactId>kotlinx.reflect.lite</artifactId>
     <version>1.0.0</version>
 </dependency>
+```
+
+## Gradle
+
+jcenter is configured by default in gradle however you may need to include it in some cases
+
+```groovy
+repositories {
+    jcenter()
+}
+```
+
+Add a dependency:
+
+```groovy
+compile 'org.jetbrains.kotlinx:kotlinx.reflect.lite:1.0.0'
 ```
 
 ## FAQ
