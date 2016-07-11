@@ -7,6 +7,7 @@ import kotlin.reflect.KClass
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 @Suppress("UNUSED_PARAMETER")
 class Subject(param: Int) {
@@ -14,6 +15,8 @@ class Subject(param: Int) {
         fun method(nullableString: String?, nonNullIntArray: IntArray, nullableNested: Nested?): Int = 0
     }
 
+    fun returnType(): List<String> = emptyList()
+    fun nullableReturnType(): Int? = null
     fun primitives(z: Boolean, c: Char, b: Byte, s: Short, i: Int, f: Float, j: Long, d: Double) {}
     fun primitiveArrays(z: BooleanArray, c: CharArray, b: ByteArray, s: ShortArray, i: IntArray, f: FloatArray, j: LongArray, d: DoubleArray) {}
     fun mappedCollections(a: Iterable<*>, b: Iterator<*>, c: Collection<*>, d: List<*>, e: Set<*>, f: Map<*, *>, g: Map.Entry<*, *>, h: ListIterator<*>) {}
@@ -28,6 +31,23 @@ class Subject(param: Int) {
 
 class SmokeTest {
     private fun Class<*>.methodByName(name: String): Method = declaredMethods.single { it.name == name }
+
+    @Test
+    fun testReturnTypeAndNullability() {
+        val klass = Subject::class.java
+        val classMetadata = ReflectionLite.loadClassMetadata(klass) ?: error("No class metadata found for $klass")
+
+        val method = klass.methodByName("returnType")
+        val methodMetadata = classMetadata.getFunction(method) ?: error("No function metadata found for $method")
+        val returnType = methodMetadata.returnType
+
+        val nullableMethod = klass.methodByName("nullableReturnType")
+        val nullableMethodMetadata = classMetadata.getFunction(nullableMethod) ?: error("No function metadata found for $nullableMethod")
+        val nullableReturnType = nullableMethodMetadata.returnType
+
+        assertFalse(returnType.isNullable)
+        assertTrue(nullableReturnType.isNullable)
+    }
 
     @Test
     fun testParameterNamesAndNullability() {

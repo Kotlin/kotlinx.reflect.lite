@@ -16,7 +16,9 @@ interface CallableMetadata {
 
 interface ConstructorMetadata : CallableMetadata
 
-interface FunctionMetadata : CallableMetadata
+interface FunctionMetadata : CallableMetadata {
+    val returnType: TypeMetadata
+}
 
 interface ParameterMetadata {
     val name: String?
