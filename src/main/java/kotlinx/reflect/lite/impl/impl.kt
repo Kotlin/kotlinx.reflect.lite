@@ -58,6 +58,9 @@ internal class FunctionMetadataImpl(
 ) : CallableMetadataImpl(), FunctionMetadata {
     override val parameters: List<ParameterMetadata>
         get() = proto.valueParameterList.map { ParameterMetadataImpl(it, nameResolver) }
+
+    override val returnType: TypeMetadata
+        get() = TypeMetadataImpl(proto.returnType, nameResolver)
 }
 
 internal class ConstructorMetadataImpl(
