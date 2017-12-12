@@ -113,7 +113,7 @@ internal object ReflectionLiteImpl {
     private val methods = WeakHashMap<Class<*>, WeakReference<MethodCache>>()
 
     @Suppress("UNCHECKED_CAST")
-    private class MethodCache(val klass: Class<*>) {
+    private class MethodCache(klass: Class<*>) {
         val k = klass.getDeclaredMethod("k").let { method ->
             { instance: Annotation -> method(instance) as Int }
         }

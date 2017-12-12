@@ -11,10 +11,10 @@
     <url>https://github.com/Kotlin/kotlinx.reflect.lite</url>
 
     <properties>
-        <kotlin.version>1.0.3</kotlin.version>
+        <kotlin.version>1.2.0</kotlin.version>
         <junit.version>4.12</junit.version>
-        <protobuf.version>2.5.0</protobuf.version>
-        <proguard.plugin.version>2.0.11</proguard.plugin.version>
+        <protobuf.version>2.6.1</protobuf.version>
+        <proguard.plugin.version>2.0.14</proguard.plugin.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -117,6 +117,15 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>

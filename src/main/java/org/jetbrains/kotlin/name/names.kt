@@ -31,9 +31,9 @@ data class FqName(private val fqName: String) {
 }
 
 data class ClassId(
-        val packageFqName: FqName,
-        val relativeClassName: FqName,
-        val local: Boolean
+        private val packageFqName: FqName,
+        private val relativeClassName: FqName,
+        private val local: Boolean
 ) {
     fun asString(): String {
         if (packageFqName.isRoot) return relativeClassName.asString()
