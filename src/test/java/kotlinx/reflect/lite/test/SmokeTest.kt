@@ -25,14 +25,15 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-@Suppress("UNUSED_PARAMETER")
+@Suppress("UNUSED_PARAMETER", "unused")
 class Subject(param: Int) {
     class Nested {
         fun method(nullableString: String?, nonNullIntArray: IntArray, nullableNested: Nested?): Int = 0
     }
 
-    fun returnType(): List<String> = emptyList()
-    fun nullableReturnType(): Int? = null
+    fun notNullListOfStrings(): List<String> = emptyList()
+    fun nullableInt(): Int? = null
+
     fun primitives(z: Boolean, c: Char, b: Byte, s: Short, i: Int, f: Float, j: Long, d: Double) {}
     fun primitiveArrays(z: BooleanArray, c: CharArray, b: ByteArray, s: ShortArray, i: IntArray, f: FloatArray, j: LongArray, d: DoubleArray) {}
     fun mappedCollections(a: Iterable<*>, b: Iterator<*>, c: Collection<*>, d: List<*>, e: Set<*>, f: Map<*, *>, g: Map.Entry<*, *>, h: ListIterator<*>) {}
@@ -45,34 +46,28 @@ class Subject(param: Int) {
                       e: (Any, Any, Any?, Array<Any?>, KClass<Any>, Class<Any>, List<Any>, Map<Any, Any>) -> Any?) {}
 }
 
+@Suppress("unused")
 class SmokeTest {
     private fun Class<*>.methodByName(name: String): Method = declaredMethods.single { it.name == name }
 
     @Test
     fun testReturnTypeAndNullability() {
         val klass = Subject::class.java
-        val classMetadata = ReflectionLite.loadClassMetadata(klass) ?: error("No class metadata found for $klass")
+        val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
 
-        val method = klass.methodByName("returnType")
-        val methodMetadata = classMetadata.getFunction(method) ?: error("No function metadata found for $method")
-        val returnType = methodMetadata.returnType
+        val notNullListOfStrings = classMetadata.getFunction(klass.methodByName("notNullListOfStrings"))!!
+        assertFalse(notNullListOfStrings.returnType.isNullable)
 
-        val nullableMethod = klass.methodByName("nullableReturnType")
-        val nullableMethodMetadata = classMetadata.getFunction(nullableMethod) ?: error("No function metadata found for $nullableMethod")
-        val nullableReturnType = nullableMethodMetadata.returnType
-
-        assertFalse(returnType.isNullable)
-        assertTrue(nullableReturnType.isNullable)
+        val nullableInt = classMetadata.getFunction(klass.methodByName("nullableInt"))!!
+        assertTrue(nullableInt.returnType.isNullable)
     }
 
     @Test
     fun testParameterNamesAndNullability() {
         val klass = Subject.Nested::class.java
-        val classMetadata = ReflectionLite.loadClassMetadata(klass) ?: error("No class metadata found for $klass")
+        val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
 
-        val method = klass.methodByName("method")
-        val methodMetadata = classMetadata.getFunction(method) ?: error("No function metadata found for $method")
-        val parameters = methodMetadata.parameters
+        val parameters = classMetadata.getFunction(klass.methodByName("method"))!!.parameters
 
         assertEquals(listOf(true, false, true), parameters.map { it.type.isNullable })
         assertEquals(listOf("nullableString", "nonNullIntArray", "nullableNested"), parameters.map { it.name })
@@ -81,11 +76,9 @@ class SmokeTest {
     @Test
     fun testConstructor() {
         val klass = Subject::class.java
-        val classMetadata = ReflectionLite.loadClassMetadata(klass) ?: error("No class metadata found for $klass")
+        val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
 
-        val constructor = klass.declaredConstructors.single()
-        val constructorMetadata = classMetadata.getConstructor(constructor) ?: error("No constructor metadata found for $constructor")
-        val parameter = constructorMetadata.parameters.single()
+        val parameter = classMetadata.getConstructor(klass.declaredConstructors.single())!!.parameters.single()
 
         assertEquals("param", parameter.name)
         assertFalse(parameter.type.isNullable)
@@ -94,13 +87,13 @@ class SmokeTest {
     @Test
     fun testMappedTypes() {
         val klass = Subject::class.java
-        val classMetadata = ReflectionLite.loadClassMetadata(klass) ?: error("No class metadata found for $klass")
+        val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
 
-        assertNotNull(classMetadata.getFunction(klass.methodByName("primitives")), "No function metadata for primitives")
-        assertNotNull(classMetadata.getFunction(klass.methodByName("primitiveArrays")), "No function metadata for primitiveArrays")
-        assertNotNull(classMetadata.getFunction(klass.methodByName("mappedCollections")), "No function metadata for mappedCollections")
-        assertNotNull(classMetadata.getFunction(klass.methodByName("mappedMutableCollections")), "No function metadata for mappedMutableCollections")
-        assertNotNull(classMetadata.getFunction(klass.methodByName("mappedTypes")), "No function metadata for mappedTypes")
-        assertNotNull(classMetadata.getFunction(klass.methodByName("functionTypes")), "No function metadata for functionTypes")
+        assertNotNull(classMetadata.getFunction(klass.methodByName("primitives")))
+        assertNotNull(classMetadata.getFunction(klass.methodByName("primitiveArrays")))
+        assertNotNull(classMetadata.getFunction(klass.methodByName("mappedCollections")))
+        assertNotNull(classMetadata.getFunction(klass.methodByName("mappedMutableCollections")))
+        assertNotNull(classMetadata.getFunction(klass.methodByName("mappedTypes")))
+        assertNotNull(classMetadata.getFunction(klass.methodByName("functionTypes")))
     }
 }
