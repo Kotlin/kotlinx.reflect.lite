@@ -39,4 +39,46 @@ interface ClassMetadata {
      * `true` if this class is a data class.
      */
     val isData: Boolean
+
+    /**
+     * Kind of this class.
+     */
+    val kind: Kind
+
+    /**
+     * Represents different sorts of classes that can be declared in Kotlin code.
+     */
+    enum class Kind {
+        /**
+         * Class, declared simply with the keyword `class`.
+         * Note that enum classes and annotation classes have separate kinds [ENUM_CLASS] and [ANNOTATION_CLASS].
+         */
+        CLASS,
+
+        /**
+         * Interface, declared with the keyword `interface`.
+         */
+        INTERFACE,
+
+        /**
+         * Enum class, declared with the keywords `enum class`.
+         */
+        ENUM_CLASS,
+
+        /**
+         * Annotation class, declared with the keywords `annotation class`.
+         */
+        ANNOTATION_CLASS,
+
+        /**
+         * Object, declared with the keyword `object`.
+         * Note that companion objects have a separate kind [COMPANION_OBJECT].
+         */
+        OBJECT,
+
+        /**
+         * Companion object, declared with the keywords `companion object`.
+         */
+        COMPANION_OBJECT,
+    }
 }

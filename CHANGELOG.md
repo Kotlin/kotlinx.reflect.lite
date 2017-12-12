@@ -4,6 +4,7 @@
 
 * Add CallableMetadata.returnType
 * Add ClassMetadata.isData
+* Add ClassMetadata.kind
 * Add ConstructorMetadata.isPrimary
 * Update to Kotlin 1.2.0
 

@@ -67,4 +67,20 @@ internal class ClassMetadataImpl(
 
     override val isData: Boolean
         get() = Flags.IS_DATA.get(proto.flags)
+
+    override val kind: ClassMetadata.Kind
+        get() = when (Flags.CLASS_KIND.get(proto.flags)) {
+            ProtoBuf.Class.Kind.CLASS -> ClassMetadata.Kind.CLASS
+            ProtoBuf.Class.Kind.INTERFACE -> ClassMetadata.Kind.INTERFACE
+            ProtoBuf.Class.Kind.ENUM_CLASS -> ClassMetadata.Kind.ENUM_CLASS
+            ProtoBuf.Class.Kind.ENUM_ENTRY -> {
+                // Enum entries were never supposed to have their own class kind, so we're treating them
+                // as other anonymous classes, i.e. as CLASS
+                ClassMetadata.Kind.CLASS
+            }
+            ProtoBuf.Class.Kind.ANNOTATION_CLASS -> ClassMetadata.Kind.ANNOTATION_CLASS
+            ProtoBuf.Class.Kind.OBJECT -> ClassMetadata.Kind.OBJECT
+            ProtoBuf.Class.Kind.COMPANION_OBJECT -> ClassMetadata.Kind.COMPANION_OBJECT
+            null -> error("No class kind for class ${nameResolver.getClassId(proto.fqName)}")
+        }
 }

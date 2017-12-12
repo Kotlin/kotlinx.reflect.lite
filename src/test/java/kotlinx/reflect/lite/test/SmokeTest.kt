@@ -16,6 +16,7 @@
 
 package kotlinx.reflect.lite.test
 
+import kotlinx.reflect.lite.ClassMetadata
 import kotlinx.reflect.lite.ReflectionLite
 import org.junit.Test
 import java.lang.reflect.Method
@@ -48,8 +49,19 @@ class Subject(param: Int) {
                       e: (Any, Any, Any?, Array<Any?>, KClass<Any>, Class<Any>, List<Any>, Map<Any, Any>) -> Any?) {}
 }
 
-@Suppress("unused")
 data class DataClass(val field: Int)
+
+@Suppress("unused")
+class ClassKinds {
+    class Class
+    interface Interface
+    enum class Enum {
+        ENTRY { fun foo() {} }
+    }
+    annotation class Annotation
+    object Object
+    companion object
+}
 
 @Suppress("unused")
 class SmokeTest {
@@ -115,5 +127,17 @@ class SmokeTest {
     fun testDataClass() {
         assertTrue(ReflectionLite.loadClassMetadata(DataClass::class.java)!!.isData)
         assertFalse(ReflectionLite.loadClassMetadata(Subject::class.java)!!.isData)
+    }
+
+    @Test
+    fun testClassKinds() {
+        assertEquals(ClassMetadata.Kind.CLASS, ReflectionLite.loadClassMetadata(ClassKinds.Class::class.java)!!.kind)
+        assertEquals(ClassMetadata.Kind.INTERFACE, ReflectionLite.loadClassMetadata(ClassKinds.Interface::class.java)!!.kind)
+        assertEquals(ClassMetadata.Kind.ENUM_CLASS, ReflectionLite.loadClassMetadata(ClassKinds.Enum::class.java)!!.kind)
+        assertEquals(ClassMetadata.Kind.ANNOTATION_CLASS, ReflectionLite.loadClassMetadata(ClassKinds.Annotation::class.java)!!.kind)
+        assertEquals(ClassMetadata.Kind.OBJECT, ReflectionLite.loadClassMetadata(ClassKinds.Object::class.java)!!.kind)
+        assertEquals(ClassMetadata.Kind.COMPANION_OBJECT, ReflectionLite.loadClassMetadata(ClassKinds.Companion::class.java)!!.kind)
+
+        assertEquals(ClassMetadata.Kind.CLASS, ReflectionLite.loadClassMetadata(ClassKinds.Enum.ENTRY::class.java)!!.kind)
     }
 }
