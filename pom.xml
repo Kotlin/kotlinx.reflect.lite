@@ -16,6 +16,8 @@
         <protobuf.version>2.6.1</protobuf.version>
         <proguard.plugin.version>2.0.14</proguard.plugin.version>
 
+        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
