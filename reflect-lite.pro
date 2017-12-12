@@ -3,7 +3,10 @@
 }
 
 -keepattributes *Annotation*
+-keeppackagenames
 
 #-dontshrink
 #-dontoptimize
 #-dontobfuscate
+
+-dontnote
