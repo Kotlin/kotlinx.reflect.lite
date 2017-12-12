@@ -34,4 +34,9 @@ interface ClassMetadata {
      * belongs to this class, or `null` otherwise.
      */
     fun getConstructor(constructor: Constructor<*>): ConstructorMetadata?
+
+    /**
+     * `true` if this class is a data class.
+     */
+    val isData: Boolean
 }

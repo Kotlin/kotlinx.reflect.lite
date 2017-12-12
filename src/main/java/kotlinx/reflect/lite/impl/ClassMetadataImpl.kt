@@ -19,6 +19,7 @@ package kotlinx.reflect.lite.impl
 import kotlinx.reflect.lite.ClassMetadata
 import kotlinx.reflect.lite.ConstructorMetadata
 import kotlinx.reflect.lite.FunctionMetadata
+import org.jetbrains.kotlin.serialization.Flags
 import org.jetbrains.kotlin.serialization.ProtoBuf
 import org.jetbrains.kotlin.serialization.deserialization.NameResolver
 import org.jetbrains.kotlin.serialization.deserialization.TypeTable
@@ -63,4 +64,7 @@ internal class ClassMetadataImpl(
             append(returnType.desc())
         }
     }
+
+    override val isData: Boolean
+        get() = Flags.IS_DATA.get(proto.flags)
 }

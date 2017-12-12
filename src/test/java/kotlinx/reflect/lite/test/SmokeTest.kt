@@ -47,6 +47,9 @@ class Subject(param: Int) {
 }
 
 @Suppress("unused")
+data class DataClass(val field: Int)
+
+@Suppress("unused")
 class SmokeTest {
     private fun Class<*>.methodByName(name: String): Method = declaredMethods.single { it.name == name }
 
@@ -95,5 +98,11 @@ class SmokeTest {
         assertNotNull(classMetadata.getFunction(klass.methodByName("mappedMutableCollections")))
         assertNotNull(classMetadata.getFunction(klass.methodByName("mappedTypes")))
         assertNotNull(classMetadata.getFunction(klass.methodByName("functionTypes")))
+    }
+
+    @Test
+    fun testDataClass() {
+        assertTrue(ReflectionLite.loadClassMetadata(DataClass::class.java)!!.isData)
+        assertFalse(ReflectionLite.loadClassMetadata(Subject::class.java)!!.isData)
     }
 }
