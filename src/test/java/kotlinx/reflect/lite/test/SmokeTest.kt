@@ -31,6 +31,8 @@ class Subject(param: Int) {
         fun method(nullableString: String?, nonNullIntArray: IntArray, nullableNested: Nested?): Int = 0
     }
 
+    constructor() : this(0) {}
+
     fun notNullListOfStrings(): List<String> = emptyList()
     fun nullableInt(): Int? = null
 
@@ -81,8 +83,17 @@ class SmokeTest {
         val klass = Subject::class.java
         val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
 
-        val parameter = classMetadata.getConstructor(klass.declaredConstructors.single())!!.parameters.single()
+        val primaryConstructor = klass.declaredConstructors.single { it.parameterTypes.isNotEmpty() }
+        val primaryConstructorMetadata = classMetadata.getConstructor(primaryConstructor)!!
+        assertTrue(primaryConstructorMetadata.isPrimary)
 
+        for (constructor in klass.declaredConstructors) {
+            if (constructor != primaryConstructor) {
+                assertFalse(classMetadata.getConstructor(constructor)!!.isPrimary)
+            }
+        }
+
+        val parameter = primaryConstructorMetadata.parameters.single()
         assertEquals("param", parameter.name)
         assertFalse(parameter.type.isNullable)
     }

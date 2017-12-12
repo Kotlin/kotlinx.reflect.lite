@@ -18,6 +18,7 @@ package kotlinx.reflect.lite.impl
 
 import kotlinx.reflect.lite.ConstructorMetadata
 import kotlinx.reflect.lite.ParameterMetadata
+import org.jetbrains.kotlin.serialization.Flags
 import org.jetbrains.kotlin.serialization.ProtoBuf
 import org.jetbrains.kotlin.serialization.deserialization.NameResolver
 
@@ -27,4 +28,7 @@ internal class ConstructorMetadataImpl(
 ) : CallableMetadataImpl(), ConstructorMetadata {
     override val parameters: List<ParameterMetadata>
         get() = proto.valueParameterList.map { ParameterMetadataImpl(it, nameResolver) }
+
+    override val isPrimary: Boolean
+        get() = !Flags.IS_SECONDARY.get(proto.flags)
 }

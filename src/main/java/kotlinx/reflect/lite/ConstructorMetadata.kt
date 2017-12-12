@@ -19,4 +19,10 @@ package kotlinx.reflect.lite
 /**
  * Provides access to the metadata of a constructor of a Kotlin class.
  */
-interface ConstructorMetadata : CallableMetadata
+interface ConstructorMetadata : CallableMetadata {
+    /**
+     * Whether this constructor is the primary constructor of the containing class, meaning that its declaration
+     * is syntactically placed right after the class name and before the class body.
+     */
+    val isPrimary: Boolean
+}
