@@ -16,6 +16,13 @@
 
 package kotlinx.reflect.lite
 
+/**
+ * Provides access to the metadata of callable Kotlin declarations: functions, properties and constructors.
+ */
 interface CallableMetadata {
+    /**
+     * Metadata for the parameters of this callable declaration, in the declaration order.
+     * If this declaration is a property, an empty list is returned.
+     */
     val parameters: List<ParameterMetadata>
 }

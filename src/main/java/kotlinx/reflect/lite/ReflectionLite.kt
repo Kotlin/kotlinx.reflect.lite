@@ -18,7 +18,13 @@ package kotlinx.reflect.lite
 
 import kotlinx.reflect.lite.impl.ReflectionLiteImpl
 
+/**
+ * The entry point to the lite reflection on Kotlin metadata.
+ */
 object ReflectionLite {
+    /**
+     * Metadata for the given [klass] if this is a Kotlin class, or `null` otherwise.
+     */
     fun loadClassMetadata(klass: Class<*>): ClassMetadata? {
         return ReflectionLiteImpl.loadClassMetadata(klass)
     }

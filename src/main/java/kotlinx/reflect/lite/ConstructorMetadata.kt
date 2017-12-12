@@ -16,4 +16,7 @@
 
 package kotlinx.reflect.lite
 
+/**
+ * Provides access to the metadata of a constructor of a Kotlin class.
+ */
 interface ConstructorMetadata : CallableMetadata

@@ -16,8 +16,17 @@
 
 package kotlinx.reflect.lite
 
+/**
+ * Provides access to the metadata of a parameter of a Kotlin function or constructor.
+ */
 interface ParameterMetadata {
+    /**
+     * Name of this parameter as it was declared in the source code, or `null` if the parameter has no name or its name is not available at runtime.
+     */
     val name: String?
 
+    /**
+     * Metadata for the type of this parameter.
+     */
     val type: TypeMetadata
 }

@@ -19,8 +19,19 @@ package kotlinx.reflect.lite
 import java.lang.reflect.Constructor
 import java.lang.reflect.Method
 
+/**
+ * Provides access to the metadata of a Kotlin class, as well as to the metadata of individual members of this class.
+ */
 interface ClassMetadata {
+    /**
+     * Metadata for the given [method] if that method is visible from Kotlin source code and
+     * belongs to this class, or `null` otherwise.
+     */
     fun getFunction(method: Method): FunctionMetadata?
 
+    /**
+     * Metadata for the given [constructor] if that constructor is visible from Kotlin source code and
+     * belongs to this class, or `null` otherwise.
+     */
     fun getConstructor(constructor: Constructor<*>): ConstructorMetadata?
 }

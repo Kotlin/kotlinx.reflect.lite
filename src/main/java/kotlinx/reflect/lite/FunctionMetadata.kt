@@ -16,6 +16,12 @@
 
 package kotlinx.reflect.lite
 
+/**
+ * Provides access to the metadata of a Kotlin function.
+ */
 interface FunctionMetadata : CallableMetadata {
+    /**
+     * Metadata for the return type of this function.
+     */
     val returnType: TypeMetadata
 }
