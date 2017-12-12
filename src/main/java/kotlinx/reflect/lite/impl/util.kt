@@ -33,7 +33,7 @@ internal class LazySoftImpl<out T>(private val initializer: () -> T) {
     }
 }
 
-fun Class<*>.desc(): String {
+internal fun Class<*>.desc(): String {
     if (this == Void.TYPE) return "V"
     return Array.newInstance(this, 0).javaClass.name.substring(1).replace('.', '/')
 }
