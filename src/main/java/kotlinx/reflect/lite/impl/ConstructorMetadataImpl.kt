@@ -17,6 +17,7 @@
 package kotlinx.reflect.lite.impl
 
 import kotlinx.reflect.lite.ConstructorMetadata
+import kotlinx.reflect.lite.DeclarationMetadata
 import kotlinx.reflect.lite.ParameterMetadata
 import org.jetbrains.kotlin.serialization.Flags
 import org.jetbrains.kotlin.serialization.ProtoBuf
@@ -31,4 +32,7 @@ internal class ConstructorMetadataImpl(
 
     override val isPrimary: Boolean
         get() = !Flags.IS_SECONDARY.get(proto.flags)
+
+    override val visibility: DeclarationMetadata.Visibility?
+        get() = Flags.VISIBILITY.get(proto.flags)?.toVisibility
 }

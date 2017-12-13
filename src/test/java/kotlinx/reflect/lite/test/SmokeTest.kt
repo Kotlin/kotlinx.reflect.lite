@@ -17,8 +17,10 @@
 package kotlinx.reflect.lite.test
 
 import kotlinx.reflect.lite.ClassMetadata
+import kotlinx.reflect.lite.DeclarationMetadata
 import kotlinx.reflect.lite.ReflectionLite
 import org.junit.Test
+import java.lang.reflect.Constructor
 import java.lang.reflect.Method
 import kotlin.reflect.KClass
 import kotlin.test.assertEquals
@@ -27,12 +29,12 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 @Suppress("UNUSED_PARAMETER", "unused")
-class Subject(param: Int) {
+class Types(param: Int) {
     class Nested {
         fun method(nullableString: String?, nonNullIntArray: IntArray, nullableNested: Nested?): Int = 0
     }
 
-    constructor() : this(0) {}
+    constructor() : this(0)
 
     fun notNullListOfStrings(): List<String> = emptyList()
     fun nullableInt(): Int? = null
@@ -63,13 +65,34 @@ class ClassKinds {
     companion object
 }
 
+@Suppress("UNUSED_PARAMETER", "unused")
+open class Visibilities {
+    constructor()
+    protected constructor(i: Int)
+    internal constructor(d: Double)
+    private constructor(f: Float)
+
+    fun publicFun() {}
+    protected fun protectedFun() {}
+    internal fun internalFun() {}
+    private fun privateFun() {}
+
+    val publicVal = ""
+    protected val protectedVal = ""
+    internal val internalVal = ""
+    private val privateVal = ""
+}
+
 @Suppress("unused")
 class SmokeTest {
     private fun Class<*>.methodByName(name: String): Method = declaredMethods.single { it.name == name }
 
+    private fun Class<*>.constructorBySignature(vararg paramTypes: Class<*>): Constructor<*> =
+            declaredConstructors.single { it.parameterTypes.contentEquals(paramTypes) }
+
     @Test
     fun testReturnTypeAndNullability() {
-        val klass = Subject::class.java
+        val klass = Types::class.java
         val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
 
         val notNullListOfStrings = classMetadata.getFunction(klass.methodByName("notNullListOfStrings"))!!
@@ -81,7 +104,7 @@ class SmokeTest {
 
     @Test
     fun testParameterNamesAndNullability() {
-        val klass = Subject.Nested::class.java
+        val klass = Types.Nested::class.java
         val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
 
         val parameters = classMetadata.getFunction(klass.methodByName("method"))!!.parameters
@@ -92,27 +115,21 @@ class SmokeTest {
 
     @Test
     fun testConstructor() {
-        val klass = Subject::class.java
+        val klass = Types::class.java
         val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
 
-        val primaryConstructor = klass.declaredConstructors.single { it.parameterTypes.isNotEmpty() }
-        val primaryConstructorMetadata = classMetadata.getConstructor(primaryConstructor)!!
-        assertTrue(primaryConstructorMetadata.isPrimary)
+        val primaryConstructor = classMetadata.getConstructor(klass.constructorBySignature(Int::class.java))!!
+        assertTrue(primaryConstructor.isPrimary)
+        assertFalse(classMetadata.getConstructor(klass.constructorBySignature())!!.isPrimary)
 
-        for (constructor in klass.declaredConstructors) {
-            if (constructor != primaryConstructor) {
-                assertFalse(classMetadata.getConstructor(constructor)!!.isPrimary)
-            }
-        }
-
-        val parameter = primaryConstructorMetadata.parameters.single()
+        val parameter = primaryConstructor.parameters.single()
         assertEquals("param", parameter.name)
         assertFalse(parameter.type.isNullable)
     }
 
     @Test
     fun testMappedTypes() {
-        val klass = Subject::class.java
+        val klass = Types::class.java
         val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
 
         assertNotNull(classMetadata.getFunction(klass.methodByName("primitives")))
@@ -126,7 +143,7 @@ class SmokeTest {
     @Test
     fun testDataClass() {
         assertTrue(ReflectionLite.loadClassMetadata(DataClass::class.java)!!.isData)
-        assertFalse(ReflectionLite.loadClassMetadata(Subject::class.java)!!.isData)
+        assertFalse(ReflectionLite.loadClassMetadata(Types::class.java)!!.isData)
     }
 
     @Test
@@ -139,5 +156,20 @@ class SmokeTest {
         assertEquals(ClassMetadata.Kind.COMPANION_OBJECT, ReflectionLite.loadClassMetadata(ClassKinds.Companion::class.java)!!.kind)
 
         assertEquals(ClassMetadata.Kind.CLASS, ReflectionLite.loadClassMetadata(ClassKinds.Enum.ENTRY::class.java)!!.kind)
+    }
+
+    @Test
+    fun testVisibilities() {
+        val klass = Visibilities::class.java
+        val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
+        assertEquals(DeclarationMetadata.Visibility.PUBLIC, classMetadata.getFunction(klass.methodByName("publicFun"))!!.visibility)
+        assertEquals(DeclarationMetadata.Visibility.PROTECTED, classMetadata.getFunction(klass.methodByName("protectedFun"))!!.visibility)
+        assertEquals(DeclarationMetadata.Visibility.INTERNAL, classMetadata.getFunction(klass.methodByName("internalFun\$kotlinx_reflect_lite"))!!.visibility)
+        assertEquals(DeclarationMetadata.Visibility.PRIVATE, classMetadata.getFunction(klass.methodByName("privateFun"))!!.visibility)
+
+        assertEquals(DeclarationMetadata.Visibility.PUBLIC, classMetadata.getConstructor(klass.constructorBySignature())!!.visibility)
+        assertEquals(DeclarationMetadata.Visibility.PROTECTED, classMetadata.getConstructor(klass.constructorBySignature(Int::class.java))!!.visibility)
+        assertEquals(DeclarationMetadata.Visibility.INTERNAL, classMetadata.getConstructor(klass.constructorBySignature(Double::class.java))!!.visibility)
+        assertEquals(DeclarationMetadata.Visibility.PRIVATE, classMetadata.getConstructor(klass.constructorBySignature(Float::class.java))!!.visibility)
     }
 }

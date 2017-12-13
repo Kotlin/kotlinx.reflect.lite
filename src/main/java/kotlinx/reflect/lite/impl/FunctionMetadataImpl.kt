@@ -16,9 +16,11 @@
 
 package kotlinx.reflect.lite.impl
 
+import kotlinx.reflect.lite.DeclarationMetadata
 import kotlinx.reflect.lite.FunctionMetadata
 import kotlinx.reflect.lite.ParameterMetadata
 import kotlinx.reflect.lite.TypeMetadata
+import org.jetbrains.kotlin.serialization.Flags
 import org.jetbrains.kotlin.serialization.ProtoBuf
 import org.jetbrains.kotlin.serialization.deserialization.NameResolver
 
@@ -31,4 +33,7 @@ internal class FunctionMetadataImpl(
 
     override val returnType: TypeMetadata
         get() = TypeMetadataImpl(proto.returnType, nameResolver)
+
+    override val visibility: DeclarationMetadata.Visibility?
+        get() = Flags.VISIBILITY.get(proto.flags)?.toVisibility
 }

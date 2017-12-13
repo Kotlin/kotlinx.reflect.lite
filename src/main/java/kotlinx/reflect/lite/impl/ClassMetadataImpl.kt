@@ -18,6 +18,7 @@ package kotlinx.reflect.lite.impl
 
 import kotlinx.reflect.lite.ClassMetadata
 import kotlinx.reflect.lite.ConstructorMetadata
+import kotlinx.reflect.lite.DeclarationMetadata
 import kotlinx.reflect.lite.FunctionMetadata
 import org.jetbrains.kotlin.serialization.Flags
 import org.jetbrains.kotlin.serialization.ProtoBuf
@@ -83,4 +84,7 @@ internal class ClassMetadataImpl(
             ProtoBuf.Class.Kind.COMPANION_OBJECT -> ClassMetadata.Kind.COMPANION_OBJECT
             null -> error("No class kind for class ${nameResolver.getClassId(proto.fqName)}")
         }
+
+    override val visibility: DeclarationMetadata.Visibility?
+        get() = Flags.VISIBILITY.get(proto.flags)?.toVisibility
 }

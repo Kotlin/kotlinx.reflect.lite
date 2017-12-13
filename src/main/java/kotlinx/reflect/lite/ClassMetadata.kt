@@ -22,7 +22,7 @@ import java.lang.reflect.Method
 /**
  * Provides access to the metadata of a Kotlin class, as well as to the metadata of individual members of this class.
  */
-interface ClassMetadata {
+interface ClassMetadata : DeclarationMetadata {
     /**
      * Metadata for the given [method] if that method is visible from Kotlin source code and
      * belongs to this class, or `null` otherwise.
