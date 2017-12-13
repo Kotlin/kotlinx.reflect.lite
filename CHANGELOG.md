@@ -3,6 +3,7 @@
 ## 1.1.0 (TBD)
 
 * Support property metadata with ClassMetadata.getProperty
+* Allow to enumerate all declarations in a class with ClassMetadata.{functions,constructors,properties}
 * Add CallableMetadata.name
 * Add CallableMetadata.returnType
 * Add ClassMetadata.isData

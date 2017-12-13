@@ -77,3 +77,11 @@ class Properties {
 
     val delegated: String by lazy { "42" }
 }
+
+class EnumerateAllCallables(val property1: String) {
+    constructor() : this("")
+
+    fun function1() {}
+    fun function2() {}
+    val property2 = ""
+}

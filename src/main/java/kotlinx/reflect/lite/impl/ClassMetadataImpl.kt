@@ -32,39 +32,48 @@ internal class ClassMetadataImpl(
 ) : ClassMetadata {
     private val typeTable = TypeTable(proto.typeTable)
 
-    private val functions: Map<String, ProtoBuf.Function> by lazySoft {
+    private val functionsBySignature: Map<String, ProtoBuf.Function> by lazySoft {
         proto.functionList.mapNotNull { function ->
             JvmProtoBufUtil.getJvmMethodSignature(function, nameResolver, typeTable)
                     ?.let { it to function }
         }.toMap()
     }
 
-    private val constructors: Map<String, ProtoBuf.Constructor> by lazySoft {
+    private val constructorsBySignature: Map<String, ProtoBuf.Constructor> by lazySoft {
         proto.constructorList.mapNotNull { constructor ->
             JvmProtoBufUtil.getJvmConstructorSignature(constructor, nameResolver, typeTable)
                     ?.let { it to constructor }
         }.toMap()
     }
 
-    private val properties: Map<JvmProtoBufUtil.PropertySignature, ProtoBuf.Property> by lazySoft {
+    private val propertiesBySignature: Map<JvmProtoBufUtil.PropertySignature, ProtoBuf.Property> by lazySoft {
         proto.propertyList.mapNotNull { property ->
             JvmProtoBufUtil.getJvmFieldSignature(property, nameResolver, typeTable)
                     ?.let { it to property }
         }.toMap()
     }
 
+    override val functions: Collection<FunctionMetadata>
+        get() = functionsBySignature.values.map { proto -> FunctionMetadataImpl(proto, nameResolver) }
+
+    override val constructors: Collection<ConstructorMetadata>
+        get() = constructorsBySignature.values.map { proto -> ConstructorMetadataImpl(proto, nameResolver) }
+
+    override val properties: Collection<PropertyMetadata>
+        get() = propertiesBySignature.values.map { proto -> PropertyMetadataImpl(proto, nameResolver) }
+
     override fun getFunction(method: Method): FunctionMetadata? {
-        return functions[signature(method.name, method.parameterTypes, method.returnType)]
+        return functionsBySignature[signature(method.name, method.parameterTypes, method.returnType)]
                 ?.let { FunctionMetadataImpl(it, nameResolver) }
     }
 
     override fun getConstructor(constructor: Constructor<*>): ConstructorMetadata? {
-        return constructors[signature("<init>", constructor.parameterTypes, Void.TYPE)]
+        return constructorsBySignature[signature("<init>", constructor.parameterTypes, Void.TYPE)]
                 ?.let { ConstructorMetadataImpl(it, nameResolver) }
     }
 
     override fun getProperty(field: Field): PropertyMetadata? {
-        return properties[JvmProtoBufUtil.PropertySignature(field.name, field.type.desc())]
+        return propertiesBySignature[JvmProtoBufUtil.PropertySignature(field.name, field.type.desc())]
                 ?.let { PropertyMetadataImpl(it, nameResolver) }
     }
 

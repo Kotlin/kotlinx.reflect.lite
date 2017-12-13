@@ -16,9 +16,7 @@
 
 package kotlinx.reflect.lite.test
 
-import kotlinx.reflect.lite.ClassMetadata
-import kotlinx.reflect.lite.DeclarationMetadata
-import kotlinx.reflect.lite.ReflectionLite
+import kotlinx.reflect.lite.*
 import org.junit.Test
 import java.lang.reflect.Constructor
 import java.lang.reflect.Field
@@ -138,5 +136,14 @@ class SmokeTest {
         val delegated = classMetadata.getProperty(klass.fieldByName("delegated\$delegate"))!!
         assertEquals("delegated", delegated.name)
         assertFalse(delegated.returnType.isNullable)
+    }
+
+    @Test
+    fun testEnumerateAll() {
+        val klass = EnumerateAllCallables::class.java
+        val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
+        assertEquals(listOf("function1", "function2"), classMetadata.functions.map(FunctionMetadata::name).sorted())
+        assertEquals(listOf("property1", "property2"), classMetadata.properties.map(PropertyMetadata::name).sorted())
+        assertEquals(2, classMetadata.constructors.size)
     }
 }

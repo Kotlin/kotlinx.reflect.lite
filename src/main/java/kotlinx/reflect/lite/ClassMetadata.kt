@@ -25,6 +25,21 @@ import java.lang.reflect.Method
  */
 interface ClassMetadata : DeclarationMetadata {
     /**
+     * Metadata for all functions declared in this class, not including functions from supertypes.
+     */
+    val functions: Collection<FunctionMetadata>
+
+    /**
+     * Metadata for all constructors declared in this class.
+     */
+    val constructors: Collection<ConstructorMetadata>
+
+    /**
+     * Metadata for all properties declared in this class, not including properties from supertypes.
+     */
+    val properties: Collection<PropertyMetadata>
+
+    /**
      * Metadata for the given [method] if that method is visible from Kotlin source code and
      * belongs to this class, or `null` otherwise.
      */
