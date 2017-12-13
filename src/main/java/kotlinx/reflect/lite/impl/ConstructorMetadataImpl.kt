@@ -27,6 +27,9 @@ internal class ConstructorMetadataImpl(
         private val proto: ProtoBuf.Constructor,
         private val nameResolver: NameResolver
 ) : CallableMetadataImpl(), ConstructorMetadata {
+    override val name: String
+        get() = "<init>"
+
     override val parameters: List<ParameterMetadata>
         get() = proto.valueParameterList.map { ParameterMetadataImpl(it, nameResolver) }
 

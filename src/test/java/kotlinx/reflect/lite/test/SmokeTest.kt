@@ -54,8 +54,10 @@ class SmokeTest {
         val klass = Types.Nested::class.java
         val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
 
-        val parameters = classMetadata.getFunction(klass.methodByName("method"))!!.parameters
+        val method = classMetadata.getFunction(klass.methodByName("method"))!!
+        assertEquals("method", method.name)
 
+        val parameters = method.parameters
         assertEquals(listOf(true, false, true), parameters.map { it.type.isNullable })
         assertEquals(listOf("nullableString", "nonNullIntArray", "nullableNested"), parameters.map { it.name })
     }
@@ -67,7 +69,11 @@ class SmokeTest {
 
         val primaryConstructor = classMetadata.getConstructor(klass.constructorBySignature(Int::class.java))!!
         assertTrue(primaryConstructor.isPrimary)
-        assertFalse(classMetadata.getConstructor(klass.constructorBySignature())!!.isPrimary)
+        val secondaryConstructor = classMetadata.getConstructor(klass.constructorBySignature())!!
+        assertFalse(secondaryConstructor.isPrimary)
+
+        assertEquals("<init>", primaryConstructor.name)
+        assertEquals("<init>", secondaryConstructor.name)
 
         val parameter = primaryConstructor.parameters.single()
         assertEquals("param", parameter.name)
@@ -124,7 +130,13 @@ class SmokeTest {
     fun testProperties() {
         val klass = Properties::class.java
         val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
-        assertTrue(classMetadata.getProperty(klass.fieldByName("backingField"))!!.returnType.isNullable)
-        assertFalse(classMetadata.getProperty(klass.fieldByName("delegated\$delegate"))!!.returnType.isNullable)
+
+        val backingField = classMetadata.getProperty(klass.fieldByName("backingField"))!!
+        assertEquals("backingField", backingField.name)
+        assertTrue(backingField.returnType.isNullable)
+
+        val delegated = classMetadata.getProperty(klass.fieldByName("delegated\$delegate"))!!
+        assertEquals("delegated", delegated.name)
+        assertFalse(delegated.returnType.isNullable)
     }
 }

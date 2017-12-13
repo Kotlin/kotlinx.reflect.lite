@@ -28,6 +28,9 @@ internal class PropertyMetadataImpl(
         private val proto: ProtoBuf.Property,
         private val nameResolver: NameResolver
 ) : CallableMetadataImpl(), PropertyMetadata {
+    override val name: String
+        get() = nameResolver.getString(proto.name)
+
     override val parameters: List<ParameterMetadata>
         get() = emptyList()
 

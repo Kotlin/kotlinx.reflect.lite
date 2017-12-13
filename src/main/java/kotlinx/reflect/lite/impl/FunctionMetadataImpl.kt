@@ -28,6 +28,9 @@ internal class FunctionMetadataImpl(
         private val proto: ProtoBuf.Function,
         private val nameResolver: NameResolver
 ) : CallableMetadataImpl(), FunctionMetadata {
+    override val name: String
+        get() = nameResolver.getString(proto.name)
+
     override val parameters: List<ParameterMetadata>
         get() = proto.valueParameterList.map { ParameterMetadataImpl(it, nameResolver) }
 
