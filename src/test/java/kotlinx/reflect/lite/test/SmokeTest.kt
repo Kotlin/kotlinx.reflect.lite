@@ -22,66 +22,10 @@ import kotlinx.reflect.lite.ReflectionLite
 import org.junit.Test
 import java.lang.reflect.Constructor
 import java.lang.reflect.Method
-import kotlin.reflect.KClass
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
-
-@Suppress("UNUSED_PARAMETER", "unused")
-class Types(param: Int) {
-    class Nested {
-        fun method(nullableString: String?, nonNullIntArray: IntArray, nullableNested: Nested?): Int = 0
-    }
-
-    constructor() : this(0)
-
-    fun notNullListOfStrings(): List<String> = emptyList()
-    fun nullableInt(): Int? = null
-
-    fun primitives(z: Boolean, c: Char, b: Byte, s: Short, i: Int, f: Float, j: Long, d: Double) {}
-    fun primitiveArrays(z: BooleanArray, c: CharArray, b: ByteArray, s: ShortArray, i: IntArray, f: FloatArray, j: LongArray, d: DoubleArray) {}
-    fun mappedCollections(a: Iterable<*>, b: Iterator<*>, c: Collection<*>, d: List<*>, e: Set<*>, f: Map<*, *>, g: Map.Entry<*, *>, h: ListIterator<*>) {}
-    fun mappedMutableCollections(
-            a: MutableIterable<*>, b: MutableIterator<*>, c: MutableCollection<*>, d: MutableList<*>, e: MutableSet<*>,
-            f: MutableMap<*, *>, g: MutableMap.MutableEntry<*, *>, h: MutableListIterator<*>
-    ) {}
-    fun mappedTypes(a: Any, b: String, c: CharSequence, d: Throwable, e: Cloneable, f: Number, g: Comparable<*>, h: Enum<*>, i: Annotation) {}
-    fun functionTypes(a: () -> Unit, b: () -> String, c: (String) -> Unit, d: (String, Int, DoubleArray) -> List<*>,
-                      e: (Any, Any, Any?, Array<Any?>, KClass<Any>, Class<Any>, List<Any>, Map<Any, Any>) -> Any?) {}
-}
-
-data class DataClass(val field: Int)
-
-@Suppress("unused")
-class ClassKinds {
-    class Class
-    interface Interface
-    enum class Enum {
-        ENTRY { fun foo() {} }
-    }
-    annotation class Annotation
-    object Object
-    companion object
-}
-
-@Suppress("UNUSED_PARAMETER", "unused")
-open class Visibilities {
-    constructor()
-    protected constructor(i: Int)
-    internal constructor(d: Double)
-    private constructor(f: Float)
-
-    fun publicFun() {}
-    protected fun protectedFun() {}
-    internal fun internalFun() {}
-    private fun privateFun() {}
-
-    val publicVal = ""
-    protected val protectedVal = ""
-    internal val internalVal = ""
-    private val privateVal = ""
-}
 
 @Suppress("unused")
 class SmokeTest {
