@@ -24,4 +24,29 @@ interface FunctionMetadata : CallableMetadata {
      * Metadata for the return type of this function.
      */
     val returnType: TypeMetadata
+
+    /**
+     * `true` if this function is `inline`.
+     */
+    val isInline: Boolean
+
+    /**
+     * `true` if this function is `external`.
+     */
+    val isExternal: Boolean
+
+    /**
+     * `true` if this function is `operator`.
+     */
+    val isOperator: Boolean
+
+    /**
+     * `true` if this function is `infix`.
+     */
+    val isInfix: Boolean
+
+    /**
+     * `true` if this function is `suspend`.
+     */
+    val isSuspend: Boolean
 }

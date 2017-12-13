@@ -42,4 +42,10 @@ internal class PropertyMetadataImpl(
 
     override val visibility: DeclarationMetadata.Visibility?
         get() = Flags.VISIBILITY.get(proto.flags)?.toVisibility
+
+    override val isLateinit: Boolean
+        get() = Flags.IS_LATEINIT.get(proto.flags)
+
+    override val isConst: Boolean
+        get() = Flags.IS_CONST.get(proto.flags)
 }

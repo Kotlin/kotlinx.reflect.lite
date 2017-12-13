@@ -158,4 +158,28 @@ class SmokeTest {
         assertNull(classMetadata.getFunction(klass.methodByName("nonExtFun"))!!.extensionReceiverType)
         assertNull(classMetadata.constructors.single().extensionReceiverType)
     }
+
+    @Test
+    fun testCallableModifiers() {
+        val klass = CallableModifiers::class.java
+        val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
+
+        assertTrue(classMetadata.getFunction(klass.methodByName("inline"))!!.isInline)
+        assertTrue(classMetadata.getFunction(klass.methodByName("external"))!!.isExternal)
+        assertTrue(classMetadata.getFunction(klass.methodByName("plus"))!!.isOperator)
+        assertTrue(classMetadata.getFunction(klass.methodByName("infix"))!!.isInfix)
+        assertTrue(classMetadata.getFunction(klass.methodByName("suspend"))!!.isSuspend)
+
+        assertTrue(classMetadata.getProperty(klass.fieldByName("lateinit"))!!.isLateinit)
+        assertTrue(classMetadata.getProperty(klass.fieldByName("const"))!!.isConst)
+
+        assertFalse(classMetadata.getFunction(klass.methodByName("external"))!!.isInline)
+        assertFalse(classMetadata.getFunction(klass.methodByName("plus"))!!.isExternal)
+        assertFalse(classMetadata.getFunction(klass.methodByName("infix"))!!.isOperator)
+        assertFalse(classMetadata.getFunction(klass.methodByName("suspend"))!!.isInfix)
+        assertFalse(classMetadata.getFunction(klass.methodByName("inline"))!!.isSuspend)
+
+        assertFalse(classMetadata.getProperty(klass.fieldByName("const"))!!.isLateinit)
+        assertFalse(classMetadata.getProperty(klass.fieldByName("lateinit"))!!.isConst)
+    }
 }

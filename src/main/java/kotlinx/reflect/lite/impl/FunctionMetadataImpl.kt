@@ -42,4 +42,19 @@ internal class FunctionMetadataImpl(
 
     override val visibility: DeclarationMetadata.Visibility?
         get() = Flags.VISIBILITY.get(proto.flags)?.toVisibility
+
+    override val isInline: Boolean
+        get() = Flags.IS_INLINE.get(proto.flags)
+
+    override val isExternal: Boolean
+        get() = Flags.IS_EXTERNAL_FUNCTION.get(proto.flags)
+
+    override val isOperator: Boolean
+        get() = Flags.IS_OPERATOR.get(proto.flags)
+
+    override val isInfix: Boolean
+        get() = Flags.IS_INFIX.get(proto.flags)
+
+    override val isSuspend: Boolean
+        get() = Flags.IS_SUSPEND.get(proto.flags)
 }

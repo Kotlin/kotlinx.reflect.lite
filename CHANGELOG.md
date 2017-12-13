@@ -5,6 +5,8 @@
 * Support property metadata with ClassMetadata.getProperty
 * Allow to enumerate all declarations in a class with ClassMetadata.{functions,constructors,properties}
 * Add CallableMetadata.{name,returnType,extensionReceiverType}
+* Add FunctionMetadata.{isInline,isExternal,isOperator,isInfix,isSuspend}
+* Add PropertyMetadata.{isLateinit,isConst}
 * Add ClassMetadata.isData
 * Add ClassMetadata.kind
 * Add ConstructorMetadata.isPrimary

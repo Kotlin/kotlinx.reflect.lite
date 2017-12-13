@@ -24,4 +24,14 @@ interface PropertyMetadata : CallableMetadata {
      * Metadata for the type of values this property returns.
      */
     val returnType: TypeMetadata
+
+    /**
+     * `true` if this property is `lateinit`.
+     */
+    val isLateinit: Boolean
+
+    /**
+     * `true` if this property is `const`.
+     */
+    val isConst: Boolean
 }

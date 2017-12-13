@@ -95,3 +95,14 @@ class ExtensionReceiverType {
 
     fun nonExtFun() {}
 }
+
+object CallableModifiers {
+    inline fun inline(f: () -> Unit) = f()
+    external fun external()
+    operator fun plus(s: String) = s
+    infix fun infix(s: String) = s
+    suspend fun suspend() {}
+
+    lateinit var lateinit: String
+    const val const = 42
+}
