@@ -71,3 +71,9 @@ open class Visibilities {
     internal val internalVal = ""
     private val privateVal = ""
 }
+
+class Properties {
+    private val backingField: List<String>? = emptyList()
+
+    val delegated: String by lazy { "42" }
+}

@@ -21,6 +21,7 @@ import kotlinx.reflect.lite.DeclarationMetadata
 import kotlinx.reflect.lite.ReflectionLite
 import org.junit.Test
 import java.lang.reflect.Constructor
+import java.lang.reflect.Field
 import java.lang.reflect.Method
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -30,6 +31,8 @@ import kotlin.test.assertTrue
 @Suppress("unused")
 class SmokeTest {
     private fun Class<*>.methodByName(name: String): Method = declaredMethods.single { it.name == name }
+
+    private fun Class<*>.fieldByName(name: String): Field = declaredFields.single { it.name == name }
 
     private fun Class<*>.constructorBySignature(vararg paramTypes: Class<*>): Constructor<*> =
             declaredConstructors.single { it.parameterTypes.contentEquals(paramTypes) }
@@ -115,5 +118,13 @@ class SmokeTest {
         assertEquals(DeclarationMetadata.Visibility.PROTECTED, classMetadata.getConstructor(klass.constructorBySignature(Int::class.java))!!.visibility)
         assertEquals(DeclarationMetadata.Visibility.INTERNAL, classMetadata.getConstructor(klass.constructorBySignature(Double::class.java))!!.visibility)
         assertEquals(DeclarationMetadata.Visibility.PRIVATE, classMetadata.getConstructor(klass.constructorBySignature(Float::class.java))!!.visibility)
+    }
+
+    @Test
+    fun testProperties() {
+        val klass = Properties::class.java
+        val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
+        assertTrue(classMetadata.getProperty(klass.fieldByName("backingField"))!!.returnType.isNullable)
+        assertFalse(classMetadata.getProperty(klass.fieldByName("delegated\$delegate"))!!.returnType.isNullable)
     }
 }

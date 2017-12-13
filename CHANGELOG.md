@@ -2,6 +2,7 @@
 
 ## 1.1.0 (TBD)
 
+* Support property metadata with ClassMetadata.getProperty
 * Add CallableMetadata.returnType
 * Add ClassMetadata.isData
 * Add ClassMetadata.kind

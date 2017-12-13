@@ -16,16 +16,14 @@
 
 package kotlinx.reflect.lite.impl
 
-import kotlinx.reflect.lite.ClassMetadata
-import kotlinx.reflect.lite.ConstructorMetadata
-import kotlinx.reflect.lite.DeclarationMetadata
-import kotlinx.reflect.lite.FunctionMetadata
+import kotlinx.reflect.lite.*
 import org.jetbrains.kotlin.serialization.Flags
 import org.jetbrains.kotlin.serialization.ProtoBuf
 import org.jetbrains.kotlin.serialization.deserialization.NameResolver
 import org.jetbrains.kotlin.serialization.deserialization.TypeTable
 import org.jetbrains.kotlin.serialization.jvm.JvmProtoBufUtil
 import java.lang.reflect.Constructor
+import java.lang.reflect.Field
 import java.lang.reflect.Method
 
 internal class ClassMetadataImpl(
@@ -48,6 +46,13 @@ internal class ClassMetadataImpl(
         }.toMap()
     }
 
+    private val properties: Map<JvmProtoBufUtil.PropertySignature, ProtoBuf.Property> by lazySoft {
+        proto.propertyList.mapNotNull { property ->
+            JvmProtoBufUtil.getJvmFieldSignature(property, nameResolver, typeTable)
+                    ?.let { it to property }
+        }.toMap()
+    }
+
     override fun getFunction(method: Method): FunctionMetadata? {
         return functions[signature(method.name, method.parameterTypes, method.returnType)]
                 ?.let { FunctionMetadataImpl(it, nameResolver) }
@@ -56,6 +61,11 @@ internal class ClassMetadataImpl(
     override fun getConstructor(constructor: Constructor<*>): ConstructorMetadata? {
         return constructors[signature("<init>", constructor.parameterTypes, Void.TYPE)]
                 ?.let { ConstructorMetadataImpl(it, nameResolver) }
+    }
+
+    override fun getProperty(field: Field): PropertyMetadata? {
+        return properties[JvmProtoBufUtil.PropertySignature(field.name, field.type.desc())]
+                ?.let { PropertyMetadataImpl(it, nameResolver) }
     }
 
     private fun signature(name: String, parameterTypes: Array<Class<*>>, returnType: Class<*>): String {

@@ -17,6 +17,7 @@
 package kotlinx.reflect.lite
 
 import java.lang.reflect.Constructor
+import java.lang.reflect.Field
 import java.lang.reflect.Method
 
 /**
@@ -34,6 +35,11 @@ interface ClassMetadata : DeclarationMetadata {
      * belongs to this class, or `null` otherwise.
      */
     fun getConstructor(constructor: Constructor<*>): ConstructorMetadata?
+
+    /**
+     * Metadata for the property, backed by the given [field], or `null` if there's no Kotlin property corresponding to that field.
+     */
+    fun getProperty(field: Field): PropertyMetadata?
 
     /**
      * `true` if this class is a data class.
