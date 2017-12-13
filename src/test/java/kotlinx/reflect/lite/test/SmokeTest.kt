@@ -21,10 +21,7 @@ import org.junit.Test
 import java.lang.reflect.Constructor
 import java.lang.reflect.Field
 import java.lang.reflect.Method
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 @Suppress("unused")
 class SmokeTest {
@@ -145,5 +142,20 @@ class SmokeTest {
         assertEquals(listOf("function1", "function2"), classMetadata.functions.map(FunctionMetadata::name).sorted())
         assertEquals(listOf("property1", "property2"), classMetadata.properties.map(PropertyMetadata::name).sorted())
         assertEquals(2, classMetadata.constructors.size)
+    }
+
+    @Test
+    fun testExtensionReceiverType() {
+        val klass = ExtensionReceiverType::class.java
+        val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
+
+        assertFalse(classMetadata.getFunction(klass.methodByName("stringExtFun"))!!.extensionReceiverType!!.isNullable)
+        assertTrue(classMetadata.getFunction(klass.methodByName("nullableListExtFun"))!!.extensionReceiverType!!.isNullable)
+
+        assertFalse(classMetadata.properties.single { it.name == "intExtProp" }.extensionReceiverType!!.isNullable)
+        assertTrue(classMetadata.properties.single { it.name == "nullableDoubleExtProp" }.extensionReceiverType!!.isNullable)
+
+        assertNull(classMetadata.getFunction(klass.methodByName("nonExtFun"))!!.extensionReceiverType)
+        assertNull(classMetadata.constructors.single().extensionReceiverType)
     }
 }

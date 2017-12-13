@@ -30,4 +30,9 @@ interface CallableMetadata : DeclarationMetadata {
      * If this declaration is a property, an empty list is returned.
      */
     val parameters: List<ParameterMetadata>
+
+    /**
+     * Metadata for the type of the extension receiver of this function or property, or `null` if this callable is not an extension.
+     */
+    val extensionReceiverType: TypeMetadata?
 }

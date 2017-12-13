@@ -85,3 +85,13 @@ class EnumerateAllCallables(val property1: String) {
     fun function2() {}
     val property2 = ""
 }
+
+class ExtensionReceiverType {
+    fun String.stringExtFun() {}
+    fun List<Any>?.nullableListExtFun() {}
+
+    val Int.intExtProp get() = ""
+    val Double?.nullableDoubleExtProp get() = ""
+
+    fun nonExtFun() {}
+}

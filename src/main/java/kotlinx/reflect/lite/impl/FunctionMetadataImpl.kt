@@ -34,6 +34,9 @@ internal class FunctionMetadataImpl(
     override val parameters: List<ParameterMetadata>
         get() = proto.valueParameterList.map { ParameterMetadataImpl(it, nameResolver) }
 
+    override val extensionReceiverType: TypeMetadata?
+        get() = if (proto.hasReceiverType()) TypeMetadataImpl(proto.receiverType, nameResolver) else null
+
     override val returnType: TypeMetadata
         get() = TypeMetadataImpl(proto.returnType, nameResolver)
 
