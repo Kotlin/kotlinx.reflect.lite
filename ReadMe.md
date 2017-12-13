@@ -60,7 +60,7 @@ Also parameter names were not supported in Java reflection until Java 8.
 
 While Kotlin has its own reflection library, its size is currently above 2Mb which may be unacceptable in some circumstances, for example on Android.
 
-The size of the minimized version of this library is about 100Kb plus the dependency on protobuf-java.
+The size of the minimized version of this library is about 260Kb.
 
 #### What is supported?
 

@@ -2,6 +2,7 @@
 
 ## 1.1.0 (TBD)
 
+* Allow to load metadata given a Kotlin .class file (not a java.lang.Class instance)
 * Support property metadata with ClassMetadata.getProperty
 * Allow to enumerate all declarations in a class with ClassMetadata.{functions,constructors,properties}
 * Add CallableMetadata.name

@@ -17,6 +17,7 @@
 package kotlinx.reflect.lite
 
 import kotlinx.reflect.lite.impl.ReflectionLiteImpl
+import java.io.InputStream
 
 /**
  * The entry point to the lite reflection on Kotlin metadata.
@@ -27,5 +28,13 @@ object ReflectionLite {
      */
     fun loadClassMetadata(klass: Class<*>): ClassMetadata? {
         return ReflectionLiteImpl.loadClassMetadata(klass)
+    }
+
+    /**
+     * Metadata for the Kotlin class represented as a .class file that can be read from the given [inputStream],
+     * or `null` if the .class file does not represent a Kotlin class.
+     */
+    fun loadClassMetadata(inputStream: InputStream): ClassMetadata? {
+        return ReflectionLiteImpl.loadClassMetadata(inputStream)
     }
 }
