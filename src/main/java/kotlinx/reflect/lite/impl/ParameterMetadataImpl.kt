@@ -18,6 +18,7 @@ package kotlinx.reflect.lite.impl
 
 import kotlinx.reflect.lite.ParameterMetadata
 import kotlinx.reflect.lite.TypeMetadata
+import org.jetbrains.kotlin.serialization.Flags
 import org.jetbrains.kotlin.serialization.ProtoBuf
 import org.jetbrains.kotlin.serialization.deserialization.NameResolver
 
@@ -30,4 +31,7 @@ internal class ParameterMetadataImpl(
 
     override val type: TypeMetadata
         get() = TypeMetadataImpl(proto.type, nameResolver)
+
+    override val hasDefaultValue: Boolean
+        get() = Flags.DECLARES_DEFAULT_VALUE.get(proto.flags)
 }

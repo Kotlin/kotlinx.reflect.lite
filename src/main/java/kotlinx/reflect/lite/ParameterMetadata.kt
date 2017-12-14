@@ -29,4 +29,11 @@ interface ParameterMetadata {
      * Metadata for the type of this parameter.
      */
     val type: TypeMetadata
+
+    /**
+     * `true` if this parameter declares a default value in the source code.
+     *
+     * Note that in case the parameter inherits a default value from a super function, it's not considered to be declaring a default value.
+     */
+    val hasDefaultValue: Boolean
 }

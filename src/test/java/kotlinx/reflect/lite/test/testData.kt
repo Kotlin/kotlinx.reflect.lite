@@ -106,3 +106,11 @@ object CallableModifiers {
     lateinit var lateinit: String
     const val const = 42
 }
+
+open class ParameterDefaultValue {
+    open fun foo(x: Int, y: Int? = null) {}
+}
+
+class ParameterDefaultValueSubclass : ParameterDefaultValue() {
+    override fun foo(x: Int, y: Int?) {}
+}

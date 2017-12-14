@@ -182,4 +182,18 @@ class SmokeTest {
         assertFalse(classMetadata.getProperty(klass.fieldByName("const"))!!.isLateinit)
         assertFalse(classMetadata.getProperty(klass.fieldByName("lateinit"))!!.isConst)
     }
+
+    @Test
+    fun testParameterDefaultValue() {
+        val klass = ParameterDefaultValue::class.java
+        val subclass = ParameterDefaultValueSubclass::class.java
+
+        val parameters = ReflectionLite.loadClassMetadata(klass)!!.getFunction(klass.methodByName("foo"))!!.parameters
+        assertFalse(parameters[0].hasDefaultValue)
+        assertTrue(parameters[1].hasDefaultValue)
+
+        val subclassParameters = ReflectionLite.loadClassMetadata(subclass)!!.getFunction(subclass.methodByName("foo"))!!.parameters
+        assertFalse(subclassParameters[0].hasDefaultValue)
+        assertFalse(subclassParameters[1].hasDefaultValue)
+    }
 }
