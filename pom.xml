@@ -11,10 +11,11 @@
     <url>https://github.com/Kotlin/kotlinx.reflect.lite</url>
 
     <properties>
-        <kotlin.version>1.2.0</kotlin.version>
+        <kotlin.version>1.2.61</kotlin.version>
         <junit.version>4.12</junit.version>
         <protobuf.version>2.6.1</protobuf.version>
         <proguard.plugin.version>2.0.14</proguard.plugin.version>
+        <kotlinx.metadata.version>0.0.4</kotlinx.metadata.version>
 
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
@@ -39,12 +40,25 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-metadata-jvm</artifactId>
+            <version>${kotlinx.metadata.version}</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>bintray-kotlin-kotlinx</id>
+            <name>bintray</name>
+            <url>https://kotlin.bintray.com/kotlinx</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>

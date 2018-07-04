@@ -16,35 +16,27 @@
 
 package kotlinx.reflect.lite.impl
 
+import kotlinx.metadata.Flag
+import kotlinx.metadata.Flags
 import kotlinx.reflect.lite.DeclarationMetadata
-import org.jetbrains.kotlin.serialization.ProtoBuf
-import java.lang.ref.SoftReference
 import java.lang.reflect.Array
-import kotlin.reflect.KProperty
-
-internal fun <T> lazySoft(initializer: () -> T) = LazySoftImpl(initializer)
-
-@Suppress("UNCHECKED_CAST")
-internal class LazySoftImpl<out T>(private val initializer: () -> T) {
-    @Volatile private var value: Any? = null
-
-    operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
-        (value as? SoftReference<T>)?.get()?.let { return it }
-
-        return initializer().apply { value = SoftReference(this) }
-    }
-}
 
 internal fun Class<*>.desc(): String {
     if (this == Void.TYPE) return "V"
     return Array.newInstance(this, 0).javaClass.name.substring(1).replace('.', '/')
 }
 
-internal val ProtoBuf.Visibility.toVisibility: DeclarationMetadata.Visibility?
-    get() = when (this) {
-        ProtoBuf.Visibility.PUBLIC -> DeclarationMetadata.Visibility.PUBLIC
-        ProtoBuf.Visibility.PROTECTED -> DeclarationMetadata.Visibility.PROTECTED
-        ProtoBuf.Visibility.INTERNAL -> DeclarationMetadata.Visibility.INTERNAL
-        ProtoBuf.Visibility.PRIVATE, ProtoBuf.Visibility.PRIVATE_TO_THIS -> DeclarationMetadata.Visibility.PRIVATE
+internal val Flags.toVisibility: DeclarationMetadata.Visibility?
+    get() = when {
+        Flag.IS_PUBLIC(this) -> DeclarationMetadata.Visibility.PUBLIC
+        Flag.IS_PROTECTED(this) -> DeclarationMetadata.Visibility.PROTECTED
+        Flag.IS_INTERNAL(this) -> DeclarationMetadata.Visibility.INTERNAL
+        Flag.IS_PRIVATE(this) || Flag.IS_PRIVATE_TO_THIS(this) -> DeclarationMetadata.Visibility.PRIVATE
         else -> null
     }
+
+// To be able to pass `List::add0` as a callable reference to `also` (`List::add` only works with the new inference)
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> MutableList<T>.add0(element: T) {
+    add(element)
+}

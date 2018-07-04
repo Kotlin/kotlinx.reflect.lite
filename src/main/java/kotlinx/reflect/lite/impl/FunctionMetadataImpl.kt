@@ -16,45 +16,37 @@
 
 package kotlinx.reflect.lite.impl
 
+import kotlinx.metadata.Flag
+import kotlinx.metadata.Flags
+import kotlinx.metadata.jvm.JvmMethodSignature
 import kotlinx.reflect.lite.DeclarationMetadata
 import kotlinx.reflect.lite.FunctionMetadata
 import kotlinx.reflect.lite.ParameterMetadata
 import kotlinx.reflect.lite.TypeMetadata
-import org.jetbrains.kotlin.serialization.Flags
-import org.jetbrains.kotlin.serialization.ProtoBuf
-import org.jetbrains.kotlin.serialization.deserialization.NameResolver
 
 internal class FunctionMetadataImpl(
-        private val proto: ProtoBuf.Function,
-        private val nameResolver: NameResolver
+    private val flags: Flags,
+    override val name: String,
+    override val extensionReceiverType: TypeMetadata?,
+    override val parameters: List<ParameterMetadata>,
+    override val returnType: TypeMetadata,
+    val signature: JvmMethodSignature?
 ) : CallableMetadataImpl(), FunctionMetadata {
-    override val name: String
-        get() = nameResolver.getString(proto.name)
-
-    override val parameters: List<ParameterMetadata>
-        get() = proto.valueParameterList.map { ParameterMetadataImpl(it, nameResolver) }
-
-    override val extensionReceiverType: TypeMetadata?
-        get() = if (proto.hasReceiverType()) TypeMetadataImpl(proto.receiverType, nameResolver) else null
-
-    override val returnType: TypeMetadata
-        get() = TypeMetadataImpl(proto.returnType, nameResolver)
-
     override val visibility: DeclarationMetadata.Visibility?
-        get() = Flags.VISIBILITY.get(proto.flags)?.toVisibility
+        get() = flags.toVisibility
 
     override val isInline: Boolean
-        get() = Flags.IS_INLINE.get(proto.flags)
+        get() = Flag.Function.IS_INLINE(flags)
 
     override val isExternal: Boolean
-        get() = Flags.IS_EXTERNAL_FUNCTION.get(proto.flags)
+        get() = Flag.Function.IS_EXTERNAL(flags)
 
     override val isOperator: Boolean
-        get() = Flags.IS_OPERATOR.get(proto.flags)
+        get() = Flag.Function.IS_OPERATOR(flags)
 
     override val isInfix: Boolean
-        get() = Flags.IS_INFIX.get(proto.flags)
+        get() = Flag.Function.IS_INFIX(flags)
 
     override val isSuspend: Boolean
-        get() = Flags.IS_SUSPEND.get(proto.flags)
+        get() = Flag.Function.IS_SUSPEND(flags)
 }

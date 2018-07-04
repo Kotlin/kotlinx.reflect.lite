@@ -16,30 +16,28 @@
 
 package kotlinx.reflect.lite.impl
 
+import kotlinx.metadata.Flag
+import kotlinx.metadata.Flags
+import kotlinx.metadata.jvm.JvmMethodSignature
 import kotlinx.reflect.lite.ConstructorMetadata
 import kotlinx.reflect.lite.DeclarationMetadata
 import kotlinx.reflect.lite.ParameterMetadata
 import kotlinx.reflect.lite.TypeMetadata
-import org.jetbrains.kotlin.serialization.Flags
-import org.jetbrains.kotlin.serialization.ProtoBuf
-import org.jetbrains.kotlin.serialization.deserialization.NameResolver
 
 internal class ConstructorMetadataImpl(
-        private val proto: ProtoBuf.Constructor,
-        private val nameResolver: NameResolver
+    private val flags: Flags,
+    override val parameters: List<ParameterMetadata>,
+    val signature: JvmMethodSignature?
 ) : CallableMetadataImpl(), ConstructorMetadata {
     override val name: String
         get() = "<init>"
 
-    override val parameters: List<ParameterMetadata>
-        get() = proto.valueParameterList.map { ParameterMetadataImpl(it, nameResolver) }
-
     override val extensionReceiverType: TypeMetadata?
         get() = null
 
-    override val isPrimary: Boolean
-        get() = !Flags.IS_SECONDARY.get(proto.flags)
-
     override val visibility: DeclarationMetadata.Visibility?
-        get() = Flags.VISIBILITY.get(proto.flags)?.toVisibility
+        get() = flags.toVisibility
+
+    override val isPrimary: Boolean
+        get() = Flag.Constructor.IS_PRIMARY(flags)
 }

@@ -16,36 +16,30 @@
 
 package kotlinx.reflect.lite.impl
 
+import kotlinx.metadata.Flag
+import kotlinx.metadata.Flags
+import kotlinx.metadata.jvm.JvmFieldSignature
 import kotlinx.reflect.lite.DeclarationMetadata
 import kotlinx.reflect.lite.ParameterMetadata
 import kotlinx.reflect.lite.PropertyMetadata
 import kotlinx.reflect.lite.TypeMetadata
-import org.jetbrains.kotlin.serialization.Flags
-import org.jetbrains.kotlin.serialization.ProtoBuf
-import org.jetbrains.kotlin.serialization.deserialization.NameResolver
 
 internal class PropertyMetadataImpl(
-        private val proto: ProtoBuf.Property,
-        private val nameResolver: NameResolver
+    private val flags: Flags,
+    override val name: String,
+    override val extensionReceiverType: TypeMetadata?,
+    override val returnType: TypeMetadata,
+    val fieldSignature: JvmFieldSignature?
 ) : CallableMetadataImpl(), PropertyMetadata {
-    override val name: String
-        get() = nameResolver.getString(proto.name)
-
     override val parameters: List<ParameterMetadata>
         get() = emptyList()
 
-    override val extensionReceiverType: TypeMetadata?
-        get() = if (proto.hasReceiverType()) TypeMetadataImpl(proto.receiverType, nameResolver) else null
-
-    override val returnType: TypeMetadata
-        get() = TypeMetadataImpl(proto.returnType, nameResolver)
-
     override val visibility: DeclarationMetadata.Visibility?
-        get() = Flags.VISIBILITY.get(proto.flags)?.toVisibility
+        get() = flags.toVisibility
 
     override val isLateinit: Boolean
-        get() = Flags.IS_LATEINIT.get(proto.flags)
+        get() = Flag.Property.IS_LATEINIT(flags)
 
     override val isConst: Boolean
-        get() = Flags.IS_CONST.get(proto.flags)
+        get() = Flag.Property.IS_CONST(flags)
 }

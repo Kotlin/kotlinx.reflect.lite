@@ -114,3 +114,7 @@ open class ParameterDefaultValue {
 class ParameterDefaultValueSubclass : ParameterDefaultValue() {
     override fun foo(x: Int, y: Int?) {}
 }
+
+class ParameterVararg {
+    fun foo(x: Int, vararg y: String?) {}
+}

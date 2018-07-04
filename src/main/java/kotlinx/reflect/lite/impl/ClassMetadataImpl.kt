@@ -16,94 +16,63 @@
 
 package kotlinx.reflect.lite.impl
 
+import kotlinx.metadata.ClassName
+import kotlinx.metadata.Flag
+import kotlinx.metadata.Flags
+import kotlinx.metadata.jvm.JvmFieldSignature
+import kotlinx.metadata.jvm.JvmMemberSignature
+import kotlinx.metadata.jvm.JvmMethodSignature
 import kotlinx.reflect.lite.*
-import org.jetbrains.kotlin.serialization.Flags
-import org.jetbrains.kotlin.serialization.ProtoBuf
-import org.jetbrains.kotlin.serialization.deserialization.NameResolver
-import org.jetbrains.kotlin.serialization.deserialization.TypeTable
-import org.jetbrains.kotlin.serialization.jvm.JvmProtoBufUtil
 import java.lang.reflect.Constructor
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 
 internal class ClassMetadataImpl(
-        private val proto: ProtoBuf.Class,
-        private val nameResolver: NameResolver
+    private val flags: Flags,
+    private val name: ClassName,
+    override val functions: Collection<FunctionMetadata>,
+    override val constructors: Collection<ConstructorMetadata>,
+    override val properties: Collection<PropertyMetadata>,
+    private val functionsBySignature: Map<JvmMemberSignature, FunctionMetadata>,
+    private val constructorsBySignature: Map<JvmMemberSignature, ConstructorMetadata>,
+    private val propertiesBySignature: Map<JvmMemberSignature, PropertyMetadata>
 ) : ClassMetadata {
-    private val typeTable = TypeTable(proto.typeTable)
+    override fun getFunction(method: Method): FunctionMetadata? =
+        functionsBySignature[signature(method.name, method.parameterTypes, method.returnType)]
 
-    private val functionsBySignature: Map<String, ProtoBuf.Function> by lazySoft {
-        proto.functionList.mapNotNull { function ->
-            JvmProtoBufUtil.getJvmMethodSignature(function, nameResolver, typeTable)
-                    ?.let { it to function }
-        }.toMap()
-    }
+    override fun getConstructor(constructor: Constructor<*>): ConstructorMetadata? =
+        constructorsBySignature[signature("<init>", constructor.parameterTypes, Void.TYPE)]
 
-    private val constructorsBySignature: Map<String, ProtoBuf.Constructor> by lazySoft {
-        proto.constructorList.mapNotNull { constructor ->
-            JvmProtoBufUtil.getJvmConstructorSignature(constructor, nameResolver, typeTable)
-                    ?.let { it to constructor }
-        }.toMap()
-    }
+    override fun getProperty(field: Field): PropertyMetadata? =
+        propertiesBySignature[JvmFieldSignature(field.name, field.type.desc())]
 
-    private val propertiesBySignature: Map<JvmProtoBufUtil.PropertySignature, ProtoBuf.Property> by lazySoft {
-        proto.propertyList.mapNotNull { property ->
-            JvmProtoBufUtil.getJvmFieldSignature(property, nameResolver, typeTable)
-                    ?.let { it to property }
-        }.toMap()
-    }
-
-    override val functions: Collection<FunctionMetadata>
-        get() = functionsBySignature.values.map { proto -> FunctionMetadataImpl(proto, nameResolver) }
-
-    override val constructors: Collection<ConstructorMetadata>
-        get() = constructorsBySignature.values.map { proto -> ConstructorMetadataImpl(proto, nameResolver) }
-
-    override val properties: Collection<PropertyMetadata>
-        get() = propertiesBySignature.values.map { proto -> PropertyMetadataImpl(proto, nameResolver) }
-
-    override fun getFunction(method: Method): FunctionMetadata? {
-        return functionsBySignature[signature(method.name, method.parameterTypes, method.returnType)]
-                ?.let { FunctionMetadataImpl(it, nameResolver) }
-    }
-
-    override fun getConstructor(constructor: Constructor<*>): ConstructorMetadata? {
-        return constructorsBySignature[signature("<init>", constructor.parameterTypes, Void.TYPE)]
-                ?.let { ConstructorMetadataImpl(it, nameResolver) }
-    }
-
-    override fun getProperty(field: Field): PropertyMetadata? {
-        return propertiesBySignature[JvmProtoBufUtil.PropertySignature(field.name, field.type.desc())]
-                ?.let { PropertyMetadataImpl(it, nameResolver) }
-    }
-
-    private fun signature(name: String, parameterTypes: Array<Class<*>>, returnType: Class<*>): String {
-        return buildString {
-            append(name)
-            parameterTypes.joinTo(this, separator = "", prefix = "(", postfix = ")", transform = Class<*>::desc)
-            append(returnType.desc())
-        }
-    }
+    private fun signature(name: String, parameterTypes: Array<Class<*>>, returnType: Class<*>): JvmMemberSignature =
+        JvmMethodSignature(
+            name,
+            parameterTypes.joinToString(
+                separator = "", prefix = "(", postfix = ")${returnType.desc()}", transform = Class<*>::desc
+            )
+        )
 
     override val isData: Boolean
-        get() = Flags.IS_DATA.get(proto.flags)
+        get() = Flag.Class.IS_DATA(flags)
 
     override val kind: ClassMetadata.Kind
-        get() = when (Flags.CLASS_KIND.get(proto.flags)) {
-            ProtoBuf.Class.Kind.CLASS -> ClassMetadata.Kind.CLASS
-            ProtoBuf.Class.Kind.INTERFACE -> ClassMetadata.Kind.INTERFACE
-            ProtoBuf.Class.Kind.ENUM_CLASS -> ClassMetadata.Kind.ENUM_CLASS
-            ProtoBuf.Class.Kind.ENUM_ENTRY -> {
+        get() = when {
+            Flag.Class.IS_CLASS(flags) -> ClassMetadata.Kind.CLASS
+            Flag.Class.IS_INTERFACE(flags) -> ClassMetadata.Kind.INTERFACE
+            Flag.Class.IS_ENUM_CLASS(flags) -> ClassMetadata.Kind.ENUM_CLASS
+            Flag.Class.IS_ENUM_ENTRY(flags) -> {
                 // Enum entries were never supposed to have their own class kind, so we're treating them
                 // as other anonymous classes, i.e. as CLASS
                 ClassMetadata.Kind.CLASS
             }
-            ProtoBuf.Class.Kind.ANNOTATION_CLASS -> ClassMetadata.Kind.ANNOTATION_CLASS
-            ProtoBuf.Class.Kind.OBJECT -> ClassMetadata.Kind.OBJECT
-            ProtoBuf.Class.Kind.COMPANION_OBJECT -> ClassMetadata.Kind.COMPANION_OBJECT
-            null -> error("No class kind for class ${nameResolver.getClassId(proto.fqName)}")
+            Flag.Class.IS_ANNOTATION_CLASS(flags) -> ClassMetadata.Kind.ANNOTATION_CLASS
+            Flag.Class.IS_OBJECT(flags) -> ClassMetadata.Kind.OBJECT
+            Flag.Class.IS_COMPANION_OBJECT(flags) -> ClassMetadata.Kind.COMPANION_OBJECT
+            else -> error("Unknown class kind for class $name")
         }
 
     override val visibility: DeclarationMetadata.Visibility?
-        get() = Flags.VISIBILITY.get(proto.flags)?.toVisibility
+        get() = flags.toVisibility
 }

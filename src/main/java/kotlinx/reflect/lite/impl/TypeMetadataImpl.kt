@@ -16,15 +16,14 @@
 
 package kotlinx.reflect.lite.impl
 
+import kotlinx.metadata.Flag
+import kotlinx.metadata.Flags
 import kotlinx.reflect.lite.TypeMetadata
-import org.jetbrains.kotlin.serialization.ProtoBuf
-import org.jetbrains.kotlin.serialization.deserialization.NameResolver
 import java.lang.reflect.Array as ReflectArray
 
 internal class TypeMetadataImpl(
-        private val proto: ProtoBuf.Type,
-        private val nameResolver: NameResolver
+    private val flags: Flags
 ) : TypeMetadata {
     override val isNullable: Boolean
-        get() = proto.nullable
+        get() = Flag.Type.IS_NULLABLE(flags)
 }

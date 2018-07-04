@@ -196,4 +196,15 @@ class SmokeTest {
         assertFalse(subclassParameters[0].hasDefaultValue)
         assertFalse(subclassParameters[1].hasDefaultValue)
     }
+
+    @Test
+    fun testParameterVararg() {
+        val klass = ParameterVararg::class.java
+
+        val parameters = ReflectionLite.loadClassMetadata(klass)!!.getFunction(klass.methodByName("foo"))!!.parameters
+        assertFalse(parameters[0].type.isNullable)
+
+        // The type of parameter `y` is `Array<out String?>`
+        assertFalse(parameters[1].type.isNullable)
+    }
 }
