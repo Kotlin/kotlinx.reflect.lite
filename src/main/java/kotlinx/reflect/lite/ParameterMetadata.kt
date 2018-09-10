@@ -16,40 +16,24 @@
 
 package kotlinx.reflect.lite
 
-import kotlinx.reflect.lite.impl.ReflectionLiteImpl
-import java.lang.reflect.Constructor
-import java.lang.reflect.Method
-
-interface ClassMetadata {
-    fun getFunction(method: Method): FunctionMetadata?
-
-    fun getConstructor(constructor: Constructor<*>): ConstructorMetadata?
-}
-
-interface CallableMetadata {
-    val parameters: List<ParameterMetadata>
-}
-
-interface ConstructorMetadata : CallableMetadata
-
-interface FunctionMetadata : CallableMetadata {
-    val returnType: TypeMetadata
-}
-
+/**
+ * Provides access to the metadata of a parameter of a Kotlin function or constructor.
+ */
 interface ParameterMetadata {
+    /**
+     * Name of this parameter as it was declared in the source code, or `null` if the parameter has no name or its name is not available at runtime.
+     */
     val name: String?
 
+    /**
+     * Metadata for the type of this parameter.
+     */
     val type: TypeMetadata
-}
 
-interface TypeMetadata {
-    val isNullable: Boolean
-}
-
-
-
-object ReflectionLite {
-    fun loadClassMetadata(klass: Class<*>): ClassMetadata? {
-        return ReflectionLiteImpl.loadClassMetadata(klass)
-    }
+    /**
+     * `true` if this parameter declares a default value in the source code.
+     *
+     * Note that in case the parameter inherits a default value from a super function, it's not considered to be declaring a default value.
+     */
+    val hasDefaultValue: Boolean
 }

@@ -14,10 +14,18 @@
  * limitations under the License.
  */
 
-package org.jetbrains.kotlin.utils
+package kotlinx.reflect.lite.impl
 
-fun <T : Any> T?.singletonOrEmptyList(): List<T> =
-        if (this != null) listOf(this) else emptyList()
+import kotlinx.metadata.Flag
+import kotlinx.metadata.Flags
+import kotlinx.reflect.lite.ParameterMetadata
+import kotlinx.reflect.lite.TypeMetadata
 
-inline fun <T, C: Collection<T>> C.ifEmpty(body: () -> C): C =
-        if (isEmpty()) body() else this
+internal class ParameterMetadataImpl(
+    private val flags: Flags,
+    override val name: String,
+    override val type: TypeMetadata
+) : ParameterMetadata {
+    override val hasDefaultValue: Boolean
+        get() = Flag.ValueParameter.DECLARES_DEFAULT_VALUE(flags)
+}

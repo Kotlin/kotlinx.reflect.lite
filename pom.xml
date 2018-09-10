@@ -6,15 +6,18 @@
 
     <groupId>org.jetbrains.kotlinx</groupId>
     <artifactId>kotlinx.reflect.lite</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
     <url>https://github.com/Kotlin/kotlinx.reflect.lite</url>
 
     <properties>
-        <kotlin.version>1.0.3</kotlin.version>
+        <kotlin.version>1.2.61</kotlin.version>
         <junit.version>4.12</junit.version>
-        <protobuf.version>2.5.0</protobuf.version>
-        <proguard.plugin.version>2.0.11</proguard.plugin.version>
+        <protobuf.version>2.6.1</protobuf.version>
+        <proguard.plugin.version>2.0.14</proguard.plugin.version>
+        <kotlinx.metadata.version>0.0.4</kotlinx.metadata.version>
+
+        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -37,12 +40,25 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-metadata-jvm</artifactId>
+            <version>${kotlinx.metadata.version}</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>bintray-kotlin-kotlinx</id>
+            <name>bintray</name>
+            <url>https://kotlin.bintray.com/kotlinx</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
@@ -93,6 +109,35 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>org.jetbrains.kotlin:kotlin-stdlib</exclude>
+                                    <exclude>org.jetbrains:annotations</exclude>
+                                </excludes>
+                            </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.google.protobuf</pattern>
+                                    <shadedPattern>kotlinx.reflect.lite.protobuf</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>com.github.wvengen</groupId>
                 <artifactId>proguard-maven-plugin</artifactId>
                 <version>${proguard.plugin.version}</version>
@@ -117,6 +162,15 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>

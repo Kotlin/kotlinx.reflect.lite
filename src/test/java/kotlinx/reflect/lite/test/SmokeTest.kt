@@ -16,91 +16,195 @@
 
 package kotlinx.reflect.lite.test
 
-import kotlinx.reflect.lite.ReflectionLite
+import kotlinx.reflect.lite.*
 import org.junit.Test
+import java.lang.reflect.Constructor
+import java.lang.reflect.Field
 import java.lang.reflect.Method
-import kotlin.reflect.KClass
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
-@Suppress("UNUSED_PARAMETER")
-class Subject(param: Int) {
-    class Nested {
-        fun method(nullableString: String?, nonNullIntArray: IntArray, nullableNested: Nested?): Int = 0
-    }
-
-    fun returnType(): List<String> = emptyList()
-    fun nullableReturnType(): Int? = null
-    fun primitives(z: Boolean, c: Char, b: Byte, s: Short, i: Int, f: Float, j: Long, d: Double) {}
-    fun primitiveArrays(z: BooleanArray, c: CharArray, b: ByteArray, s: ShortArray, i: IntArray, f: FloatArray, j: LongArray, d: DoubleArray) {}
-    fun mappedCollections(a: Iterable<*>, b: Iterator<*>, c: Collection<*>, d: List<*>, e: Set<*>, f: Map<*, *>, g: Map.Entry<*, *>, h: ListIterator<*>) {}
-    fun mappedMutableCollections(
-            a: MutableIterable<*>, b: MutableIterator<*>, c: MutableCollection<*>, d: MutableList<*>, e: MutableSet<*>,
-            f: MutableMap<*, *>, g: MutableMap.MutableEntry<*, *>, h: MutableListIterator<*>
-    ) {}
-    fun mappedTypes(a: Any, b: String, c: CharSequence, d: Throwable, e: Cloneable, f: Number, g: Comparable<*>, h: Enum<*>, i: Annotation) {}
-    fun functionTypes(a: () -> Unit, b: () -> String, c: (String) -> Unit, d: (String, Int, DoubleArray) -> List<*>,
-                      e: (Any, Any, Any?, Array<Any?>, KClass<Any>, Class<Any>, List<Any>, Map<Any, Any>) -> Any?) {}
-}
-
+@Suppress("unused")
 class SmokeTest {
     private fun Class<*>.methodByName(name: String): Method = declaredMethods.single { it.name == name }
 
+    private fun Class<*>.fieldByName(name: String): Field = declaredFields.single { it.name == name }
+
+    private fun Class<*>.constructorBySignature(vararg paramTypes: Class<*>): Constructor<*> =
+            declaredConstructors.single { it.parameterTypes.contentEquals(paramTypes) }
+
     @Test
     fun testReturnTypeAndNullability() {
-        val klass = Subject::class.java
-        val classMetadata = ReflectionLite.loadClassMetadata(klass) ?: error("No class metadata found for $klass")
+        val klass = Types::class.java
+        val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
 
-        val method = klass.methodByName("returnType")
-        val methodMetadata = classMetadata.getFunction(method) ?: error("No function metadata found for $method")
-        val returnType = methodMetadata.returnType
+        val notNullListOfStrings = classMetadata.getFunction(klass.methodByName("notNullListOfStrings"))!!
+        assertFalse(notNullListOfStrings.returnType.isNullable)
 
-        val nullableMethod = klass.methodByName("nullableReturnType")
-        val nullableMethodMetadata = classMetadata.getFunction(nullableMethod) ?: error("No function metadata found for $nullableMethod")
-        val nullableReturnType = nullableMethodMetadata.returnType
-
-        assertFalse(returnType.isNullable)
-        assertTrue(nullableReturnType.isNullable)
+        val nullableInt = classMetadata.getFunction(klass.methodByName("nullableInt"))!!
+        assertTrue(nullableInt.returnType.isNullable)
     }
 
     @Test
     fun testParameterNamesAndNullability() {
-        val klass = Subject.Nested::class.java
-        val classMetadata = ReflectionLite.loadClassMetadata(klass) ?: error("No class metadata found for $klass")
+        val klass = Types.Nested::class.java
+        val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
 
-        val method = klass.methodByName("method")
-        val methodMetadata = classMetadata.getFunction(method) ?: error("No function metadata found for $method")
-        val parameters = methodMetadata.parameters
+        val method = classMetadata.getFunction(klass.methodByName("method"))!!
+        assertEquals("method", method.name)
 
+        val parameters = method.parameters
         assertEquals(listOf(true, false, true), parameters.map { it.type.isNullable })
         assertEquals(listOf("nullableString", "nonNullIntArray", "nullableNested"), parameters.map { it.name })
     }
 
     @Test
     fun testConstructor() {
-        val klass = Subject::class.java
-        val classMetadata = ReflectionLite.loadClassMetadata(klass) ?: error("No class metadata found for $klass")
+        val klass = Types::class.java
+        val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
 
-        val constructor = klass.declaredConstructors.single()
-        val constructorMetadata = classMetadata.getConstructor(constructor) ?: error("No constructor metadata found for $constructor")
-        val parameter = constructorMetadata.parameters.single()
+        val primaryConstructor = classMetadata.getConstructor(klass.constructorBySignature(Int::class.java))!!
+        assertTrue(primaryConstructor.isPrimary)
+        val secondaryConstructor = classMetadata.getConstructor(klass.constructorBySignature())!!
+        assertFalse(secondaryConstructor.isPrimary)
 
+        assertEquals("<init>", primaryConstructor.name)
+        assertEquals("<init>", secondaryConstructor.name)
+
+        val parameter = primaryConstructor.parameters.single()
         assertEquals("param", parameter.name)
         assertFalse(parameter.type.isNullable)
     }
 
     @Test
     fun testMappedTypes() {
-        val klass = Subject::class.java
-        val classMetadata = ReflectionLite.loadClassMetadata(klass) ?: error("No class metadata found for $klass")
+        val klass = Types::class.java
+        val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
 
-        assertNotNull(classMetadata.getFunction(klass.methodByName("primitives")), "No function metadata for primitives")
-        assertNotNull(classMetadata.getFunction(klass.methodByName("primitiveArrays")), "No function metadata for primitiveArrays")
-        assertNotNull(classMetadata.getFunction(klass.methodByName("mappedCollections")), "No function metadata for mappedCollections")
-        assertNotNull(classMetadata.getFunction(klass.methodByName("mappedMutableCollections")), "No function metadata for mappedMutableCollections")
-        assertNotNull(classMetadata.getFunction(klass.methodByName("mappedTypes")), "No function metadata for mappedTypes")
-        assertNotNull(classMetadata.getFunction(klass.methodByName("functionTypes")), "No function metadata for functionTypes")
+        assertNotNull(classMetadata.getFunction(klass.methodByName("primitives")))
+        assertNotNull(classMetadata.getFunction(klass.methodByName("primitiveArrays")))
+        assertNotNull(classMetadata.getFunction(klass.methodByName("mappedCollections")))
+        assertNotNull(classMetadata.getFunction(klass.methodByName("mappedMutableCollections")))
+        assertNotNull(classMetadata.getFunction(klass.methodByName("mappedTypes")))
+        assertNotNull(classMetadata.getFunction(klass.methodByName("functionTypes")))
+    }
+
+    @Test
+    fun testDataClass() {
+        assertTrue(ReflectionLite.loadClassMetadata(DataClass::class.java)!!.isData)
+        assertFalse(ReflectionLite.loadClassMetadata(Types::class.java)!!.isData)
+    }
+
+    @Test
+    fun testClassKinds() {
+        assertEquals(ClassMetadata.Kind.CLASS, ReflectionLite.loadClassMetadata(ClassKinds.Class::class.java)!!.kind)
+        assertEquals(ClassMetadata.Kind.INTERFACE, ReflectionLite.loadClassMetadata(ClassKinds.Interface::class.java)!!.kind)
+        assertEquals(ClassMetadata.Kind.ENUM_CLASS, ReflectionLite.loadClassMetadata(ClassKinds.Enum::class.java)!!.kind)
+        assertEquals(ClassMetadata.Kind.ANNOTATION_CLASS, ReflectionLite.loadClassMetadata(ClassKinds.Annotation::class.java)!!.kind)
+        assertEquals(ClassMetadata.Kind.OBJECT, ReflectionLite.loadClassMetadata(ClassKinds.Object::class.java)!!.kind)
+        assertEquals(ClassMetadata.Kind.COMPANION_OBJECT, ReflectionLite.loadClassMetadata(ClassKinds.Companion::class.java)!!.kind)
+
+        assertEquals(ClassMetadata.Kind.CLASS, ReflectionLite.loadClassMetadata(ClassKinds.Enum.ENTRY::class.java)!!.kind)
+    }
+
+    @Test
+    fun testVisibilities() {
+        val klass = Visibilities::class.java
+        val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
+        assertEquals(DeclarationMetadata.Visibility.PUBLIC, classMetadata.getFunction(klass.methodByName("publicFun"))!!.visibility)
+        assertEquals(DeclarationMetadata.Visibility.PROTECTED, classMetadata.getFunction(klass.methodByName("protectedFun"))!!.visibility)
+        assertEquals(DeclarationMetadata.Visibility.INTERNAL, classMetadata.getFunction(klass.methodByName("internalFun\$kotlinx_reflect_lite"))!!.visibility)
+        assertEquals(DeclarationMetadata.Visibility.PRIVATE, classMetadata.getFunction(klass.methodByName("privateFun"))!!.visibility)
+
+        assertEquals(DeclarationMetadata.Visibility.PUBLIC, classMetadata.getConstructor(klass.constructorBySignature())!!.visibility)
+        assertEquals(DeclarationMetadata.Visibility.PROTECTED, classMetadata.getConstructor(klass.constructorBySignature(Int::class.java))!!.visibility)
+        assertEquals(DeclarationMetadata.Visibility.INTERNAL, classMetadata.getConstructor(klass.constructorBySignature(Double::class.java))!!.visibility)
+        assertEquals(DeclarationMetadata.Visibility.PRIVATE, classMetadata.getConstructor(klass.constructorBySignature(Float::class.java))!!.visibility)
+    }
+
+    @Test
+    fun testProperties() {
+        val klass = Properties::class.java
+        val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
+
+        val backingField = classMetadata.getProperty(klass.fieldByName("backingField"))!!
+        assertEquals("backingField", backingField.name)
+        assertTrue(backingField.returnType.isNullable)
+
+        val delegated = classMetadata.getProperty(klass.fieldByName("delegated\$delegate"))!!
+        assertEquals("delegated", delegated.name)
+        assertFalse(delegated.returnType.isNullable)
+    }
+
+    @Test
+    fun testEnumerateAll() {
+        val klass = EnumerateAllCallables::class.java
+        val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
+        assertEquals(listOf("function1", "function2"), classMetadata.functions.map(FunctionMetadata::name).sorted())
+        assertEquals(listOf("property1", "property2"), classMetadata.properties.map(PropertyMetadata::name).sorted())
+        assertEquals(2, classMetadata.constructors.size)
+    }
+
+    @Test
+    fun testExtensionReceiverType() {
+        val klass = ExtensionReceiverType::class.java
+        val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
+
+        assertFalse(classMetadata.getFunction(klass.methodByName("stringExtFun"))!!.extensionReceiverType!!.isNullable)
+        assertTrue(classMetadata.getFunction(klass.methodByName("nullableListExtFun"))!!.extensionReceiverType!!.isNullable)
+
+        assertFalse(classMetadata.properties.single { it.name == "intExtProp" }.extensionReceiverType!!.isNullable)
+        assertTrue(classMetadata.properties.single { it.name == "nullableDoubleExtProp" }.extensionReceiverType!!.isNullable)
+
+        assertNull(classMetadata.getFunction(klass.methodByName("nonExtFun"))!!.extensionReceiverType)
+        assertNull(classMetadata.constructors.single().extensionReceiverType)
+    }
+
+    @Test
+    fun testCallableModifiers() {
+        val klass = CallableModifiers::class.java
+        val classMetadata = ReflectionLite.loadClassMetadata(klass)!!
+
+        assertTrue(classMetadata.getFunction(klass.methodByName("inline"))!!.isInline)
+        assertTrue(classMetadata.getFunction(klass.methodByName("external"))!!.isExternal)
+        assertTrue(classMetadata.getFunction(klass.methodByName("plus"))!!.isOperator)
+        assertTrue(classMetadata.getFunction(klass.methodByName("infix"))!!.isInfix)
+        assertTrue(classMetadata.getFunction(klass.methodByName("suspend"))!!.isSuspend)
+
+        assertTrue(classMetadata.getProperty(klass.fieldByName("lateinit"))!!.isLateinit)
+        assertTrue(classMetadata.getProperty(klass.fieldByName("const"))!!.isConst)
+
+        assertFalse(classMetadata.getFunction(klass.methodByName("external"))!!.isInline)
+        assertFalse(classMetadata.getFunction(klass.methodByName("plus"))!!.isExternal)
+        assertFalse(classMetadata.getFunction(klass.methodByName("infix"))!!.isOperator)
+        assertFalse(classMetadata.getFunction(klass.methodByName("suspend"))!!.isInfix)
+        assertFalse(classMetadata.getFunction(klass.methodByName("inline"))!!.isSuspend)
+
+        assertFalse(classMetadata.getProperty(klass.fieldByName("const"))!!.isLateinit)
+        assertFalse(classMetadata.getProperty(klass.fieldByName("lateinit"))!!.isConst)
+    }
+
+    @Test
+    fun testParameterDefaultValue() {
+        val klass = ParameterDefaultValue::class.java
+        val subclass = ParameterDefaultValueSubclass::class.java
+
+        val parameters = ReflectionLite.loadClassMetadata(klass)!!.getFunction(klass.methodByName("foo"))!!.parameters
+        assertFalse(parameters[0].hasDefaultValue)
+        assertTrue(parameters[1].hasDefaultValue)
+
+        val subclassParameters = ReflectionLite.loadClassMetadata(subclass)!!.getFunction(subclass.methodByName("foo"))!!.parameters
+        assertFalse(subclassParameters[0].hasDefaultValue)
+        assertFalse(subclassParameters[1].hasDefaultValue)
+    }
+
+    @Test
+    fun testParameterVararg() {
+        val klass = ParameterVararg::class.java
+
+        val parameters = ReflectionLite.loadClassMetadata(klass)!!.getFunction(klass.methodByName("foo"))!!.parameters
+        assertFalse(parameters[0].type.isNullable)
+
+        // The type of parameter `y` is `Array<out String?>`
+        assertFalse(parameters[1].type.isNullable)
     }
 }

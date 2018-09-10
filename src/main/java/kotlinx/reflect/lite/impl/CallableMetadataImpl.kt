@@ -14,15 +14,8 @@
  * limitations under the License.
  */
 
-package org.jetbrains.kotlin.serialization.deserialization;
+package kotlinx.reflect.lite.impl
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.kotlin.name.ClassId;
+import kotlinx.reflect.lite.CallableMetadata
 
-public interface NameResolver {
-    @NotNull
-    String getString(int index);
-
-    @NotNull
-    ClassId getClassId(int index);
-}
+internal abstract class CallableMetadataImpl : CallableMetadata

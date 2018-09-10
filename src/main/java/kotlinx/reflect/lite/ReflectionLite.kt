@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package org.jetbrains.kotlin.serialization
+package kotlinx.reflect.lite
 
-import org.jetbrains.kotlin.serialization.deserialization.NameResolver
+import kotlinx.reflect.lite.impl.ReflectionLiteImpl
 
-data class ClassData(
-        val nameResolver: NameResolver,
-        val classProto: ProtoBuf.Class
-)
-
-data class PackageData(
-        val nameResolver: NameResolver,
-        val packageProto: ProtoBuf.Package
-)
+/**
+ * The entry point to the lite reflection on Kotlin metadata.
+ */
+object ReflectionLite {
+    /**
+     * Metadata for the given [klass] if this is a Kotlin class, or `null` otherwise.
+     */
+    fun loadClassMetadata(klass: Class<*>): ClassMetadata? {
+        return ReflectionLiteImpl.loadClassMetadata(klass)
+    }
+}
