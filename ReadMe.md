@@ -1,4 +1,4 @@
-[![Kotlin](https://img.shields.io/badge/kotlin-1.0.0-blue.svg)](http://kotlinlang.org) [![Kotlin Slack](https://img.shields.io/badge/chat-kotlin%20slack-orange.svg)](http://kotlinslackin.herokuapp.com)
+[![Kotlin](https://img.shields.io/badge/kotlin-1.0.0-blue.svg)](https://kotlinlang.org) [![Kotlin Slack](https://img.shields.io/badge/chat-kotlin%20slack-orange.svg)](https://kotlinslackin.herokuapp.com)
 
 
 # kotlinx.reflect.lite
@@ -18,7 +18,7 @@ Add jcenter repository (if you don't have it yet)
     </snapshots>
     <id>central</id>
     <name>bintray</name>
-    <url>http://jcenter.bintray.com</url>
+    <url>https://jcenter.bintray.com</url>
 </repository>
 ```
 
