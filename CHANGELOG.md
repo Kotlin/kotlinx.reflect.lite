@@ -12,7 +12,7 @@
 * Add ConstructorMetadata.isPrimary
 * Add DeclarationMetadata.visibility
 * Add ParameterMetadata.hasDefaultValue
-* Update to Kotlin 1.2.0
+* Update to Kotlin 1.3
 
 ## 1.0.0 (Feb 15, 2016)
 

@@ -24,7 +24,9 @@ import kotlinx.reflect.lite.TypeMetadata
 
 internal object ReflectionLiteImpl {
     fun loadClassMetadata(klass: Class<*>): ClassMetadata? {
-        val header = MetadataLoader.loadHeader(klass)
+        val header = with(klass.getAnnotation(Metadata::class.java)) {
+            KotlinClassHeader(kind, metadataVersion, bytecodeVersion, data1, data2, extraString, packageName, extraInt)
+        }
 
         val metadata = KotlinClassMetadata.read(header)
         if (metadata is KotlinClassMetadata.Class) {

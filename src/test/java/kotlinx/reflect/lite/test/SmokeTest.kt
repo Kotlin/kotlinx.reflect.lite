@@ -30,7 +30,7 @@ class SmokeTest {
     private fun Class<*>.fieldByName(name: String): Field = declaredFields.single { it.name == name }
 
     private fun Class<*>.constructorBySignature(vararg paramTypes: Class<*>): Constructor<*> =
-            declaredConstructors.single { it.parameterTypes.contentEquals(paramTypes) }
+            declaredConstructors.single { it.parameterTypes!!.contentEquals(paramTypes) }
 
     @Test
     fun testReturnTypeAndNullability() {
