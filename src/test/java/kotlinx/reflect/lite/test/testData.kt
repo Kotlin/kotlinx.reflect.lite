@@ -102,6 +102,7 @@ object CallableModifiers {
     operator fun plus(s: String) = s
     infix fun infix(s: String) = s
     suspend fun suspend() {}
+    fun isOdd(x: Int) = x % 2 != 0
 
     lateinit var lateinit: String
     const val const = 42
@@ -117,4 +118,25 @@ class ParameterDefaultValueSubclass : ParameterDefaultValue() {
 
 class ParameterVararg {
     fun foo(x: Int, vararg y: String?) {}
+}
+
+open class ParentClass {
+    open val p1: String = "aaa"
+    val p2: String = "bbb"
+
+    open fun foo1(x: Int): String {
+        return "$x$p1"
+    }
+
+    fun foo2(x: Int): String {
+        return "$x$p2"
+    }
+}
+
+class ChildClass(): ParentClass() {
+    val p3: String = "ccc"
+
+    fun bar(): String {
+        return p3
+    }
 }

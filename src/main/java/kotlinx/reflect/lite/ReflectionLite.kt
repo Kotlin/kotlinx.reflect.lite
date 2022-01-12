@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2017 JetBrains s.r.o.
+ * Copyright 2010-2022 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package kotlinx.reflect.lite
 
-import kotlinx.reflect.lite.impl.ReflectionLiteImpl
+import kotlinx.reflect.lite.impl.*
 
 /**
  * The entry point to the lite reflection on Kotlin metadata.
@@ -25,7 +25,7 @@ object ReflectionLite {
     /**
      * Metadata for the given [klass] if this is a Kotlin class, or `null` otherwise.
      */
-    fun loadClassMetadata(klass: Class<*>): ClassMetadata? {
+    fun loadClassMetadata(klass: Class<*>): KClass<*>? {
         return ReflectionLiteImpl.loadClassMetadata(klass)
     }
 }
