@@ -31,33 +31,36 @@ public interface KCallable<out R> : KAnnotatedElement {
     /**
      * The type of values returned by this callable.
      */
-    // public val returnType: KType
+    private val returnType: KType
+        get() = TODO()
 
     /**
      * The list of type parameters of this callable.
      */
-//    @SinceKotlin("1.1")
-//    public val typeParameters: List<KTypeParameter>
+    @SinceKotlin("1.1")
+    private val typeParameters: List<KTypeParameter>
+        get() = TODO()
 
     /**
      * Calls this callable with the specified list of arguments and returns the result.
      * Throws an exception if the number of specified arguments is not equal to the size of [parameters],
      * or if their types do not match the types of the parameters.
      */
-    //public fun call(vararg args: Any?): R
+    private fun call(vararg args: Any?): R = TODO()
 
     /**
      * Calls this callable with the specified mapping of parameters to arguments and returns the result.
      * If a parameter is not found in the mapping and is not optional (as per [KParameter.isOptional]),
      * or its type does not match the type of the provided value, an exception is thrown.
      */
-    //public fun callBy(args: Map<KParameter, Any?>): R
+    private fun callBy(args: Map<KParameter, Any?>): R = TODO()
 
     /**
      * Visibility of this callable, or `null` if its visibility cannot be represented in Kotlin.
      */
-    //@SinceKotlin("1.1")
-    //public val visibility: KVisibility?
+    @SinceKotlin("1.1")
+    private val visibility: KVisibility?
+        get() = TODO()
 
     /**
      * `true` if this callable is `final`.

@@ -14,10 +14,10 @@ internal class KClassImpl<T : Any>(
     override val simpleName: String
         get() = kmClass.name
 
-    override val properties: Collection<KProperty<T>>
+    private val properties: Collection<KProperty<T>>
         get() = kmClass.properties.map(::KPropertyImpl)
 
-    override val functions: Collection<KFunction<T>>
+    private val functions: Collection<KFunction<T>>
         get() = kmClass.functions.map(::KFunctionImpl)
 
     override val constructors: Collection<KFunction<T>>

@@ -40,4 +40,10 @@ public interface KFunction<out R> : KCallable<R>, Function<R> {
      */
     @SinceKotlin("1.1")
     public val isInfix: Boolean
+
+    /**
+     * `true` if this is a suspending function.
+     */
+    @SinceKotlin("1.1")
+    public override val isSuspend: Boolean
 }

@@ -1,6 +1,11 @@
 package kotlinx.reflect.lite
 
-public interface KClass<T : Any> : KDeclarationContainer, KAnnotatedElement {
+/**
+ * Represents a class and provides introspection capabilities.
+ *
+ * @param T the type of the class.
+ */
+public interface KClass<T : Any> : KDeclarationContainer, KAnnotatedElement, KClassifier {
     /**
      * The simple name of the class as it was declared in the source code,
      * or `null` if the class has no name (if, for example, it is a class of an anonymous object).
@@ -8,14 +13,11 @@ public interface KClass<T : Any> : KDeclarationContainer, KAnnotatedElement {
     public val simpleName: String?
 
     /**
-     * All properties declared in this class, not including properties from supertypes.
+     * The fully qualified dot-separated name of the class,
+     * or `null` if the class is local or a class of an anonymous object.
      */
-    public val properties: Collection<KProperty<T>>
-
-    /**
-     * All functions declared in this class, not including functions from supertypes.
-     */
-    public val functions: Collection<KFunction<T>>
+    private val qualifiedName: String?
+        get() = TODO()
 
     /**
      * All constructors declared in this class.
@@ -23,56 +25,50 @@ public interface KClass<T : Any> : KDeclarationContainer, KAnnotatedElement {
     public val constructors: Collection<KFunction<T>>
 
     /**
-     * The fully qualified dot-separated name of the class,
-     * or `null` if the class is local or a class of an anonymous object.
-     */
-    //public val qualifiedName: String?
-
-    /**
      * All classes declared inside this class. This includes both inner and static nested classes.
      */
-    //public val nestedClasses: Collection<KClass<*>>
-
-    /**
-     * All functions and properties accessible in this class, including those declared in this class
-     * and all of its superclasses. Does not include constructors.
-     */
-    //override val members: Collection<KCallable<*>>
+    private val nestedClasses: Collection<KClass<*>>
+        get() = TODO()
 
     /**
      * The instance of the object declaration, or `null` if this class is not an object declaration.
      */
-//    public val objectInstance: T?
+    private val objectInstance: T?
+        get() = TODO()
 
     /**
      * Returns `true` if [value] is an instance of this class on a given platform.
      */
-//    @SinceKotlin("1.1")
-//    public fun isInstance(value: Any?): Boolean
+    @SinceKotlin("1.1")
+    private fun isInstance(value: Any?): Boolean = TODO()
 
     /**
      * The list of type parameters of this class. This list does *not* include type parameters of outer classes.
      */
-//    @SinceKotlin("1.1")
-//    public val typeParameters: List<KTypeParameter>
+    @SinceKotlin("1.1")
+    private val typeParameters: List<KTypeParameter>
+        get() = TODO()
 
     /**
      * The list of immediate supertypes of this class, in the order they are listed in the source code.
      */
-//    @SinceKotlin("1.1")
-//    public val supertypes: List<KType>
+    @SinceKotlin("1.1")
+    private val supertypes: List<KType>
+        get() = TODO()
 
     /**
      * The list of the immediate subclasses if this class is a sealed class, or an empty list otherwise.
      */
-//    @SinceKotlin("1.3")
-//    public val sealedSubclasses: List<KClass<out T>>
+    @SinceKotlin("1.3")
+    private val sealedSubclasses: List<KClass<out T>>
+        get() = TODO()
 
     /**
      * Visibility of this class, or `null` if its visibility cannot be represented in Kotlin.
      */
-//    @SinceKotlin("1.1")
-//    public val visibility: KVisibility?
+    @SinceKotlin("1.1")
+    private val visibility: KVisibility?
+        get() = TODO()
 
     /**
      * `true` if this class is `final`.

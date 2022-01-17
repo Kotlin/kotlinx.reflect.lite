@@ -24,7 +24,8 @@ public interface KParameter : KAnnotatedElement {
     /**
      * 0-based index of this parameter in the parameter list of its containing callable.
      */
-    //public val index: Int
+    private val index: Int
+        get() = TODO()
 
     /**
      * Name of this parameter as it was declared in the source code,
@@ -44,7 +45,8 @@ public interface KParameter : KAnnotatedElement {
     /**
      * Kind of this parameter.
      */
-    //public val kind: Kind
+    private val kind: Kind
+        get() = TODO()
 
     /**
      * Kind represents a particular position of the parameter declaration in the source code,
@@ -68,7 +70,8 @@ public interface KParameter : KAnnotatedElement {
      * 1. The default value is provided at the declaration of this parameter.
      * 2. The parameter is declared in a member function and one of the corresponding parameters in the super functions is optional.
      */
-    //public val isOptional: Boolean
+    private val isOptional: Boolean
+        get() = TODO()
 
     /**
      * `true` if this parameter is `vararg`.

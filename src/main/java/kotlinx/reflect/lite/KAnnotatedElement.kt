@@ -9,5 +9,6 @@ public interface KAnnotatedElement {
     /**
      * Annotations which are present on this element.
      */
-    //public val annotations: List<Annotation>
+    private val annotations: List<Annotation>
+        get() = TODO()
 }
