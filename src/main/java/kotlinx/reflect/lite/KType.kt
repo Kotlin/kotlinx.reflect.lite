@@ -49,6 +49,7 @@ public interface KType : KAnnotatedElement {
      * }
      * ```
      */
-    public val isMarkedNullable: Boolean
+    private val isMarkedNullable: Boolean
+        get() = TODO()
 }
 

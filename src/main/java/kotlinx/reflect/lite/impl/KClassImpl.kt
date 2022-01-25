@@ -1,44 +1,100 @@
 package kotlinx.reflect.lite.impl
 
-import kotlinx.metadata.*
 import kotlinx.metadata.jvm.*
 import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.descriptors.*
+import kotlinx.reflect.lite.descriptors.ClassDescriptor
+import kotlinx.reflect.lite.misc.*
 
 internal class KClassImpl<T : Any>(
-    private val klass: Class<*>,
-    private val metadata: KotlinClassMetadata.Class
+    val jClass: Class<T>
 ) : KClass<T> {
-    private val kmClass = metadata.toKmClass()
-    private val flags: Flags = kmClass.flags
+    val descriptor: ClassDescriptor = createClassDescriptor()
 
-    override val simpleName: String
-        get() = kmClass.name
+    private fun createClassDescriptor(): ClassDescriptor {
+        val header = with(jClass.getAnnotation(Metadata::class.java)) {
+            KotlinClassHeader(kind, metadataVersion, data1, data2, extraString, packageName, extraInt)
+        }
+        val metadata = KotlinClassMetadata.read(header)
+        val kmClass = (metadata as? KotlinClassMetadata.Class)?.toKmClass()
+            ?: error("KotlinClassMetadata.Class metadata is only supported for now")
+        val module = ModuleDescriptorImpl(jClass.safeClassLoader)
+        return ClassDescriptorImpl(kmClass, module, jClass.classId, this)
+    }
 
-    private val properties: Collection<KProperty<T>>
-        get() = kmClass.properties.map(::KPropertyImpl)
+    override val simpleName: String?
+        get() {
+            if (jClass.isAnonymousClass) return null
 
-    private val functions: Collection<KFunction<T>>
-        get() = kmClass.functions.map(::KFunctionImpl)
+            val classId = jClass.classId
+            return when {
+                classId.isLocal -> calculateLocalClassName(jClass)
+                else -> classId.shortClassName
+            }
+        }
+
+    override val qualifiedName: String?
+        get() {
+            if (jClass.isAnonymousClass) return null
+
+            val classId = jClass.classId
+            return when {
+                classId.isLocal -> null
+                else -> classId.asSingleFqName().asString()
+            }
+        }
+
+    private fun calculateLocalClassName(jClass: Class<*>): String {
+        val name = jClass.simpleName
+        jClass.enclosingMethod?.let { method ->
+            return name.substringAfter(method.name + "$")
+        }
+        jClass.enclosingConstructor?.let { constructor ->
+            return name.substringAfter(constructor.name + "$")
+        }
+        return name.substringAfter('$')
+    }
 
     override val constructors: Collection<KFunction<T>>
-        get() = kmClass.constructors.map(::KConstructorImpl)
+        get() = descriptor.constructors.map {
+            @Suppress("UNCHECKED_CAST")
+            KFunctionImpl(it) as KFunction<T>
+        }
+
+    override val nestedClasses: Collection<KClass<*>>
+        get() = descriptor.nestedClasses.map { nestedClassDesc ->
+            nestedClassDesc.kClass.jClass.let { KClassImpl(it) }
+        }
+
+    override val sealedSubclasses: List<KClass<T>>
+        get() = descriptor.sealedSubclasses.mapNotNull { subclassDesc ->
+            @Suppress("UNCHECKED_CAST")
+            val jClass = subclassDesc.kClass.jClass as Class<out T>?
+            jClass?.let { KClassImpl(it) }
+        }
+
+    override val visibility: KVisibility?
+        get() = descriptor.visibility
+
+    override val typeParameters: List<KTypeParameter>
+        get() = descriptor.typeParameters.map { KTypeParameterImpl(it) }
 
     override val isFinal: Boolean
-        get() = Flag.Common.IS_FINAL(flags)
+        get() = descriptor.isFinal
     override val isOpen: Boolean
-        get() = Flag.Common.IS_OPEN(flags)
+        get() = descriptor.isOpen
     override val isAbstract: Boolean
-        get() = Flag.Common.IS_ABSTRACT(flags)
+        get() = descriptor.isAbstract
     override val isSealed: Boolean
-        get() = Flag.Common.IS_SEALED(flags)
+        get() = descriptor.isSealed
     override val isData: Boolean
-        get() = Flag.Class.IS_DATA(flags)
+        get() = descriptor.isData
     override val isInner: Boolean
-        get() = Flag.Class.IS_INNER(flags)
+        get() = descriptor.isInner
     override val isCompanion: Boolean
-        get() = Flag.Class.IS_COMPANION_OBJECT(flags)
+        get() = descriptor.isCompanion
     override val isFun: Boolean
-        get() = Flag.Class.IS_FUN(flags)
+        get() = descriptor.isFun
     override val isValue: Boolean
-        get() = Flag.Class.IS_VALUE(flags)
+        get() = descriptor.isValue
 }

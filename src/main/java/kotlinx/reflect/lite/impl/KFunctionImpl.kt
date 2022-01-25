@@ -1,34 +1,29 @@
 package kotlinx.reflect.lite.impl
 
-import kotlinx.metadata.*
 import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.descriptors.*
 
-internal class KFunctionImpl<T : Any>(
-    private val kmFunction: KmFunction
-) : KCallableImpl<T>(), KFunction<T> {
-    private val flags: Flags = kmFunction.flags
-
+internal class KFunctionImpl(
+    override val descriptor: FunctionDescriptor
+) : KCallableImpl<Any?>(), KFunction<Any?> {
     override val name: String
-        get() = kmFunction.name
-
-    override val parameters: List<KParameter>
-        get() = kmFunction.valueParameters.map(::KParameterImpl)
+        get() = descriptor.name
 
     override val isInline: Boolean
-        get() = Flag.Function.IS_INLINE(flags)
+        get() = descriptor.isInline
     override val isExternal: Boolean
-        get() = Flag.Function.IS_EXTERNAL(flags)
+        get() = descriptor.isExternal
     override val isOperator: Boolean
-        get() = Flag.Function.IS_OPERATOR(flags)
+        get() = descriptor.isOperator
     override val isInfix: Boolean
-        get() = Flag.Function.IS_INFIX(flags)
+        get() = descriptor.isInfix
     override val isSuspend: Boolean
-        get() = Flag.Function.IS_SUSPEND(flags)
+        get() = descriptor.isSuspend
 
     override val isAbstract: Boolean
-        get() = Flag.Common.IS_ABSTRACT(flags)
+        get() = descriptor.isAbstract
     override val isFinal: Boolean
-        get() = Flag.Common.IS_FINAL(flags)
+        get() = descriptor.isFinal
     override val isOpen: Boolean
-        get() = Flag.Common.IS_OPEN(flags)
+        get() = descriptor.isOpen
 }

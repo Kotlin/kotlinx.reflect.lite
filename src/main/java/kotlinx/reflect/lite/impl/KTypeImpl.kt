@@ -1,11 +1,9 @@
 package kotlinx.reflect.lite.impl
 
-import kotlinx.metadata.*
 import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.types.KotlinType
 
-class KTypeImpl(
-    private val kmType: KmType
+internal class KTypeImpl(
+    val kType: KotlinType
 ): KType {
-    override val isMarkedNullable: Boolean
-        get() = Flag.Type.IS_NULLABLE(kmType.flags)
 }

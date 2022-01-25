@@ -27,4 +27,13 @@ class BasicReflectTest {
         assertTrue(ReflectionLite.loadClassMetadata(ClassKinds.Enum::class.java)!!.isFinal)
         assertTrue(ReflectionLite.loadClassMetadata(ClassKinds.Companion::class.java)!!.isCompanion)
     }
+
+    @Test
+    fun testNestedClasses() {
+        val kClass = ReflectionLite.loadClassMetadata(A::class.java)!!
+        val nestedClasses = kClass.nestedClasses.map { it.simpleName }
+        nestedClasses.forEach {
+            println(it)
+        }
+    }
 }

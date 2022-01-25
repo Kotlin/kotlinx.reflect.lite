@@ -1,11 +1,14 @@
 package kotlinx.reflect.lite
 
+import kotlinx.reflect.lite.descriptors.*
+import kotlinx.reflect.lite.descriptors.ClassDescriptor
+
 /**
  * Represents a class and provides introspection capabilities.
  *
  * @param T the type of the class.
  */
-public interface KClass<T : Any> : KDeclarationContainer, KAnnotatedElement, KClassifier {
+public interface KClass<out T> : KDeclarationContainer, KAnnotatedElement, KClassifier {
     /**
      * The simple name of the class as it was declared in the source code,
      * or `null` if the class has no name (if, for example, it is a class of an anonymous object).
@@ -16,8 +19,7 @@ public interface KClass<T : Any> : KDeclarationContainer, KAnnotatedElement, KCl
      * The fully qualified dot-separated name of the class,
      * or `null` if the class is local or a class of an anonymous object.
      */
-    private val qualifiedName: String?
-        get() = TODO()
+    public val qualifiedName: String?
 
     /**
      * All constructors declared in this class.
@@ -27,8 +29,7 @@ public interface KClass<T : Any> : KDeclarationContainer, KAnnotatedElement, KCl
     /**
      * All classes declared inside this class. This includes both inner and static nested classes.
      */
-    private val nestedClasses: Collection<KClass<*>>
-        get() = TODO()
+    public val nestedClasses: Collection<KClass<*>>
 
     /**
      * The instance of the object declaration, or `null` if this class is not an object declaration.
@@ -46,8 +47,7 @@ public interface KClass<T : Any> : KDeclarationContainer, KAnnotatedElement, KCl
      * The list of type parameters of this class. This list does *not* include type parameters of outer classes.
      */
     @SinceKotlin("1.1")
-    private val typeParameters: List<KTypeParameter>
-        get() = TODO()
+    public val typeParameters: List<KTypeParameter>
 
     /**
      * The list of immediate supertypes of this class, in the order they are listed in the source code.
@@ -60,15 +60,13 @@ public interface KClass<T : Any> : KDeclarationContainer, KAnnotatedElement, KCl
      * The list of the immediate subclasses if this class is a sealed class, or an empty list otherwise.
      */
     @SinceKotlin("1.3")
-    private val sealedSubclasses: List<KClass<out T>>
-        get() = TODO()
+    public val sealedSubclasses: List<KClass<T>>
 
     /**
      * Visibility of this class, or `null` if its visibility cannot be represented in Kotlin.
      */
     @SinceKotlin("1.1")
-    private val visibility: KVisibility?
-        get() = TODO()
+    public val visibility: KVisibility?
 
     /**
      * `true` if this class is `final`.

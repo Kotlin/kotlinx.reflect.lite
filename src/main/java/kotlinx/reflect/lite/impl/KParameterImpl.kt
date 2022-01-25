@@ -1,17 +1,13 @@
 package kotlinx.reflect.lite.impl
 
-import kotlinx.metadata.*
 import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.descriptors.*
 
-class KParameterImpl(
-    private val kmParam: KmValueParameter
+internal class KParameterImpl(
+    val descriptor: ParameterDescriptor,
+    override val index: Int,
+    override val kind: KParameter.Kind
 ): KParameter {
     override val name: String
-        get() = kmParam.name
-
-    override val type: KType?
-        get() = kmParam.type?.let(::KTypeImpl)
-
-    override val isVararg: Boolean
-        get() = kmParam.varargElementType != null
+        get() = descriptor.name
 }

@@ -25,7 +25,7 @@ object ReflectionLite {
     /**
      * Metadata for the given [klass] if this is a Kotlin class, or `null` otherwise.
      */
-    fun loadClassMetadata(klass: Class<*>): KClass<*>? {
+    fun <T: Any> loadClassMetadata(klass: Class<T>): KClass<T>? {
         return ReflectionLiteImpl.loadClassMetadata(klass)
     }
 }

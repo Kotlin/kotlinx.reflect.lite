@@ -16,20 +16,11 @@
 
 package kotlinx.reflect.lite.impl
 
-import kotlinx.metadata.jvm.*
 import kotlinx.reflect.lite.*
 
 internal object ReflectionLiteImpl {
-    fun loadClassMetadata(klass: Class<*>): KClass<*>? {
-        val header = with(klass.getAnnotation(Metadata::class.java)) {
-            KotlinClassHeader(kind, metadataVersion, data1, data2, extraString, packageName, extraInt)
-        }
-
-        val metadata = KotlinClassMetadata.read(header)
-        if (metadata is KotlinClassMetadata.Class) {
-            return KClassImpl<Any>(klass, metadata)
-        }
-
-        return null
+    // TODO some entry point API
+    fun <T : Any> loadClassMetadata(klass: Class<T>): KClass<T>? {
+        return KClassImpl(klass)
     }
 }

@@ -24,8 +24,7 @@ public interface KParameter : KAnnotatedElement {
     /**
      * 0-based index of this parameter in the parameter list of its containing callable.
      */
-    private val index: Int
-        get() = TODO()
+    public val index: Int
 
     /**
      * Name of this parameter as it was declared in the source code,
@@ -40,13 +39,13 @@ public interface KParameter : KAnnotatedElement {
      * Type of this parameter. For a `vararg` parameter, this is the type of the corresponding array,
      * not the individual element.
      */
-    public val type: KType?
+    private val type: KType?
+        get() = TODO()
 
     /**
      * Kind of this parameter.
      */
-    private val kind: Kind
-        get() = TODO()
+    public val kind: Kind
 
     /**
      * Kind represents a particular position of the parameter declaration in the source code,
@@ -79,5 +78,6 @@ public interface KParameter : KAnnotatedElement {
      * for more information.
      */
     @SinceKotlin("1.1")
-    public val isVararg: Boolean
+    private val isVararg: Boolean
+        get() = TODO()
 }

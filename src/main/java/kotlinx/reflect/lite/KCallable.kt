@@ -38,8 +38,7 @@ public interface KCallable<out R> : KAnnotatedElement {
      * The list of type parameters of this callable.
      */
     @SinceKotlin("1.1")
-    private val typeParameters: List<KTypeParameter>
-        get() = TODO()
+    public val typeParameters: List<KTypeParameter>
 
     /**
      * Calls this callable with the specified list of arguments and returns the result.
@@ -59,8 +58,7 @@ public interface KCallable<out R> : KAnnotatedElement {
      * Visibility of this callable, or `null` if its visibility cannot be represented in Kotlin.
      */
     @SinceKotlin("1.1")
-    private val visibility: KVisibility?
-        get() = TODO()
+    public val visibility: KVisibility?
 
     /**
      * `true` if this callable is `final`.
