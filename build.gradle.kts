@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm")
+    kotlin("jvm") version "1.6.10"
     `java-gradle-plugin`
     `maven-publish`
 }
@@ -12,9 +12,10 @@ repositories {
 
 dependencies {
     implementation("com.google.protobuf:protobuf-java:2.6.1")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib")
+    testImplementation("org.jetbrains.kotlin:kotlin-stdlib")
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
     implementation("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.3.0")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.6.10")
     testImplementation("junit:junit:4.12")
 }
 

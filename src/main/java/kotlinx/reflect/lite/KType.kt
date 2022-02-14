@@ -17,8 +17,7 @@ public interface KType : KAnnotatedElement {
      * Returns `null` if this type is not denotable in Kotlin, for example if it is an intersection type.
      */
     @SinceKotlin("1.1")
-    private val classifier: KClassifier?
-        get() = TODO()
+    public val classifier: KClassifier?
 
     /**
      * Type arguments passed for the parameters of the classifier in this type.
@@ -29,8 +28,7 @@ public interface KType : KAnnotatedElement {
      * For example, in the type `Outer<A, B>.Inner<C, D>` the returned list is `[C, D, A, B]`.
      */
     @SinceKotlin("1.1")
-    private val arguments: List<KTypeProjection>
-        get() = TODO()
+    public val arguments: List<KTypeProjection>
 
     /**
      * `true` if this type was marked nullable in the source code.
@@ -49,7 +47,6 @@ public interface KType : KAnnotatedElement {
      * }
      * ```
      */
-    private val isMarkedNullable: Boolean
-        get() = TODO()
+    public val isMarkedNullable: Boolean
 }
 

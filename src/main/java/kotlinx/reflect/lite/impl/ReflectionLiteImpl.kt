@@ -20,7 +20,7 @@ import kotlinx.reflect.lite.*
 
 internal object ReflectionLiteImpl {
     // TODO some entry point API
-    fun <T : Any> loadClassMetadata(klass: Class<T>): KClass<T>? {
+    fun <T : Any> loadClassMetadata(klass: Class<T>): KClass<T> {
         return KClassImpl(klass)
     }
 }

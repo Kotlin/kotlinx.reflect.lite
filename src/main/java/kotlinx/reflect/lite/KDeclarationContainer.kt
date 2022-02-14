@@ -7,7 +7,7 @@ package kotlinx.reflect.lite
 interface KDeclarationContainer {
     /**
      * All functions and properties accessible in this container.
+     * TODO: inherited members are not supported yet
      */
-    private val members: Collection<KCallable<*>>
-        get() = TODO()
+    public val members: Collection<KCallable<*>>
 }

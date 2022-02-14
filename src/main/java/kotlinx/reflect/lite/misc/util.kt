@@ -75,10 +75,3 @@ fun ClassLoader.tryLoadClass(fqName: String) =
     } catch (e: ClassNotFoundException) {
         null
     }
-
-fun <T> ArrayList<T>.compact(): List<T> =
-    when (size) {
-        0 -> emptyList()
-        1 -> listOf(first())
-        else -> apply { trimToSize() }
-    }

@@ -31,8 +31,7 @@ public interface KCallable<out R> : KAnnotatedElement {
     /**
      * The type of values returned by this callable.
      */
-    private val returnType: KType
-        get() = TODO()
+    public val returnType: KType
 
     /**
      * The list of type parameters of this callable.

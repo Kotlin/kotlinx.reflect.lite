@@ -11,4 +11,10 @@ internal class KTypeParameterImpl(
 
     override val isReified: Boolean
         get() = descriptor.isReified
+
+    override val upperBounds: List<KType>
+        get() = descriptor.upperBounds.map(::KTypeImpl)
+
+    override val variance: KVariance
+        get() = descriptor.variance
 }

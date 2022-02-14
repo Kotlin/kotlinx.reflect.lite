@@ -118,7 +118,6 @@ object JavaToKotlinClassMap {
      * kotlin.reflect.KFunction42 -> kotlin.reflect.KFunction
      * kotlin.reflect.KSuspendFunction42 -> kotlin.reflect.KFunction
      */
-    // TODO: maybe take ClassId as well
     fun mapKotlinToJava(kotlinFqName: FqName): ClassId? = when {
         isKotlinFunctionWithBigArity(kotlinFqName, NUMBERED_FUNCTION_PREFIX) -> FUNCTION_N_CLASS_ID
         isKotlinFunctionWithBigArity(kotlinFqName, NUMBERED_SUSPEND_FUNCTION_PREFIX) -> FUNCTION_N_CLASS_ID

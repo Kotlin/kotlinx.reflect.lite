@@ -15,7 +15,4 @@ internal object CompanionObjectMapping {
 
     fun allClassesWithIntrinsicCompanions(): Set<ClassId> =
         Collections.unmodifiableSet(classIds)
-
-//    fun isMappedIntrinsicCompanionObject(classDescriptor: ClassDescriptor): Boolean =
-//        classDescriptor.isCompanionObject && classDescriptor.classId.getOuterClassId() in classIds
 }

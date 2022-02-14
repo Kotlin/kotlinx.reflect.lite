@@ -39,8 +39,7 @@ public interface KParameter : KAnnotatedElement {
      * Type of this parameter. For a `vararg` parameter, this is the type of the corresponding array,
      * not the individual element.
      */
-    private val type: KType?
-        get() = TODO()
+    public val type: KType?
 
     /**
      * Kind of this parameter.
@@ -69,8 +68,7 @@ public interface KParameter : KAnnotatedElement {
      * 1. The default value is provided at the declaration of this parameter.
      * 2. The parameter is declared in a member function and one of the corresponding parameters in the super functions is optional.
      */
-    private val isOptional: Boolean
-        get() = TODO()
+    public val isOptional: Boolean
 
     /**
      * `true` if this parameter is `vararg`.
@@ -78,6 +76,5 @@ public interface KParameter : KAnnotatedElement {
      * for more information.
      */
     @SinceKotlin("1.1")
-    private val isVararg: Boolean
-        get() = TODO()
+    public val isVararg: Boolean
 }

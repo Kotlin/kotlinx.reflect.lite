@@ -2,9 +2,9 @@ package kotlinx.reflect.lite.descriptors
 
 import kotlinx.metadata.*
 import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.descriptors.impl.KotlinType
 import kotlinx.reflect.lite.impl.KClassImpl
 import kotlinx.reflect.lite.name.*
-import kotlinx.reflect.lite.types.KotlinType
 
 internal interface ModuleDescriptor {
     fun findClass(name: ClassName): ClassDescriptor
@@ -31,10 +31,7 @@ internal interface DeclarationDescriptor : Annotated {
     val name: Name
 }
 
-internal interface DeclarationContainerDescriptor {
-    private val members: Collection<CallableDescriptor>
-        get() = TODO()
-}
+internal interface DeclarationContainerDescriptor
 
 internal interface ClassDescriptor : DeclarationContainerDescriptor, ClassifierDescriptor {
     val classId: ClassId
@@ -44,13 +41,18 @@ internal interface ClassDescriptor : DeclarationContainerDescriptor, ClassifierD
     val constructors: List<ConstructorDescriptor>
     val nestedClasses: List<ClassDescriptor>
     val sealedSubclasses: List<ClassDescriptor>
+    val properties: List<PropertyDescriptor>
+    val functions: List<FunctionDescriptor>
+    val memberScope: MemberScope
 
-    public val typeParameters: List<TypeParameterDescriptor>
+    val typeParameters: List<TypeParameterDescriptor>
+    val supertypes: List<KotlinType>
 
-    private val supertypes: List<KotlinType>
-        get() = TODO()
+    val visibility: KVisibility?
 
-    public val visibility: KVisibility?
+    val isInterface: Boolean
+    val isObject: Boolean
+    val isCompanionObject: Boolean
 
     val isFinal: Boolean
     val isOpen: Boolean
@@ -63,18 +65,22 @@ internal interface ClassDescriptor : DeclarationContainerDescriptor, ClassifierD
     val isValue: Boolean
 }
 
+internal class MemberScope(
+    val properties: List<PropertyDescriptor>,
+    val functions: List<FunctionDescriptor>
+)
+
 internal interface CallableDescriptor : DeclarationDescriptor {
     val module: ModuleDescriptor
     val containingClass: ClassDescriptor?
 
     val valueParameters: List<ValueParameterDescriptor>
 
-    public val typeParameters: List<TypeParameterDescriptor>
+    val typeParameters: List<TypeParameterDescriptor>
 
-    private val returnType: KType
-        get() = TODO()
+    val returnType: KotlinType
 
-    public val visibility: KVisibility?
+    val visibility: KVisibility?
 
     val isFinal: Boolean
     val isOpen: Boolean
@@ -91,17 +97,24 @@ internal interface FunctionDescriptor : CallableDescriptor {
 
 internal interface ParameterDescriptor : DeclarationDescriptor {
     val containingDeclaration: CallableDescriptor
+    val type: KotlinType?
 }
 
-internal interface ValueParameterDescriptor : ParameterDescriptor
+internal interface ValueParameterDescriptor : ParameterDescriptor {
+    val declaresDefaultValue: Boolean
+    private val inheritsDefaultValue: Boolean
+        get() = TODO("Is not implemented yet (for KParameter.isOptional 2 case)")
+
+    val varargElementType: KotlinType?
+}
 
 internal interface ReceiverParameterDescriptor : ParameterDescriptor
 
 internal interface PropertyDescriptor : CallableDescriptor {
     private val isVar: Boolean
         get() = TODO()
-    public val isLateInit: Boolean
-    public val isConst: Boolean
+    val isLateInit: Boolean
+    val isConst: Boolean
     private val isDelegated: Boolean
         get() = TODO()
 
@@ -123,10 +136,10 @@ internal interface ClassifierDescriptor : DeclarationDescriptor
 
 internal interface TypeParameterDescriptor : ClassifierDescriptor {
     val containingDeclaration: DeclarationDescriptor
-    private val upperBounds: List<KotlinType>
-        get() = TODO()
-    private val variance: KVariance
-        get() = TODO()
+    val upperBounds: List<KotlinType>
+
+    val variance: KVariance
     val isReified: Boolean
 }
 
+internal interface TypeAliasDescriptor : ClassifierDescriptor

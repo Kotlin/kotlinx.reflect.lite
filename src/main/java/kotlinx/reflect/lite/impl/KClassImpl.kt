@@ -2,24 +2,29 @@ package kotlinx.reflect.lite.impl
 
 import kotlinx.metadata.jvm.*
 import kotlinx.reflect.lite.*
-import kotlinx.reflect.lite.descriptors.*
 import kotlinx.reflect.lite.descriptors.ClassDescriptor
+import kotlinx.reflect.lite.descriptors.impl.ClassDescriptorImpl
+import kotlinx.reflect.lite.descriptors.impl.ModuleDescriptorImpl
+import kotlinx.reflect.lite.internal.*
 import kotlinx.reflect.lite.misc.*
 
 internal class KClassImpl<T : Any>(
     val jClass: Class<T>
 ) : KClass<T> {
-    val descriptor: ClassDescriptor = createClassDescriptor()
+
+    val descriptor: ClassDescriptor by ReflectProperties.lazySoft {
+        createClassDescriptor()
+    }
 
     private fun createClassDescriptor(): ClassDescriptor {
-        val header = with(jClass.getAnnotation(Metadata::class.java)) {
-            KotlinClassHeader(kind, metadataVersion, data1, data2, extraString, packageName, extraInt)
-        }
+        val header = jClass.getAnnotation(Metadata::class.java)?.let {
+            KotlinClassHeader(it.kind, it.metadataVersion, it.data1, it.data2, it.extraString, it.packageName, it.extraInt)
+        } ?: error("@Metadata annotation was not found for ${jClass.name} ")
         val metadata = KotlinClassMetadata.read(header)
         val kmClass = (metadata as? KotlinClassMetadata.Class)?.toKmClass()
             ?: error("KotlinClassMetadata.Class metadata is only supported for now")
         val module = ModuleDescriptorImpl(jClass.safeClassLoader)
-        return ClassDescriptorImpl(kmClass, module, jClass.classId, this)
+        return ClassDescriptorImpl(kmClass, module, jClass.classId, this@KClassImpl)
     }
 
     override val simpleName: String?
@@ -56,10 +61,15 @@ internal class KClassImpl<T : Any>(
     }
 
     override val constructors: Collection<KFunction<T>>
-        get() = descriptor.constructors.map {
-            @Suppress("UNCHECKED_CAST")
-            KFunctionImpl(it) as KFunction<T>
-        }
+        get() =
+            if (descriptor.isInterface || descriptor.isObject || descriptor.isCompanionObject) {
+                emptyList()
+            } else {
+                descriptor.constructors.map {
+                    @Suppress("UNCHECKED_CAST")
+                    KFunctionImpl(it) as KFunction<T>
+                }
+            }
 
     override val nestedClasses: Collection<KClass<*>>
         get() = descriptor.nestedClasses.map { nestedClassDesc ->
@@ -73,11 +83,18 @@ internal class KClassImpl<T : Any>(
             jClass?.let { KClassImpl(it) }
         }
 
+    // TODO: inherited members
+    override val members: Collection<KCallable<*>>
+        get() = descriptor.functions.map(::KFunctionImpl) + descriptor.properties.map(::KPropertyImpl)
+
     override val visibility: KVisibility?
         get() = descriptor.visibility
 
     override val typeParameters: List<KTypeParameter>
         get() = descriptor.typeParameters.map { KTypeParameterImpl(it) }
+
+    override val supertypes: List<KType>
+        get() = descriptor.supertypes.map(::KTypeImpl)
 
     override val isFinal: Boolean
         get() = descriptor.isFinal

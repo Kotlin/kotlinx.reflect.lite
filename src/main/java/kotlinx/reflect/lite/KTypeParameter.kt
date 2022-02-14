@@ -17,16 +17,14 @@ public interface KTypeParameter : KClassifier {
      * See the [Kotlin language documentation](https://kotlinlang.org/docs/reference/generics.html#upper-bounds)
      * for more information.
      */
-    private val upperBounds: List<KType>
-        get() = TODO()
+    public val upperBounds: List<KType>
 
     /**
      * Declaration-site variance of this type parameter.
      * See the [Kotlin language documentation](https://kotlinlang.org/docs/reference/generics.html#declaration-site-variance)
      * for more information.
      */
-    private val variance: KVariance
-        get() = TODO()
+    public val variance: KVariance
 
     /**
      * `true` if this type parameter is `reified`.

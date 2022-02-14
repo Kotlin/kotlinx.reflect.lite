@@ -1,12 +1,6 @@
 package kotlinx.reflect.lite.builtins
 
-import kotlinx.reflect.lite.descriptors.*
-import kotlinx.reflect.lite.descriptors.ClassDescriptor
-import kotlinx.reflect.lite.impl.*
-import kotlinx.reflect.lite.impl.KClassImpl
 import kotlinx.reflect.lite.name.*
-import kotlinx.reflect.lite.types.*
-import kotlinx.reflect.lite.types.KotlinType
 
 internal object StandardNames {
     val BUILT_INS_PACKAGE_FQ_NAME = FqName("kotlin")

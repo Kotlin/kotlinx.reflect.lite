@@ -53,8 +53,7 @@ public interface KClass<out T> : KDeclarationContainer, KAnnotatedElement, KClas
      * The list of immediate supertypes of this class, in the order they are listed in the source code.
      */
     @SinceKotlin("1.1")
-    private val supertypes: List<KType>
-        get() = TODO()
+    public val supertypes: List<KType>
 
     /**
      * The list of the immediate subclasses if this class is a sealed class, or an empty list otherwise.
