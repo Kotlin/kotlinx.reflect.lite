@@ -3,11 +3,11 @@ package kotlinx.reflect.lite.descriptors
 import kotlinx.metadata.*
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.descriptors.impl.KotlinType
-import kotlinx.reflect.lite.impl.KClassImpl
+import kotlinx.reflect.lite.descriptors.impl.TypeParameterTable
 import kotlinx.reflect.lite.name.*
 
 internal interface ModuleDescriptor {
-    fun findClass(name: ClassName): ClassDescriptor
+    fun <T> findClass(name: ClassName): ClassDescriptor<*>
 }
 
 internal interface Annotated {
@@ -33,18 +33,23 @@ internal interface DeclarationDescriptor : Annotated {
 
 internal interface DeclarationContainerDescriptor
 
-internal interface ClassDescriptor : DeclarationContainerDescriptor, ClassifierDescriptor {
+internal interface ClassDescriptor<out T> : DeclarationContainerDescriptor, ClassifierDescriptor {
+    val jClass: Class<*>
+    val kmClass: KmClass
     val classId: ClassId
     val module: ModuleDescriptor
-    val kClass: KClassImpl<*>
+
+    val simpleName: String?
+    val qualifiedName: String?
 
     val constructors: List<ConstructorDescriptor>
-    val nestedClasses: List<ClassDescriptor>
-    val sealedSubclasses: List<ClassDescriptor>
+    val nestedClasses: List<ClassDescriptor<*>>
+    val sealedSubclasses: List<ClassDescriptor<T>>
     val properties: List<PropertyDescriptor>
     val functions: List<FunctionDescriptor>
     val memberScope: MemberScope
 
+    val typeParameterTable: TypeParameterTable
     val typeParameters: List<TypeParameterDescriptor>
     val supertypes: List<KotlinType>
 
@@ -72,7 +77,7 @@ internal class MemberScope(
 
 internal interface CallableDescriptor : DeclarationDescriptor {
     val module: ModuleDescriptor
-    val containingClass: ClassDescriptor?
+    val containingClass: ClassDescriptor<*>?
 
     val valueParameters: List<ValueParameterDescriptor>
 

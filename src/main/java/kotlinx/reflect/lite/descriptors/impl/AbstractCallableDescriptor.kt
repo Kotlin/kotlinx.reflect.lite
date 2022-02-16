@@ -5,13 +5,13 @@ import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.descriptors.*
 import kotlinx.reflect.lite.descriptors.CallableDescriptor
 
-abstract class AbstractCallableDescriptor : CallableDescriptor {
-    protected abstract val flags: Flags
+internal interface AbstractCallableDescriptor : CallableDescriptor {
+    val flags: Flags
 
     override val visibility: KVisibility?
         get() = flags.toVisibility()
 
-    internal abstract val typeParameterTable: TypeParameterTable
+    val typeParameterTable: TypeParameterTable
 
     override val isFinal: Boolean
         get() = Flag.Common.IS_FINAL(flags)

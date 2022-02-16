@@ -23,8 +23,8 @@ public interface KProperty<out V> : KCallable<V> {
     public val isConst: Boolean
 
     /** The getter of this property, used to obtain the value of the property. */
-    private val getter: Getter<V>
-        get() = TODO()
+    public val getter: Getter<V>
+        get() = TODO("Not implemented yet")
 
     /**
      * Represents a property accessor, which is a `get` or `set` method declared alongside the property.
@@ -47,14 +47,14 @@ public interface KProperty<out V> : KCallable<V> {
 /**
  * Represents a property declared as a `var`.
  */
-public interface KMutableProperty<V> : kotlin.reflect.KProperty<V> {
+public interface KMutableProperty<V> : KProperty<V> {
     /** The setter of this mutable property, used to change the value of the property. */
     public val setter: Setter<V>
 
     /**
      * Setter of the property is a `set` method declared alongside the property.
      */
-    public interface Setter<V> : kotlin.reflect.KProperty.Accessor<V>, kotlin.reflect.KFunction<Unit>
+    public interface Setter<V> : KProperty.Accessor<V>, KFunction<Unit>
 }
 
 
@@ -63,7 +63,7 @@ public interface KMutableProperty<V> : kotlin.reflect.KProperty<V> {
  * Such property is either originally declared in a receiverless context such as a package,
  * or has the receiver bound to it.
  */
-public interface KProperty0<out V> : kotlin.reflect.KProperty<V>, () -> V {
+public interface KProperty0<out V> : KProperty<V>, () -> V {
     /**
      * Returns the current value of the property.
      */
@@ -84,7 +84,7 @@ public interface KProperty0<out V> : kotlin.reflect.KProperty<V>, () -> V {
      *
      * Can be used as a function that takes 0 arguments and returns the value of the property type [V].
      */
-    public interface Getter<out V> : kotlin.reflect.KProperty.Getter<V>, () -> V
+    public interface Getter<out V> : KProperty.Getter<V>, () -> V
 }
 
 /**
@@ -115,7 +115,7 @@ public interface KMutableProperty0<V> : KProperty0<V>, KMutableProperty<V> {
  * @param T the type of the receiver which should be used to obtain the value of the property.
  * @param V the type of the property value.
  */
-public interface KProperty1<T, out V> : kotlin.reflect.KProperty<V>, (T) -> V {
+public interface KProperty1<T, out V> : KProperty<V>, (T) -> V {
     /**
      * Returns the current value of the property.
      *
@@ -149,7 +149,7 @@ public interface KProperty1<T, out V> : kotlin.reflect.KProperty<V>, (T) -> V {
      *
      * Can be used as a function that takes an argument of type [T] (the receiver) and returns the value of the property type [V].
      */
-    public interface Getter<T, out V> : kotlin.reflect.KProperty.Getter<V>, (T) -> V
+    public interface Getter<T, out V> : KProperty.Getter<V>, (T) -> V
 }
 
 /**
@@ -187,7 +187,7 @@ public interface KMutableProperty1<T, V> : KProperty1<T, V>, KMutableProperty<V>
  *        the type of the extension receiver.
  * @param V the type of the property value.
  */
-public interface KProperty2<D, E, out V> : kotlin.reflect.KProperty<V>, (D, E) -> V {
+public interface KProperty2<D, E, out V> : KProperty<V>, (D, E) -> V {
     /**
      * Returns the current value of the property. In case of the extension property in a class,
      * the instance of the class should be passed first and the instance of the extension receiver second.
@@ -221,7 +221,7 @@ public interface KProperty2<D, E, out V> : kotlin.reflect.KProperty<V>, (D, E) -
      * Can be used as a function that takes an argument of type [D] (the first receiver), an argument of type [E] (the second receiver)
      * and returns the value of the property type [V].
      */
-    public interface Getter<D, E, out V> : kotlin.reflect.KProperty.Getter<V>, (D, E) -> V
+    public interface Getter<D, E, out V> : KProperty.Getter<V>, (D, E) -> V
 }
 
 /**

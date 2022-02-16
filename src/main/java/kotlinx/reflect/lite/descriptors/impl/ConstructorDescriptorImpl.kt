@@ -1,6 +1,7 @@
 package kotlinx.reflect.lite.descriptors.impl
 
 import kotlinx.metadata.*
+import kotlinx.reflect.lite.descriptors.ClassDescriptor
 import kotlinx.reflect.lite.descriptors.ConstructorDescriptor
 import kotlinx.reflect.lite.descriptors.ModuleDescriptor
 import kotlinx.reflect.lite.descriptors.TypeParameterDescriptor
@@ -11,7 +12,7 @@ import kotlinx.reflect.lite.name.*
 internal class ConstructorDescriptorImpl(
     val kmCons: KmConstructor,
     override val module: ModuleDescriptor,
-    override val containingClass: ClassDescriptorImpl
+    override val containingClass: ClassDescriptor<*>
 ) : AbstractFunctionDescriptor(), ConstructorDescriptor {
     override val flags: Flags
         get() = kmCons.flags

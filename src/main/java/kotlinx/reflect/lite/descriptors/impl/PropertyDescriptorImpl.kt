@@ -1,6 +1,7 @@
 package kotlinx.reflect.lite.descriptors.impl
 
 import kotlinx.metadata.*
+import kotlinx.reflect.lite.descriptors.ClassDescriptor
 import kotlinx.reflect.lite.descriptors.ModuleDescriptor
 import kotlinx.reflect.lite.descriptors.PropertyDescriptor
 import kotlinx.reflect.lite.descriptors.TypeParameterDescriptor
@@ -10,8 +11,8 @@ import kotlinx.reflect.lite.name.*
 internal class PropertyDescriptorImpl(
     val kmProperty: KmProperty,
     override val module: ModuleDescriptor,
-    override val containingClass: ClassDescriptorImpl?
-) : AbstractCallableDescriptor(), PropertyDescriptor {
+    override val containingClass: ClassDescriptor<*>?
+) : AbstractCallableDescriptor, PropertyDescriptor {
     override val flags: Flags
         get() = kmProperty.flags
 

@@ -1,6 +1,7 @@
 package kotlinx.reflect.lite.descriptors.impl
 
 import kotlinx.metadata.*
+import kotlinx.reflect.lite.descriptors.ClassDescriptor
 import kotlinx.reflect.lite.descriptors.FunctionDescriptor
 import kotlinx.reflect.lite.descriptors.ModuleDescriptor
 import kotlinx.reflect.lite.descriptors.TypeParameterDescriptor
@@ -8,7 +9,7 @@ import kotlinx.reflect.lite.descriptors.ValueParameterDescriptor
 import kotlinx.reflect.lite.descriptors.ValueParameterDescriptorImpl
 import kotlinx.reflect.lite.name.*
 
-abstract class AbstractFunctionDescriptor : AbstractCallableDescriptor(), FunctionDescriptor {
+abstract class AbstractFunctionDescriptor : AbstractCallableDescriptor, FunctionDescriptor {
     override val isInline: Boolean
         get() = Flag.Function.IS_INLINE(flags)
     override val isExternal: Boolean
@@ -24,7 +25,7 @@ abstract class AbstractFunctionDescriptor : AbstractCallableDescriptor(), Functi
 internal class FunctionDescriptorImpl(
     val kmFunction: KmFunction,
     override val module: ModuleDescriptor,
-    override val containingClass: ClassDescriptorImpl?
+    override val containingClass: ClassDescriptor<*>?
 ) : AbstractFunctionDescriptor() {
     override val flags: Flags
         get() = kmFunction.flags

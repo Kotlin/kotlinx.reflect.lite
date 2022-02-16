@@ -11,10 +11,9 @@ internal class KTypeImpl(
     override val classifier: KClassifier?
         get() =
             when (val descriptor = type.classifierDescriptor) {
-                is ClassDescriptor -> {
-                    val jClass = descriptor.kClass.jClass
+                is ClassDescriptor<*> -> {
                     // TODO array types
-                    KClassImpl(jClass)
+                    KClassImpl(descriptor)
                 }
                 is TypeParameterDescriptor -> KTypeParameterImpl(descriptor)
                 is TypeAliasDescriptor -> TODO("Type alias classifiers are not yet supported")

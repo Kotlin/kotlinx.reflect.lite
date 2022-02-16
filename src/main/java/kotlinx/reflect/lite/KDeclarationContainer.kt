@@ -7,7 +7,8 @@ package kotlinx.reflect.lite
 interface KDeclarationContainer {
     /**
      * All functions and properties accessible in this container.
-     * TODO: inherited members are not supported yet
+     * TODO: inherited, static and extension members are not supported yet
+     * NOTE: kotlinx-metadata-jvm can not provide inherited and static members - it's a low level api
      */
     public val members: Collection<KCallable<*>>
 }

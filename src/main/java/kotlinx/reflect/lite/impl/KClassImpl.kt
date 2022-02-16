@@ -1,64 +1,17 @@
 package kotlinx.reflect.lite.impl
 
-import kotlinx.metadata.jvm.*
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.descriptors.ClassDescriptor
-import kotlinx.reflect.lite.descriptors.impl.ClassDescriptorImpl
-import kotlinx.reflect.lite.descriptors.impl.ModuleDescriptorImpl
-import kotlinx.reflect.lite.internal.*
-import kotlinx.reflect.lite.misc.*
 
-internal class KClassImpl<T : Any>(
-    val jClass: Class<T>
+internal class KClassImpl<T : Any?>(
+    private val descriptor: ClassDescriptor<T>
 ) : KClass<T> {
 
-    val descriptor: ClassDescriptor by ReflectProperties.lazySoft {
-        createClassDescriptor()
-    }
-
-    private fun createClassDescriptor(): ClassDescriptor {
-        val header = jClass.getAnnotation(Metadata::class.java)?.let {
-            KotlinClassHeader(it.kind, it.metadataVersion, it.data1, it.data2, it.extraString, it.packageName, it.extraInt)
-        } ?: error("@Metadata annotation was not found for ${jClass.name} ")
-        val metadata = KotlinClassMetadata.read(header)
-        val kmClass = (metadata as? KotlinClassMetadata.Class)?.toKmClass()
-            ?: error("KotlinClassMetadata.Class metadata is only supported for now")
-        val module = ModuleDescriptorImpl(jClass.safeClassLoader)
-        return ClassDescriptorImpl(kmClass, module, jClass.classId, this@KClassImpl)
-    }
-
     override val simpleName: String?
-        get() {
-            if (jClass.isAnonymousClass) return null
-
-            val classId = jClass.classId
-            return when {
-                classId.isLocal -> calculateLocalClassName(jClass)
-                else -> classId.shortClassName
-            }
-        }
+        get() = descriptor.simpleName
 
     override val qualifiedName: String?
-        get() {
-            if (jClass.isAnonymousClass) return null
-
-            val classId = jClass.classId
-            return when {
-                classId.isLocal -> null
-                else -> classId.asSingleFqName().asString()
-            }
-        }
-
-    private fun calculateLocalClassName(jClass: Class<*>): String {
-        val name = jClass.simpleName
-        jClass.enclosingMethod?.let { method ->
-            return name.substringAfter(method.name + "$")
-        }
-        jClass.enclosingConstructor?.let { constructor ->
-            return name.substringAfter(constructor.name + "$")
-        }
-        return name.substringAfter('$')
-    }
+        get() = descriptor.qualifiedName
 
     override val constructors: Collection<KFunction<T>>
         get() =
@@ -72,18 +25,11 @@ internal class KClassImpl<T : Any>(
             }
 
     override val nestedClasses: Collection<KClass<*>>
-        get() = descriptor.nestedClasses.map { nestedClassDesc ->
-            nestedClassDesc.kClass.jClass.let { KClassImpl(it) }
-        }
+        get() = descriptor.nestedClasses.map(::KClassImpl)
 
     override val sealedSubclasses: List<KClass<T>>
-        get() = descriptor.sealedSubclasses.mapNotNull { subclassDesc ->
-            @Suppress("UNCHECKED_CAST")
-            val jClass = subclassDesc.kClass.jClass as Class<out T>?
-            jClass?.let { KClassImpl(it) }
-        }
+        get() = descriptor.sealedSubclasses.map(::KClassImpl)
 
-    // TODO: inherited members
     override val members: Collection<KCallable<*>>
         get() = descriptor.functions.map(::KFunctionImpl) + descriptor.properties.map(::KPropertyImpl)
 
