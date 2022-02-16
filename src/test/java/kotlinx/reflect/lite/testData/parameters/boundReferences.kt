@@ -1,6 +1,7 @@
 package tests.parameters.boundReferences
 
-import kotlin.reflect.*
+import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.tests.*
 import kotlin.test.*
 
 class C {
@@ -16,16 +17,23 @@ fun KParameter.check(name: String) {
 }
 
 fun box(): String {
-    val cFoo = C()::foo
-    val cBar = C()::bar
-    val cExtFun = C()::extFun
+    val kClass = C::class.java.toLiteKClass()
+    val cFoo = kClass.members.find { it.name == "foo" } as KFunction
+    val cBar = kClass.members.find { it.name == "bar" } as KProperty
+    // TODO extesnion functions are not supported yet
+    val cExtFun = kClass.members.find { it.name == "extFun" } as KFunction
 
     assertEquals(0, cFoo.parameters.size)
+    // TODO
     assertEquals(0, cBar.getter.parameters.size)
-    assertEquals(1, cBar.setter.parameters.size)
+    assertFalse(cBar.isConst)
+    assertFalse(cBar.isLateinit)
 
-    assertEquals(1, cExtFun.parameters.size)
-    cExtFun.parameters[0].check("i")
+    // TODO mutable properties are not supported yet
+    //assertEquals(1, cBar.setter.parameters.size)
+
+    //assertEquals(1, cExtFun.parameters.size)
+    //cExtFun.parameters[0].check("i")
 
     return "OK"
 }

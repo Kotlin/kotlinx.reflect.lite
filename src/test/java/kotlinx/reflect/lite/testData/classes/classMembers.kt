@@ -12,7 +12,13 @@ class Derived : Base() {
     val b = 20
 
     fun bar() {}
+
+    companion object {
+        fun staticFun() {}
+    }
 }
+
+fun Derived.extFun() {}
 
 fun box(): String {
     Derived::class.java.toLiteKClass().members.forEach {
