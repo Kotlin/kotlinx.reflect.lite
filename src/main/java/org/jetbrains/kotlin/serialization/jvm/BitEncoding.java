@@ -251,7 +251,7 @@ public class BitEncoding {
         int byteIndex = 0;
         int bit = 0;
 
-        // A resulting byte is comprised of 8 bits, starting from the current bit. Since each input byte only "contains 7 bytes", a
+        // A resulting byte is comprised of 8 bits, starting from the current bit. Since each input byte only "contains 7 bits", a
         // resulting byte always consists of two parts: several most significant bits of the current byte and several least significant bits
         // of the next byte
         for (int i = 0; i < resultLength; i++) {
