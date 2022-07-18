@@ -1,9 +1,10 @@
+// Most logic copied from: https://github.com/JetBrains/kotlin/blob/master/core/descriptors.runtime/src/org/jetbrains/kotlin/descriptors/runtime/structure/reflectClassUtil.kt
 package kotlinx.reflect.lite.misc
 
-import kotlinx.reflect.lite.name.*
-import java.lang.reflect.Array
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
+import kotlinx.reflect.lite.name.*
+import java.lang.reflect.Array
 
 val Class<*>.safeClassLoader: ClassLoader
     get() = classLoader ?: ClassLoader.getSystemClassLoader()
@@ -32,7 +33,7 @@ val Class<*>.functionClassArity: Int?
     get() = FUNCTION_CLASSES[this]
 
 /**
- * NOTE: does not perform a Java -> Kotlin mapping. If this is not expected, consider using KClassImpl#classId instead TODO
+ * NOTE: does not perform a Java -> Kotlin mapping. If this is not expected, consider using KClassImpl#classId instead
  */
 val Class<*>.classId: ClassId
     get() = when {
@@ -46,11 +47,21 @@ val Class<*>.classId: ClassId
     }
 
 val Class<*>.desc: String
-    get() {
-        if (this == Void.TYPE) return "V"
-        // This is a clever exploitation of a format returned by Class.getName(): for arrays, it's almost an internal name,
-        // but with '.' instead of '/'
-        return createArrayType().name.substring(1).replace('.', '/')
+    get() = when {
+        isPrimitive -> when (name) {
+            "boolean" -> "Z"
+            "char" -> "C"
+            "byte" -> "B"
+            "short" -> "S"
+            "int" -> "I"
+            "float" -> "F"
+            "long" -> "J"
+            "double" -> "D"
+            "void" -> "V"
+            else -> throw IllegalArgumentException("Unsupported primitive type: $this")
+        }
+        isArray -> name.replace('.', '/')
+        else -> "L${name.replace('.', '/')};"
     }
 
 fun Class<*>.createArrayType(): Class<*> =

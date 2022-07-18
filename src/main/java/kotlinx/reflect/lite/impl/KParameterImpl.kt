@@ -14,9 +14,17 @@ internal class KParameterImpl(
     override val type: KType?
         get() = descriptor.type?.let(::KTypeImpl)
 
-    override val isOptional: Boolean // TODO: inheritsDefaultValue
+    override val isOptional: Boolean
         get() = (descriptor as? ValueParameterDescriptor)?.declaresDefaultValue ?: false
 
     override val isVararg: Boolean
         get() = (descriptor is ValueParameterDescriptor) && descriptor.varargElementType != null
+
+    override fun equals(other: Any?) =
+        other is KParameterImpl &&
+        descriptor.containingDeclaration == other.descriptor.containingDeclaration &&
+        index == other.index
+
+    override fun hashCode() =
+        (descriptor.containingDeclaration.hashCode() * 31) + index.hashCode()
 }

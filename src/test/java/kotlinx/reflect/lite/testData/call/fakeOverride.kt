@@ -1,5 +1,7 @@
 package tests.call.fakeOverride
 
+import kotlinx.reflect.lite.tests.*
+
 open class A {
     fun foo() = "OK"
 }
@@ -7,6 +9,6 @@ open class A {
 class B : A()
 
 fun box(): String {
-    val foo = B::class.members.single { it.name == "foo" }
+    val foo = (B::class.java).toLiteKClass().getMemberByName("foo")
     return foo.call(B()) as String
 }

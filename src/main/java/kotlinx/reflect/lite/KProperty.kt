@@ -24,7 +24,6 @@ public interface KProperty<out V> : KCallable<V> {
 
     /** The getter of this property, used to obtain the value of the property. */
     public val getter: Getter<V>
-        get() = TODO("Not implemented yet")
 
     /**
      * Represents a property accessor, which is a `get` or `set` method declared alongside the property.
@@ -75,7 +74,7 @@ public interface KProperty0<out V> : KProperty<V>, () -> V {
      * for more information.
      */
     @SinceKotlin("1.1")
-    public fun getDelegate(): Any?
+    private fun getDelegate(): Any? = TODO()
 
     override val getter: Getter<V>
 
@@ -140,7 +139,7 @@ public interface KProperty1<T, out V> : KProperty<V>, (T) -> V {
      * @see [kotlin.reflect.full.getExtensionDelegate] // [KProperty1.getExtensionDelegate]
      */
     @SinceKotlin("1.1")
-    public fun getDelegate(receiver: T): Any?
+    private fun getDelegate(receiver: T): Any? = TODO()
 
     override val getter: Getter<T, V>
 
@@ -211,7 +210,7 @@ public interface KProperty2<D, E, out V> : KProperty<V>, (D, E) -> V {
      * @see [kotlin.reflect.full.getExtensionDelegate] // [KProperty2.getExtensionDelegate]
      */
     @SinceKotlin("1.1")
-    public fun getDelegate(receiver1: D, receiver2: E): Any?
+    private fun getDelegate(receiver1: D, receiver2: E): Any? = TODO()
 
     override val getter: Getter<D, E, V>
 

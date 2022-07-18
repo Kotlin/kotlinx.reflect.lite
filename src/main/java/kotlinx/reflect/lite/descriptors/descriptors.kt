@@ -47,7 +47,6 @@ internal interface DeclarationContainerDescriptor {
 }
 
 internal interface ClassDescriptor<out T> : DeclarationContainerDescriptor, ClassifierDescriptor {
-    val jClass: Class<*>
     val kmClass: KmClass
     val classId: ClassId
     val module: ModuleDescriptor
@@ -94,6 +93,8 @@ internal interface CallableDescriptor : DeclarationDescriptor {
     val containingClass: ClassDescriptor<*>?
     val container: DeclarationContainerDescriptor
 
+    val dispatchReceiverParameter: ReceiverParameterDescriptor?
+    val extensionReceiverParameter: ReceiverParameterDescriptor?
     val valueParameters: List<ValueParameterDescriptor>
 
     val typeParameters: List<TypeParameterDescriptor>
@@ -102,9 +103,16 @@ internal interface CallableDescriptor : DeclarationDescriptor {
 
     val visibility: KVisibility?
 
+    private val isBound: Boolean
+        get() = TODO()
+
     val isFinal: Boolean
     val isOpen: Boolean
     val isAbstract: Boolean
+    val isReal: Boolean
+
+    val caller: Caller<*>
+    val defaultCaller: Caller<*>?
 }
 
 internal interface FunctionDescriptor : CallableDescriptor {
@@ -113,6 +121,10 @@ internal interface FunctionDescriptor : CallableDescriptor {
     val isOperator: Boolean
     val isInfix: Boolean
     val isSuspend: Boolean
+    val isAnnotationConstructor: Boolean
+
+    val member: Member?
+    val defaultMember: Member?
 }
 
 internal interface ParameterDescriptor : DeclarationDescriptor {
@@ -122,26 +134,20 @@ internal interface ParameterDescriptor : DeclarationDescriptor {
 
 internal interface ValueParameterDescriptor : ParameterDescriptor {
     val declaresDefaultValue: Boolean
-    private val inheritsDefaultValue: Boolean
-        get() = TODO("Is not implemented yet (for KParameter.isOptional 2 case)")
-
     val varargElementType: KotlinType?
 }
 
 internal interface ReceiverParameterDescriptor : ParameterDescriptor
 
 internal interface PropertyDescriptor : CallableDescriptor {
-    private val isVar: Boolean
-        get() = TODO()
+    val isVar: Boolean
     val isLateInit: Boolean
     val isConst: Boolean
     private val isDelegated: Boolean
         get() = TODO()
 
-    private val getter: PropertyGetterDescriptor?
-        get() = TODO()
-    private val setter: PropertySetterDescriptor?
-        get() = TODO()
+    val getter: PropertyGetterDescriptor?
+    val setter: PropertySetterDescriptor?
 }
 
 internal interface PropertyAccessorDescriptor : FunctionDescriptor {

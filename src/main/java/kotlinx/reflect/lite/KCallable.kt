@@ -44,14 +44,14 @@ public interface KCallable<out R> : KAnnotatedElement {
      * Throws an exception if the number of specified arguments is not equal to the size of [parameters],
      * or if their types do not match the types of the parameters.
      */
-    private fun call(vararg args: Any?): R = TODO()
+    public fun call(vararg args: Any?): R
 
     /**
      * Calls this callable with the specified mapping of parameters to arguments and returns the result.
      * If a parameter is not found in the mapping and is not optional (as per [KParameter.isOptional]),
      * or its type does not match the type of the provided value, an exception is thrown.
      */
-    private fun callBy(args: Map<KParameter, Any?>): R = TODO()
+    public fun callBy(args: Map<KParameter, Any?>): R
 
     /**
      * Visibility of this callable, or `null` if its visibility cannot be represented in Kotlin.

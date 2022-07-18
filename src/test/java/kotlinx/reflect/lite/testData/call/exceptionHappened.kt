@@ -6,6 +6,8 @@ fun fail(message: String) {
     throw AssertionError(message)
 }
 
+// todo top-level functions
+
 fun box(): String {
     try {
         ::fail.call("OK")

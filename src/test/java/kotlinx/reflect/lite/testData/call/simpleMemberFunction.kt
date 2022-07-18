@@ -1,11 +1,15 @@
 package tests.call.simpleMemberFunction
 
+import kotlinx.reflect.lite.tests.*
+
 class A {
     fun foo(x: Int, y: Int) = x + y
 }
 
 fun box(): String {
-    val x = (A::foo).call(A(), 42, 239)
+    val foo = (A::class.java).toLiteKClass().getMemberByName("foo")
+
+    val x = foo.call(A(), 42, 239)
     if (x != 281) return "Fail: $x"
 
     try {

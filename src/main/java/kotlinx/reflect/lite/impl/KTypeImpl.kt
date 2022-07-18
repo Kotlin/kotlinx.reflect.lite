@@ -7,10 +7,9 @@ import kotlinx.reflect.lite.descriptors.impl.KotlinType
 internal class KTypeImpl(
     val type: KotlinType
 ): KType {
-
     override val classifier: KClassifier?
         get() =
-            when (val descriptor = type.classifierDescriptor) {
+            when (val descriptor = type.descriptor) {
                 is ClassDescriptor<*> -> {
                     // TODO array types
                     KClassImpl(descriptor)

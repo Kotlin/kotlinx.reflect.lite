@@ -20,12 +20,10 @@ fun box(): String {
     val kClass = C::class.java.toLiteKClass()
     val cFoo = kClass.members.find { it.name == "foo" } as KFunction
     val cBar = kClass.members.find { it.name == "bar" } as KProperty
-    // TODO extesnion functions are not supported yet
-    val cExtFun = kClass.members.find { it.name == "extFun" } as KFunction
+    // TODO extension functions are not supported yet
+    //val cExtFun = kClass.members.find { it.name == "extFun" } as KFunction
 
-    assertEquals(0, cFoo.parameters.size)
-    // TODO
-    assertEquals(0, cBar.getter.parameters.size)
+    assertEquals(1, cFoo.parameters.size)
     assertFalse(cBar.isConst)
     assertFalse(cBar.isLateinit)
 

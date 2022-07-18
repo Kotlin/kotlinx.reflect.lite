@@ -1,17 +1,16 @@
 package tests.call.cannotCallEnumConstructor
 
-import kotlin.reflect.jvm.isAccessible
+import kotlinx.reflect.lite.tests.*
 
 enum class E
 
 fun box(): String {
     try {
-        val c = E::class.constructors.single()
-        c.isAccessible = true
+        val c = (E::class.java).toLiteKClass().constructors.single()
+        //c.isAccessible = true // todo KCallable.isAccessible
         c.call()
         return "Fail: constructing an enum class should not be allowed"
-    }
-    catch (e: Throwable) {
+    } catch (e: Throwable) {
         return "OK"
     }
 }

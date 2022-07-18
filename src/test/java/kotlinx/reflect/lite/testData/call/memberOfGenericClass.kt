@@ -1,5 +1,8 @@
 package tests.call.memberOfGenericClass
 
+import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.tests.*
+
 var result = "Fail"
 
 class A<T> {
@@ -9,6 +12,8 @@ class A<T> {
 }
 
 fun box(): String {
-    (A<String>::foo).call(A<String>(), "OK")
+    val a = (A::class.java).toLiteKClass()
+    val foo = a.getMemberByName("foo")
+    foo.call(a.getPrimaryConstructor().call(), "OK")
     return result
 }

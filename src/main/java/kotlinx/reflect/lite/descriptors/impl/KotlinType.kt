@@ -2,6 +2,7 @@ package kotlinx.reflect.lite.descriptors.impl
 
 import kotlinx.metadata.*
 import kotlinx.reflect.lite.KVariance
+import kotlinx.reflect.lite.descriptors.*
 import kotlinx.reflect.lite.descriptors.Annotated
 import kotlinx.reflect.lite.descriptors.ClassDescriptor
 import kotlinx.reflect.lite.descriptors.ClassifierDescriptor
@@ -10,12 +11,10 @@ import kotlinx.reflect.lite.descriptors.ModuleDescriptor
 import kotlinx.reflect.lite.descriptors.TypeParameterDescriptor
 
 internal class KotlinType(
-    val classifierDescriptor: ClassifierDescriptor,
+    val descriptor: ClassifierDescriptor,
     val arguments: List<TypeProjection>,
-    val isMarkedNullable: Boolean
-) : Annotated {
-
-}
+    val isMarkedNullable: Boolean // todo pass annotations
+) : Annotated
 
 internal class TypeParameterTable(
     val typeParameters: List<TypeParameterDescriptorImpl>,
@@ -76,6 +75,15 @@ internal val ClassifierDescriptor.kotlinType: KotlinType
         this,
         (this as? ClassDescriptor<*>)?.typeParameters?.map {
             TypeProjection(it.kotlinType, false, KVariance.INVARIANT)
+        }.orEmpty(),
+        false
+    )
+
+internal val ClassifierDescriptor.defaultType: KotlinType
+    get() = KotlinType(
+        this,
+        (this as? ClassDescriptor<*>)?.typeParameters?.map {
+            TypeProjection(it.defaultType, false, KVariance.INVARIANT)
         }.orEmpty(),
         false
     )

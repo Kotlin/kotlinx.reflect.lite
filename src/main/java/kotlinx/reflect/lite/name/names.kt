@@ -74,3 +74,6 @@ data class ClassId(val packageFqName: FqName, val relativeClassName: FqName, val
 }
 
 private val SANITIZE_AS_JAVA_INVALID_CHARACTERS = "[^\\p{L}\\p{Digit}]".toRegex()
+
+fun sanitizeAsJavaIdentifier(name: String): String =
+    SANITIZE_AS_JAVA_INVALID_CHARACTERS.replace(name, "_")
