@@ -12,7 +12,8 @@ import kotlinx.reflect.lite.name.*
 internal class ConstructorDescriptorImpl(
     val kmCons: KmConstructor,
     override val module: ModuleDescriptor,
-    override val containingClass: ClassDescriptor<*>
+    override val containingClass: ClassDescriptor<*>,
+    override val container: DeclarationContainerDescriptor
 ) : AbstractFunctionDescriptor(), ConstructorDescriptor {
     override val flags: Flags
         get() = kmCons.flags
@@ -31,6 +32,21 @@ internal class ConstructorDescriptorImpl(
     override val typeParameters: List<TypeParameterDescriptor>
         get() = emptyList()
 
+    override val dispatchReceiverParameter: ReceiverParameterDescriptor?
+        get() = if (containingClass.isInner) ReceiverParameterDescriptorImpl(containingClass.containingClass!!.defaultType, this) else null
+
+    override val extensionReceiverParameter: ReceiverParameterDescriptor?
+        get() = null
+
     override val returnType: KotlinType
         get() = containingClass.kotlinType
+
+    private val jvmSignature: JvmFunctionSignature.KotlinConstructor
+        get() = JvmFunctionSignature.KotlinConstructor(kmCons.signature ?: error("No constructor signature for ${kmCons}"))
+
+    override val member: Member?
+        get() = container.findConstructorBySignature(jvmSignature.constructorDesc)
+
+    override val defaultMember: Member?
+        get() = container.findDefaultConstructor(jvmSignature.constructorDesc)
 }

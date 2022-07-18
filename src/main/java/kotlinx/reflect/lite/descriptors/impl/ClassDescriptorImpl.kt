@@ -10,25 +10,53 @@ import kotlinx.reflect.lite.descriptors.ClassDescriptor
 import kotlinx.reflect.lite.descriptors.ConstructorDescriptor
 import kotlinx.reflect.lite.descriptors.FunctionDescriptor
 import kotlinx.reflect.lite.descriptors.MemberScope
-import kotlinx.reflect.lite.descriptors.ModuleDescriptor
 import kotlinx.reflect.lite.descriptors.PropertyDescriptor
 import kotlinx.reflect.lite.descriptors.TypeParameterDescriptor
-import kotlinx.reflect.lite.impl.KClassImpl
+import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.misc.*
 import kotlinx.reflect.lite.name.*
 
 internal class ClassDescriptorImpl<T : Any?> internal constructor(
     override val jClass: Class<T>
-) : ClassDescriptor<T> {
+) : ClassDescriptor<T>, DeclarationContainerDescriptorImpl() {
 
     override val kmClass: KmClass = jClass.getKmClass()
 
     override val module = ModuleDescriptorImpl(jClass.safeClassLoader)
 
-    override val classId: ClassId = jClass.classId
+    override val classId: ClassId = RuntimeTypeMapper.mapJvmClassToKotlinClassId(jClass)
 
     private fun Class<*>.getKmClass(): KmClass {
-        val builtinClassId = JavaToKotlinClassMap.mapJavaToKotlin(FqName(name))
+        val className = jClass.name
+        val builtinClassId = when (className) {
+            "[Ljava.lang.Object;" -> ClassId(FqName("kotlin"), "Array")
+            // TODO: move this into mapJavaToKotlin
+            "[Z" -> ClassId(FqName("kotlin"), "BooleanArray")
+            "[B" -> ClassId(FqName("kotlin"), "ByteArray")
+            "[C" -> ClassId(FqName("kotlin"), "CharArray")
+            "[D" -> ClassId(FqName("kotlin"), "DoubleArray")
+            "[F" -> ClassId(FqName("kotlin"), "FloatArray")
+            "[I" -> ClassId(FqName("kotlin"), "IntArray")
+            "[J" -> ClassId(FqName("kotlin"), "LongArray")
+            "[S" -> ClassId(FqName("kotlin"), "ShortArray")
+            "java.lang.Void" -> ClassId(FqName("kotlin"), "Nothing") // TODO: ???
+            else -> when {
+                jClass.isPrimitive -> {
+                    when (jClass) {
+                        Boolean::class.java -> ClassId(FqName("kotlin"), "Boolean")
+                        Byte::class.java -> ClassId(FqName("kotlin"), "Byte")
+                        Char::class.java -> ClassId(FqName("kotlin"), "Char")
+                        Double::class.java -> ClassId(FqName("kotlin"), "Double")
+                        Float::class.java -> ClassId(FqName("kotlin"), "Float")
+                        Int::class.java -> ClassId(FqName("kotlin"), "Int")
+                        Long::class.java -> ClassId(FqName("kotlin"), "Long")
+                        Short::class.java -> ClassId(FqName("kotlin"), "Short")
+                        else -> error(jClass)
+                    }
+                }
+                else -> JavaToKotlinClassMap.mapJavaToKotlin(jClass.classId.asSingleFqName())
+            }
+        }
         return if (builtinClassId != null) {
             val packageName = builtinClassId.packageFqName
             // kotlin.collections -> kotlin/collections/collections.kotlin_builtins
@@ -86,7 +114,7 @@ internal class ClassDescriptorImpl<T : Any?> internal constructor(
     }
 
     override val constructors: List<ConstructorDescriptor>
-        get() = kmClass.constructors.map { ConstructorDescriptorImpl(it, module, this) }
+        get() = kmClass.constructors.map { ConstructorDescriptorImpl(it, module, this, this) }
 
     override val nestedClasses: List<ClassDescriptor<*>>
         get() = kmClass.nestedClasses.map { module.findClass<Any?>(classId.createNestedClassId(it).asClassName()) }
@@ -95,18 +123,27 @@ internal class ClassDescriptorImpl<T : Any?> internal constructor(
         get() = kmClass.sealedSubclasses.map { module.findClass(it) }
 
     override val properties: List<PropertyDescriptor>
-        get() = kmClass.properties.map { PropertyDescriptorImpl(it, module, this) }
+        get() = kmClass.properties.map { PropertyDescriptorImpl(it, module, this, this) }
 
     override val functions: List<FunctionDescriptor>
-        get() = kmClass.functions.map { FunctionDescriptorImpl(it, module, this) }
+        get() = kmClass.functions.map {
+            FunctionDescriptorImpl(it, module, this, this)
+        }
 
     // TODO: static members
-    // TODO: function and property fake overrides
     override val memberScope: MemberScope
         get() = MemberScope(
-            kmClass.properties.map { PropertyDescriptorImpl(it, module, this) },
-            kmClass.functions.map { FunctionDescriptorImpl(it, module, this) }
+            kmClass.properties.map { PropertyDescriptorImpl(it, module, this, this) }.let { realProperties ->
+                realProperties + addPropertyFakeOverrides(this, realProperties)
+            },
+            kmClass.functions.map { FunctionDescriptorImpl(it, module, this, this) }.let { realFunctions ->
+                realFunctions + addFunctionFakeOverrides(this, realFunctions)
+            }
         )
+
+    // TODO: static scope
+    override val staticScope: MemberScope
+        get() = MemberScope(emptyList(), emptyList())
 
     override val visibility: KVisibility?
         get() = kmClass.flags.toVisibility()
@@ -114,7 +151,7 @@ internal class ClassDescriptorImpl<T : Any?> internal constructor(
     override val typeParameterTable: TypeParameterTable =
         kmClass.typeParameters.toTypeParameters(this, module, containingClass?.typeParameterTable)
 
-    internal val containingClass: ClassDescriptor<*>?
+    override val containingClass: ClassDescriptor<*>?
         get() = classId.getOuterClassId()?.let { module.findClass<Any?>(it.asClassName()) }
 
     override val typeParameters: List<TypeParameterDescriptor>
@@ -127,7 +164,7 @@ internal class ClassDescriptorImpl<T : Any?> internal constructor(
         get() = Flag.Class.IS_INTERFACE(kmClass.flags)
     override val isObject: Boolean
         get() = Flag.Class.IS_OBJECT(kmClass.flags)
-    override val isCompanionObject: Boolean
+    override val isCompanion: Boolean
         get() = Flag.Class.IS_COMPANION_OBJECT(kmClass.flags)
     override val isFinal: Boolean
         get() = Flag.Common.IS_FINAL(kmClass.flags)
@@ -141,8 +178,6 @@ internal class ClassDescriptorImpl<T : Any?> internal constructor(
         get() = Flag.Class.IS_DATA(kmClass.flags)
     override val isInner: Boolean
         get() = Flag.Class.IS_INNER(kmClass.flags)
-    override val isCompanion: Boolean
-        get() = Flag.Class.IS_COMPANION_OBJECT(kmClass.flags)
     override val isFun: Boolean
         get() = Flag.Class.IS_FUN(kmClass.flags)
     override val isValue: Boolean

@@ -20,9 +20,8 @@ import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.descriptors.impl.ClassDescriptorImpl
 
 internal object ReflectionLiteImpl {
-    // TODO some entry point API
     fun <T : Any> loadClassMetadata(jClass: Class<T>): KClass<T> {
-        val descriptor = ClassDescriptorImpl<T>(jClass)
+        val descriptor = ClassDescriptorImpl(jClass)
         return KClassImpl(descriptor)
     }
 }

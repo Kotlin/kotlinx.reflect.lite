@@ -2,9 +2,12 @@ package kotlinx.reflect.lite.descriptors
 
 import kotlinx.metadata.*
 import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.calls.Caller
 import kotlinx.reflect.lite.descriptors.impl.KotlinType
 import kotlinx.reflect.lite.descriptors.impl.TypeParameterTable
+import kotlinx.reflect.lite.impl.KCallableImpl
 import kotlinx.reflect.lite.name.*
+import java.lang.reflect.*
 
 internal interface ModuleDescriptor {
     fun <T> findClass(name: ClassName): ClassDescriptor<*>
@@ -31,7 +34,17 @@ internal interface DeclarationDescriptor : Annotated {
     val name: Name
 }
 
-internal interface DeclarationContainerDescriptor
+internal interface DeclarationContainerDescriptor {
+    val jClass: Class<*>
+
+    val declaredMembers: Collection<KCallableImpl<*>>
+    val allMembers: Collection<KCallableImpl<*>>
+
+    fun findConstructorBySignature(desc: String): Constructor<*>?
+    fun findMethodBySignature(name: String, desc: String): Method?
+    fun findDefaultConstructor(desc: String): Constructor<*>?
+    fun findDefaultMethod(name: String, desc: String, isMember: Boolean): Method?
+}
 
 internal interface ClassDescriptor<out T> : DeclarationContainerDescriptor, ClassifierDescriptor {
     val jClass: Class<*>
@@ -49,6 +62,8 @@ internal interface ClassDescriptor<out T> : DeclarationContainerDescriptor, Clas
     val functions: List<FunctionDescriptor>
     val memberScope: MemberScope
 
+    val containingClass: ClassDescriptor<*>?
+
     val typeParameterTable: TypeParameterTable
     val typeParameters: List<TypeParameterDescriptor>
     val supertypes: List<KotlinType>
@@ -57,7 +72,7 @@ internal interface ClassDescriptor<out T> : DeclarationContainerDescriptor, Clas
 
     val isInterface: Boolean
     val isObject: Boolean
-    val isCompanionObject: Boolean
+    val isCompanion: Boolean
 
     val isFinal: Boolean
     val isOpen: Boolean
@@ -65,7 +80,6 @@ internal interface ClassDescriptor<out T> : DeclarationContainerDescriptor, Clas
     val isSealed: Boolean
     val isData: Boolean
     val isInner: Boolean
-    val isCompanion: Boolean
     val isFun: Boolean
     val isValue: Boolean
 }
@@ -78,6 +92,7 @@ internal class MemberScope(
 internal interface CallableDescriptor : DeclarationDescriptor {
     val module: ModuleDescriptor
     val containingClass: ClassDescriptor<*>?
+    val container: DeclarationContainerDescriptor
 
     val valueParameters: List<ValueParameterDescriptor>
 

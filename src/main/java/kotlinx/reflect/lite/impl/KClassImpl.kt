@@ -4,7 +4,7 @@ import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.descriptors.ClassDescriptor
 
 internal class KClassImpl<T : Any?>(
-    private val descriptor: ClassDescriptor<T>
+    val descriptor: ClassDescriptor<T>
 ) : KClass<T> {
 
     override val simpleName: String?
@@ -15,7 +15,7 @@ internal class KClassImpl<T : Any?>(
 
     override val constructors: Collection<KFunction<T>>
         get() =
-            if (descriptor.isInterface || descriptor.isObject || descriptor.isCompanionObject) {
+            if (descriptor.isInterface || descriptor.isObject || descriptor.isCompanion) {
                 emptyList()
             } else {
                 descriptor.constructors.map {
@@ -31,7 +31,7 @@ internal class KClassImpl<T : Any?>(
         get() = descriptor.sealedSubclasses.map(::KClassImpl)
 
     override val members: Collection<KCallable<*>>
-        get() = descriptor.functions.map(::KFunctionImpl) + descriptor.properties.map(::KPropertyImpl)
+        get() = descriptor.allMembers
 
     override val visibility: KVisibility?
         get() = descriptor.visibility
