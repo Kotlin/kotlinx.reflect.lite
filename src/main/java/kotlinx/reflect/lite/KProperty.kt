@@ -12,7 +12,7 @@ public interface KProperty<out V> : KCallable<V> {
      * for more information.
      */
     @SinceKotlin("1.1")
-    public val isLateinit: Boolean
+    public val isLateInit: Boolean
 
     /**
      * `true` if this property is `const`.

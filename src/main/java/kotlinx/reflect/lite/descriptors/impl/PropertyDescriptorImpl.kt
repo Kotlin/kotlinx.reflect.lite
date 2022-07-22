@@ -2,8 +2,11 @@ package kotlinx.reflect.lite.descriptors.impl
 
 import kotlinx.metadata.*
 import kotlinx.metadata.jvm.*
+import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.calls.*
 import kotlinx.reflect.lite.calls.Caller
 import kotlinx.reflect.lite.descriptors.*
+import kotlinx.reflect.lite.misc.JvmPropertySignature
 import kotlinx.reflect.lite.misc.*
 import kotlinx.reflect.lite.name.*
 import java.lang.reflect.*
@@ -42,10 +45,14 @@ internal class PropertyDescriptorImpl(
         get() = true
 
     override val dispatchReceiverParameter: ReceiverParameterDescriptor?
-        get() = containingClass?.let { ReceiverParameterDescriptorImpl(it.defaultType, this) }
+        get() = containingClass?.let {
+            ReceiverParameterDescriptorImpl(it.defaultType, this)
+        }
 
     override val extensionReceiverParameter: ReceiverParameterDescriptor?
-        get() = kmProperty.receiverParameterType?.let { ReceiverParameterDescriptorImpl(it.toKotlinType(module, typeParameterTable), this) }
+        get() = kmProperty.receiverParameterType?.let {
+            ReceiverParameterDescriptorImpl(it.toKotlinType(module, typeParameterTable), this)
+        }
 
     override val getter: PropertyGetterDescriptor?
         get() = if (Flag.Property.HAS_GETTER(flags)) PropertyGetterDescriptorImpl(this) else null
@@ -60,12 +67,9 @@ internal class PropertyDescriptorImpl(
         get() = getter?.defaultCaller ?: error("The property has no getter")
 }
 
-internal class PropertyGetterDescriptorImpl(
+internal abstract class PropertyAccessorDescriptorImpl(
     override val property: PropertyDescriptorImpl
-) : AbstractFunctionDescriptor(), PropertyGetterDescriptor {
-    override val name: Name
-        get() = "<get-${property.name}>"
-
+) : AbstractFunctionDescriptor(), PropertyAccessorDescriptor {
     override val module: ModuleDescriptor
         get() = property.module
     override val containingClass: ClassDescriptor<*>?
@@ -90,58 +94,83 @@ internal class PropertyGetterDescriptorImpl(
     override val isReal: Boolean
         get() = property.isReal
 
+    // TODO create abstract property jvmSignature
+    // TODO abstract and override jvmSignature for PropertyAccessorDescriptor
+    val jvmSignature: JvmPropertySignature.KotlinProperty
+        get() = JvmPropertySignature.KotlinProperty(
+            property,
+            property.kmProperty.fieldSignature,
+            property.kmProperty.getterSignature,
+            property.kmProperty.setterSignature
+        )
+
+    abstract override val member: Method?
+
+    override val defaultMember: Member?
+        get() = null // TODO: no defaultMember for properties
+
+    // TODO: support: JavaField, JavaMethodProperty, MappedKotlinProperty
+    override val caller: Caller<*>
+        get() {
+            val accessor = member
+            return when {
+                accessor == null -> {
+                    // todo inlineClassAwareCaller
+                    if (property.isUnderlyingPropertyOfInlineClass() &&
+                        property.visibility == KVisibility.INTERNAL
+                    ) {
+                        TODO("Inline class aware caller is not supported yet")
+                    } else {
+                        TODO("Implement PropertyDescriptor.javaField")
+                    }
+                }
+                !Modifier.isStatic(accessor.modifiers) ->
+                    // todo isBound
+                    CallerImpl.Method.Instance(accessor)
+                isJvmStaticProperty() ->
+                    // todo isBound
+                    CallerImpl.Method.JvmStaticInObject(accessor)
+                else ->
+                    // todo isBound
+                    CallerImpl.Method.Static(accessor)
+            }
+        }
+
+    fun isJvmStaticProperty(): Boolean {
+        return TODO("Implement isJvmStaticProperty: check annotations")
+    }
+}
+
+internal class PropertyGetterDescriptorImpl(
+    override val property: PropertyDescriptorImpl
+) : PropertyAccessorDescriptorImpl(property), PropertyGetterDescriptor {
+    override val name: Name
+        get() = "<get-${property.name}>"
+
     override val flags: Flags
         get() = property.kmProperty.getterFlags
 
-    private val jvmSignature: JvmFunctionSignature.KotlinFunction
-        get() = JvmFunctionSignature.KotlinFunction(property.kmProperty.getterSignature ?: error("No getter signature for ${property.kmProperty}"))
-
-    override val member: Member?
-        get() = container.findMethodBySignature(jvmSignature.methodName, jvmSignature.methodDesc)
-
-    override val defaultMember: Member?
-        get() = container.findDefaultMethod(jvmSignature.methodName, jvmSignature.methodDesc, !Modifier.isStatic(caller.member!!.modifiers))
+    override val member: Method?
+        get() = jvmSignature.getterSignature?.let { signature ->
+            property.container.findMethodBySignature(signature.name, signature.desc)
+        }
 }
 
 internal class PropertySetterDescriptorImpl(
     override val property: PropertyDescriptorImpl
-) : AbstractFunctionDescriptor(), PropertySetterDescriptor {
+) : PropertyAccessorDescriptorImpl(property), PropertySetterDescriptor {
     override val name: Name
         get() = "<set-${property.name}>"
-
-    override val module: ModuleDescriptor
-        get() = property.module
-    override val containingClass: ClassDescriptor<*>?
-        get() = property.containingClass
-    override val container: DeclarationContainerDescriptor
-        get() = property.container
-
-    override val typeParameterTable: TypeParameterTable
-        get() = property.typeParameterTable
-    override val valueParameters: List<ValueParameterDescriptor> =
-        listOf(ValueParameterDescriptorImpl(property.kmProperty.setterParameter!!, this, 0))
-    override val typeParameters: List<TypeParameterDescriptor>
-        get() = property.typeParameters
-    override val returnType: KotlinType
-        get() = module.findClass<Any?>("kotlin/Unit").kotlinType
-
-    override val dispatchReceiverParameter: ReceiverParameterDescriptor?
-        get() = property.dispatchReceiverParameter
-    override val extensionReceiverParameter: ReceiverParameterDescriptor?
-        get() = property.extensionReceiverParameter
-
-    override val isReal: Boolean
-        get() = property.isReal
 
     override val flags: Flags
         get() = property.kmProperty.setterFlags
 
-    private val jvmSignature: JvmFunctionSignature.KotlinFunction
-        get() = JvmFunctionSignature.KotlinFunction(property.kmProperty.getterSignature ?: error("No getter signature for ${property.kmProperty}"))
-
-    override val member: Member?
-        get() = container.findMethodBySignature(jvmSignature.methodName, jvmSignature.methodDesc)
-
-    override val defaultMember: Member?
-        get() = container.findDefaultMethod(jvmSignature.methodName, jvmSignature.methodDesc, !Modifier.isStatic(caller.member!!.modifiers))
+    override val member: Method?
+        get() = jvmSignature.setterSignature?.let { signature ->
+            property.container.findMethodBySignature(signature.name, signature.desc)
+        }
 }
+
+// todo KProperty2Descriptor
+
+

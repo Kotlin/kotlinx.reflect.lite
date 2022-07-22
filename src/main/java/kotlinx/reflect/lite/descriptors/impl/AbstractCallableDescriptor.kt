@@ -8,7 +8,7 @@ import kotlinx.reflect.lite.descriptors.CallableDescriptor
 internal interface AbstractCallableDescriptor : CallableDescriptor {
     val flags: Flags
 
-    override val visibility: KVisibility?
+    override val visibility: KVisibility? // todo add DescriptorVisibility maybe for consistency
         get() = flags.toVisibility()
 
     val typeParameterTable: TypeParameterTable

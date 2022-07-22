@@ -25,7 +25,7 @@ fun box(): String {
 
     assertEquals(1, cFoo.parameters.size)
     assertFalse(cBar.isConst)
-    assertFalse(cBar.isLateinit)
+    assertFalse(cBar.isLateInit)
 
     // TODO mutable properties are not supported yet
     //assertEquals(1, cBar.setter.parameters.size)

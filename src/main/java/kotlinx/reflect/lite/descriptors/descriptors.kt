@@ -90,7 +90,7 @@ internal class MemberScope(
 
 internal interface CallableDescriptor : DeclarationDescriptor {
     val module: ModuleDescriptor
-    val containingClass: ClassDescriptor<*>?
+    val containingClass: ClassDescriptor<*>? // todo do we need them both?
     val container: DeclarationContainerDescriptor
 
     val dispatchReceiverParameter: ReceiverParameterDescriptor?

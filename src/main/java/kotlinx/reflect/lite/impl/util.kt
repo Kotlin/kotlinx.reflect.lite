@@ -2,8 +2,7 @@ package kotlinx.reflect.lite.impl
 
 import kotlinx.metadata.*
 import kotlinx.reflect.lite.*
-import kotlinx.reflect.lite.calls.*
-import kotlinx.reflect.lite.calls.Caller
+3import kotlinx.reflect.lite.calls.Caller
 import kotlinx.reflect.lite.descriptors.*
 import kotlinx.reflect.lite.descriptors.CallableDescriptor
 import kotlinx.reflect.lite.descriptors.impl.*
@@ -12,8 +11,24 @@ import java.lang.reflect.*
 
 internal fun createKCallable(descriptor: CallableDescriptor): KCallableImpl<*> {
     if (descriptor is PropertyDescriptor) {
-        // TODO: implement properties
-        return KPropertyImpl<Any?>(descriptor)
+        val receiverCount = (descriptor.dispatchReceiverParameter?.let { 1 } ?: 0) +
+                (descriptor.extensionReceiverParameter?.let { 1 } ?: 0)
+
+        when {
+            descriptor.isVar ->
+                when (receiverCount) {
+                    0 -> return KMutableProperty0Impl<Any?>(descriptor)
+                    1 -> return KMutableProperty1Impl<Any?, Any?>(descriptor)
+                    else -> TODO("Implement mutable properties for other numbers of receivers")
+//                2 -> return KMutableProperty2Impl<Any?, Any?, Any?>(container, descriptor)
+            }
+            else -> when (receiverCount) {
+                0 -> return KProperty0Impl<Any?>(descriptor)
+                1 -> return KProperty1Impl<Any?, Any?>(descriptor)
+                else -> TODO("Implement properties for other numbers of receivers")
+//                2 -> return KProperty2Impl<Any?, Any?, Any?>(container, descriptor)
+            }
+        }
     }
     if (descriptor is FunctionDescriptor) {
         return KFunctionImpl(descriptor)

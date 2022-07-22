@@ -47,6 +47,13 @@ internal abstract class KCallableImpl<out R>: KCallable<R> {
     override val returnType: KType
         get() = KTypeImpl(descriptor.returnType)
 
+    override val isAbstract: Boolean
+        get() = descriptor.isAbstract
+    override val isFinal: Boolean
+        get() = descriptor.isFinal
+    override val isOpen: Boolean
+        get() = descriptor.isOpen
+
     @Suppress("UNCHECKED_CAST")
     override fun call(vararg args: Any?): R {
         return descriptor.caller.call(args) as R

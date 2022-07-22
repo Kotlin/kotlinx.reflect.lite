@@ -19,11 +19,4 @@ internal class KFunctionImpl(
         get() = descriptor.isInfix
     override val isSuspend: Boolean
         get() = descriptor.isSuspend
-
-    override val isAbstract: Boolean
-        get() = descriptor.isAbstract
-    override val isFinal: Boolean
-        get() = descriptor.isFinal
-    override val isOpen: Boolean
-        get() = descriptor.isOpen
 }
