@@ -1,12 +1,13 @@
 package kotlinx.reflect.lite.impl
 
 import kotlinx.metadata.*
-import kotlinx.reflect.lite.*
-import kotlinx.reflect.lite.calls.Caller
 import kotlinx.reflect.lite.descriptors.*
 import kotlinx.reflect.lite.descriptors.CallableDescriptor
+import kotlinx.reflect.lite.KVisibility
 import kotlinx.reflect.lite.descriptors.impl.*
 import kotlinx.reflect.lite.descriptors.impl.KotlinType
+import kotlinx.reflect.lite.calls.*
+import kotlinx.reflect.lite.misc.JvmPropertySignature
 import java.lang.reflect.*
 
 internal fun createKCallable(descriptor: CallableDescriptor): KCallableImpl<*> {
@@ -208,6 +209,12 @@ internal class FakeOverridePropertyDescriptor(
         get() = false
     override val isConst: Boolean
         get() = false
+
+    override val jvmSignature: JvmPropertySignature.KotlinProperty
+        get() = TODO("Not yet implemented")
+
+    override val javaField: Field?
+        get() = TODO("Not yet implemented")
 
     override val getter: PropertyGetterDescriptor?
         get() = TODO("Not yet implemented")

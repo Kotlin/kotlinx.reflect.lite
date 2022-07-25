@@ -53,6 +53,28 @@ internal class PropertyDescriptorImpl(
             ReceiverParameterDescriptorImpl(it.toKotlinType(module, typeParameterTable), this)
         }
 
+    // TODO: also support overriden properties
+    override val jvmSignature: JvmPropertySignature.KotlinProperty
+        get() = JvmPropertySignature.KotlinProperty(
+            this,
+            kmProperty.fieldSignature,
+            kmProperty.getterSignature,
+            kmProperty.setterSignature
+        )
+
+    // Logic from: https://github.com/JetBrains/kotlin/blob/3b5179686eaba0a71bcca53c2cc922a54cc9241f/core/reflection.jvm/src/kotlin/reflect/jvm/internal/KPropertyImpl.kt#L51
+    override val javaField: Field?
+        get() = jvmSignature.fieldSignature?.let {
+            // TODO: support propertyWithBackingFieldInOuterClass
+            // TODO: support JavaField, JavaMethodProperty, MappedKotlinProperty
+            val owner = containingClass?.jClass ?: container.jClass
+            try {
+                owner.getDeclaredField(it.name)
+            } catch (e: NoSuchFieldException) {
+                null
+            }
+        }
+
     override val getter: PropertyGetterDescriptor?
         get() = if (Flag.Property.HAS_GETTER(flags)) PropertyGetterDescriptorImpl(this) else null
 
@@ -92,16 +114,6 @@ internal abstract class PropertyAccessorDescriptorImpl(
 
     override val isReal: Boolean
         get() = property.isReal
-
-    // TODO create abstract property jvmSignature
-    // TODO abstract and override jvmSignature for PropertyAccessorDescriptor
-    val jvmSignature: JvmPropertySignature.KotlinProperty
-        get() = JvmPropertySignature.KotlinProperty(
-            property,
-            property.kmProperty.fieldSignature,
-            property.kmProperty.getterSignature,
-            property.kmProperty.setterSignature
-        )
 
     abstract override val member: Method?
 
@@ -151,7 +163,7 @@ internal class PropertyGetterDescriptorImpl(
         get() = property.kmProperty.getterFlags
 
     override val member: Method?
-        get() = jvmSignature.getterSignature?.let { signature ->
+        get() = property.jvmSignature.getterSignature?.let { signature ->
             property.container.findMethodBySignature(signature.name, signature.desc)
         }
 }
@@ -166,7 +178,7 @@ internal class PropertySetterDescriptorImpl(
         get() = property.kmProperty.setterFlags
 
     override val member: Method?
-        get() = jvmSignature.setterSignature?.let { signature ->
+        get() = property.jvmSignature.setterSignature?.let { signature ->
             property.container.findMethodBySignature(signature.name, signature.desc)
         }
 }

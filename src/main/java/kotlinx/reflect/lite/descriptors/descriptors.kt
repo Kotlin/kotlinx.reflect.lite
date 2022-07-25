@@ -6,6 +6,7 @@ import kotlinx.reflect.lite.calls.Caller
 import kotlinx.reflect.lite.descriptors.impl.KotlinType
 import kotlinx.reflect.lite.descriptors.impl.TypeParameterTable
 import kotlinx.reflect.lite.impl.KCallableImpl
+import kotlinx.reflect.lite.misc.JvmPropertySignature
 import kotlinx.reflect.lite.name.*
 import java.lang.reflect.*
 
@@ -149,6 +150,9 @@ internal interface PropertyDescriptor : CallableDescriptor {
     val isConst: Boolean
     private val isDelegated: Boolean
         get() = TODO()
+
+    val jvmSignature: JvmPropertySignature.KotlinProperty
+    val javaField: Field?
 
     val getter: PropertyGetterDescriptor?
     val setter: PropertySetterDescriptor?

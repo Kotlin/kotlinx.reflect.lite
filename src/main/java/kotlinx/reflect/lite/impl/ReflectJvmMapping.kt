@@ -5,6 +5,17 @@ import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.descriptors.impl.*
 import java.lang.reflect.*
 
+// Kotlin reflection -> Java reflection
+
+/**
+ * Returns a Java [Field] instance corresponding to the backing field of the given property,
+ * or `null` if the property has no backing field.
+ */
+val KProperty<*>.javaField: Field?
+    get() = (this as KPropertyImpl).descriptor.javaField
+
+// Java reflection -> Kotlin reflection
+
 val <T : Any> Class<T>.kotlinClass: KDeclarationContainer
     @JvmName("getKotlinClass")
     get() = ReflectionLiteImpl.loadClassMetadata(this)
