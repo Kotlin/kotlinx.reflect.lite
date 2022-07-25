@@ -2,7 +2,7 @@ package kotlinx.reflect.lite.impl
 
 import kotlinx.metadata.*
 import kotlinx.reflect.lite.*
-3import kotlinx.reflect.lite.calls.Caller
+import kotlinx.reflect.lite.calls.Caller
 import kotlinx.reflect.lite.descriptors.*
 import kotlinx.reflect.lite.descriptors.CallableDescriptor
 import kotlinx.reflect.lite.descriptors.impl.*
@@ -131,7 +131,7 @@ internal abstract class FakeOverrideCallableMemberDescriptor(
     override val visibility: KVisibility?
         get() = overridden.first().visibility
 
-    override val container: DeclarationContainerDescriptor
+    override val container: ClassBasedDeclarationContainerDescriptor
         get() = containingClass
 
     override val typeParameterTable: TypeParameterTable

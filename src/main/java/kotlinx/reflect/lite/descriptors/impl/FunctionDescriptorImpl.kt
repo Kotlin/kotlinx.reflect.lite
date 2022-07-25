@@ -72,7 +72,7 @@ internal class FunctionDescriptorImpl(
     val kmFunction: KmFunction,
     override val module: ModuleDescriptor,
     override val containingClass: ClassDescriptor<*>?,
-    override val container: DeclarationContainerDescriptor
+    override val container: ClassBasedDeclarationContainerDescriptor
 ) : AbstractFunctionDescriptor() {
     override val flags: Flags
         get() = kmFunction.flags

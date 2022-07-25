@@ -16,12 +16,27 @@
 
 package kotlinx.reflect.lite.impl
 
+import kotlinx.metadata.*
+import kotlinx.metadata.internal.common.*
+import kotlinx.metadata.jvm.*
 import kotlinx.reflect.lite.*
-import kotlinx.reflect.lite.descriptors.impl.ClassDescriptorImpl
+import kotlinx.reflect.lite.builtins.*
+import kotlinx.reflect.lite.descriptors.*
+import kotlinx.reflect.lite.descriptors.ClassDescriptor
+import kotlinx.reflect.lite.descriptors.impl.*
+import kotlinx.reflect.lite.misc.*
+import kotlinx.reflect.lite.name.*
 
 internal object ReflectionLiteImpl {
-    fun <T : Any> loadClassMetadata(jClass: Class<T>): KClass<T> {
-        val descriptor = ClassDescriptorImpl(jClass)
-        return KClassImpl(descriptor)
+    fun <T : Any> loadClassMetadata(jClass: Class<T>): KDeclarationContainer {
+        return when (jClass.getAnnotation(Metadata::class.java)?.kind) {
+            // if the class may be builtin or it's kind == CLASS_KIND -> try create a KClass
+            // TODO: null case, check if is primitive or isAray
+            null, 1 -> KClassImpl(ClassDescriptorImpl(jClass))
+            // if it's kind == FILE_FACADE_KIND -> try create a KPackage
+            // TODO: support header kinds MULTI_FILE_CLASS_FACADE_KIND, MULTI_FILE_CLASS_PART_KIND
+            2 -> KPackageImpl(PackageDescriptorImpl(jClass))
+            else -> throw KotlinReflectionInternalError("Can not load class metadata for $jClass")
+        }
     }
 }

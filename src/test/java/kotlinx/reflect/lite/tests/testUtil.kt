@@ -2,7 +2,7 @@ package kotlinx.reflect.lite.tests
 
 import kotlinx.reflect.lite.*
 
-internal fun <T : Any> Class<T>.toLiteKClass() = ReflectionLite.loadClassMetadata(this)
+internal fun <T : Any> Class<T>.toLiteKClass() = ReflectionLite.loadClassMetadata(this) as KClass<T>
 
 internal fun <T: Any> KClass<T>.getMemberByName(name: String) =
     members.single { it.name == name }

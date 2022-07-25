@@ -9,16 +9,14 @@ import kotlinx.reflect.lite.internal.*
 import kotlinx.reflect.lite.misc.*
 import java.lang.reflect.*
 
-internal abstract class DeclarationContainerDescriptorImpl : DeclarationContainerDescriptor {
+internal abstract class ClassBasedDeclarationContainerDescriptorImpl(
+    override val jClass: Class<*>
+) : ClassBasedDeclarationContainerDescriptor {
     protected open val methodOwner: Class<*>
         get() = jClass.wrapperByPrimitive ?: jClass
 
     abstract val memberScope: MemberScope
     abstract val staticScope: MemberScope
-
-    abstract val constructors: Collection<ConstructorDescriptor>
-    abstract val properties: Collection<PropertyDescriptor>
-    abstract val functions: Collection<FunctionDescriptor>
 
     val declaredNonStaticMembers: Collection<KCallableImpl<*>>
         get() = getMembers(memberScope, MemberBelonginess.DECLARED)

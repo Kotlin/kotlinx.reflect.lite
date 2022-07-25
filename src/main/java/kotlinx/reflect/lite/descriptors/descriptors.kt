@@ -34,8 +34,9 @@ internal interface DeclarationDescriptor : Annotated {
     val name: Name
 }
 
-internal interface DeclarationContainerDescriptor {
+internal interface ClassBasedDeclarationContainerDescriptor {
     val jClass: Class<*>
+    val module: ModuleDescriptor
 
     val declaredMembers: Collection<KCallableImpl<*>>
     val allMembers: Collection<KCallableImpl<*>>
@@ -46,10 +47,9 @@ internal interface DeclarationContainerDescriptor {
     fun findDefaultMethod(name: String, desc: String, isMember: Boolean): Method?
 }
 
-internal interface ClassDescriptor<out T> : DeclarationContainerDescriptor, ClassifierDescriptor {
+internal interface ClassDescriptor<out T> : ClassBasedDeclarationContainerDescriptor, ClassifierDescriptor {
     val kmClass: KmClass
     val classId: ClassId
-    val module: ModuleDescriptor
 
     val simpleName: String?
     val qualifiedName: String?
@@ -83,6 +83,10 @@ internal interface ClassDescriptor<out T> : DeclarationContainerDescriptor, Clas
     val isValue: Boolean
 }
 
+internal interface PackageDescriptor<out T> : ClassBasedDeclarationContainerDescriptor, ClassifierDescriptor {
+    val kmPackage: KmPackage
+}
+
 internal class MemberScope(
     val properties: List<PropertyDescriptor>,
     val functions: List<FunctionDescriptor>
@@ -91,7 +95,7 @@ internal class MemberScope(
 internal interface CallableDescriptor : DeclarationDescriptor {
     val module: ModuleDescriptor
     val containingClass: ClassDescriptor<*>? // todo do we need them both?
-    val container: DeclarationContainerDescriptor
+    val container: ClassBasedDeclarationContainerDescriptor
 
     val dispatchReceiverParameter: ReceiverParameterDescriptor?
     val extensionReceiverParameter: ReceiverParameterDescriptor?

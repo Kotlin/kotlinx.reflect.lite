@@ -4,8 +4,8 @@ import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.descriptors.ClassDescriptor
 
 internal class KClassImpl<T : Any?>(
-    val descriptor: ClassDescriptor<T>
-) : KClass<T> {
+    override val descriptor: ClassDescriptor<T>
+) : KClass<T>, KDeclarationContainerImpl() {
 
     override val simpleName: String?
         get() = descriptor.simpleName
@@ -29,9 +29,6 @@ internal class KClassImpl<T : Any?>(
 
     override val sealedSubclasses: List<KClass<T>>
         get() = descriptor.sealedSubclasses.map(::KClassImpl)
-
-    override val members: Collection<KCallable<*>>
-        get() = descriptor.allMembers
 
     override val visibility: KVisibility?
         get() = descriptor.visibility

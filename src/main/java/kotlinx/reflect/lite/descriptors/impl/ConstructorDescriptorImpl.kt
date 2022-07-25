@@ -11,7 +11,7 @@ internal class ConstructorDescriptorImpl(
     val kmCons: KmConstructor,
     override val module: ModuleDescriptor,
     override val containingClass: ClassDescriptor<*>,
-    override val container: DeclarationContainerDescriptor
+    override val container: ClassBasedDeclarationContainerDescriptor
 ) : AbstractFunctionDescriptor(), ConstructorDescriptor {
     override val flags: Flags
         get() = kmCons.flags

@@ -7,7 +7,6 @@ import kotlinx.reflect.lite.calls.*
 import kotlinx.reflect.lite.calls.Caller
 import kotlinx.reflect.lite.descriptors.*
 import kotlinx.reflect.lite.misc.JvmPropertySignature
-import kotlinx.reflect.lite.misc.*
 import kotlinx.reflect.lite.name.*
 import java.lang.reflect.*
 
@@ -15,7 +14,7 @@ internal class PropertyDescriptorImpl(
     val kmProperty: KmProperty,
     override val module: ModuleDescriptor,
     override val containingClass: ClassDescriptor<*>?,
-    override val container: DeclarationContainerDescriptor
+    override val container: ClassBasedDeclarationContainerDescriptor
 ) : AbstractCallableDescriptor, PropertyDescriptor {
     override val flags: Flags
         get() = kmProperty.flags
@@ -74,7 +73,7 @@ internal abstract class PropertyAccessorDescriptorImpl(
         get() = property.module
     override val containingClass: ClassDescriptor<*>?
         get() = property.containingClass
-    override val container: DeclarationContainerDescriptor
+    override val container: ClassBasedDeclarationContainerDescriptor
         get() = property.container
 
     override val typeParameterTable: TypeParameterTable
@@ -137,7 +136,8 @@ internal abstract class PropertyAccessorDescriptorImpl(
         }
 
     fun isJvmStaticProperty(): Boolean {
-        return TODO("Implement isJvmStaticProperty: check annotations")
+        return false
+        TODO("Implement isJvmStaticProperty: check annotations")
     }
 }
 
