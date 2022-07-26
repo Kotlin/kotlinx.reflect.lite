@@ -2,7 +2,6 @@ package kotlinx.reflect.lite.impl
 
 import kotlinx.metadata.*
 import kotlinx.reflect.lite.descriptors.*
-import kotlinx.reflect.lite.descriptors.CallableDescriptor
 import kotlinx.reflect.lite.KVisibility
 import kotlinx.reflect.lite.descriptors.impl.*
 import kotlinx.reflect.lite.descriptors.impl.KotlinType

@@ -1,21 +1,18 @@
 package tests.properties.accessors.extensionPropertyAccessors
 
-import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.tests.*
-import kotlin.reflect.jvm.*
 import kotlin.test.*
 
 var state: String = ""
 
-// TODO: implement top-level extension proeprties
 var String.prop: String
     get() = length.toString()
     set(value) { state = this + value }
 
 fun box(): String {
-    val prop = String::prop
-
-    val a = ::state.javaField!!.kotlinLiteProperty
+    val clazz = Class.forName("tests.properties.accessors.extensionPropertyAccessors.ExtensionPropertyAccessorsKt").toKDeclarationContainer()
+    val prop = clazz.getPropertyByName("prop") as KMutableProperty1<String, String>
 
     assertEquals("3", prop.getter.invoke("abc"))
     assertEquals("5", prop.getter("defgh"))

@@ -1,19 +1,19 @@
 package tests.properties.accessors.topLevelPropertyAccessors
 
 import kotlinx.reflect.lite.*
-import kotlinx.reflect.lite.impl.*
-import kotlin.reflect.jvm.*
+import kotlinx.reflect.lite.tests.*
 import kotlin.test.assertEquals
 
 var state: String = ""
 
 fun box(): String {
-    val prop = ::state.javaField!!.kotlinLiteProperty as KMutableProperty0<String>
+    val clazz = Class.forName("tests.properties.accessors.topLevelPropertyAccessors.TopLevelPropertyAccessorsKt").toKDeclarationContainer()
+    val state = clazz.getPropertyByName("state") as KMutableProperty0<String>
 
-    assertEquals("", prop.getter.invoke())
-    assertEquals("", prop.getter())
+    assertEquals("", state.getter.invoke())
+    assertEquals("", state.getter())
 
-    prop.setter("OK")
+    state.setter("OK")
 
-    return prop.get()
+    return state.get()
 }
