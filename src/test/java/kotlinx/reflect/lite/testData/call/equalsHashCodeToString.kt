@@ -36,12 +36,11 @@ fun box(): String {
     assert(intHashCode.call(0) != Int::hashCode.call(1))
     assert(intToString.call(42) == "42")
 
-    //val stringEquals = String::class.java.getFunctionByName("equals") as KFunction<Boolean>
-//    val stringHashcode = String::class.java.getFunctionByName("hashCode") as KFunction<Int>
-//    val stringToString = String::class.java.getFunctionByName("toString") as KFunction<String>
-//    assert(stringEquals.call("beer", "beer"))
-//    stringHashcode.call("beer")
+    val stringEquals = (String::class.java).toLiteKClass().getMemberByName("equals") as KFunction<Boolean>
+    val stringHashcode = (String::class.java).toLiteKClass().getMemberByName("hashCode") as KFunction<Int>
+    val stringToString = (String::class.java).toLiteKClass().getMemberByName("toString") as KFunction<String>
+    assert(stringEquals.call("beer", "beer"))
+    stringHashcode.call("beer")
 
-    //return stringToString.call("OK")
-    return "OK"
+    return stringToString.call("OK")
 }
