@@ -3,6 +3,7 @@ package tests.call.incorrectNumberOfArguments
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.tests.*
+import kotlin.test.*
 
 var foo: String = ""
 
@@ -86,20 +87,20 @@ private fun testAccessPrivateBarProperty() {
     bar.isAccessible = true
     // TODO: kotlinx.reflect.lite.calls.CallerImpl$FieldGetter cannot access a member of class tests.call.incorrectNumberOfArguments.A with modifiers "private"
     b.call(A())
-//    check(b)
-//    check(b, null, null)
-//    check(b, "", "")
-//
-//    check(b.getter)
-//    check(b.getter, null, null)
-//    check(b.getter, "", "")
-//
-//    check(b.setter)
-//    check(b.setter, null)
-//    check(b.setter, "")
-//
-//    b.set(A(), "45")
-//    assertEquals("4646", b.get(A()))
+    check(b)
+    check(b, null, null)
+    check(b, "", "")
+
+    check(b.getter)
+    check(b.getter, null, null)
+    check(b.getter, "", "")
+
+    check(b.setter)
+    check(b.setter, null)
+    check(b.setter, "")
+
+    b.set(A(), "45")
+    assertEquals("45", b.get(A()))
 }
 
 private fun testAccessPrivateBazProperty() {

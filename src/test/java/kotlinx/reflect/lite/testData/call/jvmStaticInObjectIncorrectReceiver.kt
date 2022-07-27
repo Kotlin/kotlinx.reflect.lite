@@ -1,5 +1,7 @@
 package tests.call.jvmStaticInObjectIncorrectReceiver
 
+import kotlinx.reflect.lite.tests.*
+
 object Obj {
     @JvmStatic
     fun foo(s: String) {}
@@ -10,7 +12,7 @@ object Obj {
     @JvmStatic
     fun sly(obj: Obj) {}
 
-    operator fun get(name: String) = Obj::class.members.single { it.name == name }
+    operator fun get(name: String) = (Obj::class.java).toLiteKClass().members.single { it.name == name }
 }
 
 fun box(): String {

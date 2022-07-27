@@ -43,6 +43,18 @@ class KCallableTest {
     @Test
     fun testSimpleTopLevelFunctions() = test("call.simpleTopLevelFunctions") { tests.call.simpleTopLevelFunctions.box() }
 
+    @Test
+    fun testJvmStatic() = test("call.jvmStatic") { tests.call.jvmStatic.box() }
+
+    @Test
+    fun testJvmStaticInObjectIncorrectReceiver() = test("call.jvmStaticInObjectIncorrectReceiver") { tests.call.jvmStaticInObjectIncorrectReceiver.box() }
+
+    @Test
+    fun testPropertyGetterAndGetFunctionDifferentReturnType() = test("call.propertyGetterAndGetFunctionDifferentReturnType") { tests.call.propertyGetterAndGetFunctionDifferentReturnType.box() }
+
+    @Test
+    fun testProtectedMembers() = test("call.protectedMembers") { tests.call.protectedMembers.box() }
+
     // callBy
     @Test
     fun testSimpleMemberFunciton() = test("call.simpleMemberFunciton") { tests.callBy.simpleMemberFunciton.box() }

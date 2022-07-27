@@ -15,7 +15,7 @@ class A {
 fun box(): String {
     val a = A()
     val foo = (A::class.java).toLiteKClass().getMemberByName("foo")
-    val o = foo.call(a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, "O") as String // todo necessary type cast
+    val o = foo.call(a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, "O") as String
     val k = foo.call(a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, "K") as String
 
     return o + k

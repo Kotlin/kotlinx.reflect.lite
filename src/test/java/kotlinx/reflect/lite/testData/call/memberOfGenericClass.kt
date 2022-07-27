@@ -1,6 +1,5 @@
 package tests.call.memberOfGenericClass
 
-import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.tests.*
 
 var result = "Fail"

@@ -11,7 +11,7 @@ private class A(private var bar: String = "") {
     fun getKotlinReflectBar() = A::bar
 }
 
-// Test case refering the tests.call.incorrectNumberOfArguments.testAccessPrivateBarProperty()
+// Test case referring the tests.call.incorrectNumberOfArguments.testAccessPrivateBarProperty()
 fun box(): String {
     // kotlinx.reflect.lite
     val getBar = A().getBar() as KMutableProperty1<A, String>

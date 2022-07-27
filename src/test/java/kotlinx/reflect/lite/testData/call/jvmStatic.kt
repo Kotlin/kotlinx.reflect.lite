@@ -1,5 +1,7 @@
 package tests.call.jvmStatic
 
+import kotlinx.reflect.lite.tests.*
+
 object Obj {
     @JvmStatic
     fun foo() {}
@@ -13,7 +15,9 @@ class C {
 }
 
 fun box(): String {
-    (Obj::class.members.single { it.name == "foo" }).call(Obj)
-    (C.Companion::class.members.single { it.name == "bar" }).call(C.Companion)
+    val foo = (Obj::class.java).toLiteKClass().getMemberByName("foo")
+    foo.call(Obj)
+    val bar = C.Companion::class.java.toLiteKClass().getMemberByName("bar")
+    bar.call(C.Companion)
     return "OK"
 }
