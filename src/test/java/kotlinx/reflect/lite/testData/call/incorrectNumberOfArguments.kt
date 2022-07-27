@@ -1,6 +1,7 @@
 package tests.call.incorrectNumberOfArguments
 
 import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.tests.*
 
 var foo: String = ""
@@ -13,9 +14,8 @@ object O {
     @JvmStatic
     private var baz: String = ""
 
-    @JvmStatic // TODO: support isAccessible
-    //fun getBaz() = (O::class.members.single { it.name == "baz" } as KMutableProperty<*>).apply { isAccessible = true }
-    fun getBaz() = (O::class.java).toLiteKClass().getMemberByName("baz") as KMutableProperty<*>
+    @JvmStatic
+    fun getBaz() = ((O::class.java).toLiteKClass().getMemberByName("baz") as KMutableProperty<*>).apply { isAccessible = true }
 
     fun getGetBaz() = (O::class.java).toLiteKClass().getMemberByName("getBaz") as KFunction<*>
 }
@@ -43,24 +43,31 @@ fun check(callable: KCallable<*>, vararg args: Any?) {
     }
 }
 
-fun box(): String {
+private fun testBox() {
     val clazz = Class.forName("tests.call.incorrectNumberOfArguments.IncorrectNumberOfArgumentsKt").toLiteKDeclarationContainer()
     val box = clazz.getMemberByName("box")
     check(box, null)
     check(box, "")
+}
 
+private fun testAConstructor() {
     val aCons = A::class.java.toLiteKClass().getPrimaryConstructor()
     check(aCons)
     check(aCons, null, "")
+}
 
+private fun testGetBaz() {
     val getGetBaz = (O::class.java).toLiteKClass().getMemberByName("getGetBaz")
     check(getGetBaz)
     check(getGetBaz, null, "")
+}
 
+private fun testFoo() {
+    val clazz = Class.forName("tests.call.incorrectNumberOfArguments.IncorrectNumberOfArgumentsKt").toLiteKDeclarationContainer()
     val f = clazz.getMemberByName("foo") as KMutableProperty0<String>
     check(f, null)
     // TODO: args array of size 2 is wrapped into another array of size 1
-//    check(f, null, null)
+    // check(f, null, null)
     check(f, arrayOf<Any?>(null))
     check(f, "")
 
@@ -71,10 +78,15 @@ fun box(): String {
     check(f.setter)
     check(f.setter, null, null)
     check(f.setter, null, "")
+}
 
-    // TODO: KCallable<*>.isAccessible
-    // val b = A().getBar()
-    // check(b)
+private fun testAccessPrivateBarProperty() {
+    val b = A().getBar() as KMutableProperty1<A, String>
+    val bar = A::class.java.toLiteKClass().getMemberByName("bar")
+    bar.isAccessible = true
+    // TODO: kotlinx.reflect.lite.calls.CallerImpl$FieldGetter cannot access a member of class tests.call.incorrectNumberOfArguments.A with modifiers "private"
+    b.call(A())
+//    check(b)
 //    check(b, null, null)
 //    check(b, "", "")
 //
@@ -86,20 +98,32 @@ fun box(): String {
 //    check(b.setter, null)
 //    check(b.setter, "")
 //
+//    b.set(A(), "45")
+//    assertEquals("4646", b.get(A()))
+}
 
-//    val z = O.getBaz()
-//
-//    check(z)
-//    check(z, null, null)
-//    check(z, "", "")
-//
-//    check(z.getter)
-//    check(z.getter, null, null)
-//    check(z.getter, "", "")
-//
-//    check(z.setter)
-//    check(z.setter, null)
-//    check(z.setter, "")
+private fun testAccessPrivateBazProperty() {
+    val z = O.getBaz()
 
+    check(z)
+    check(z, null, null)
+    check(z, "", "")
+
+    check(z.getter)
+    check(z.getter, null, null)
+    check(z.getter, "", "")
+
+    check(z.setter)
+    check(z.setter, null)
+    check(z.setter, "")
+}
+
+fun box(): String {
+    testBox()
+    testAConstructor()
+    testGetBaz()
+    testFoo()
+    // testAccessPrivateBarProperty()
+    // testAccessPrivateBazProperty()
     return "OK"
 }
