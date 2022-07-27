@@ -1,11 +1,12 @@
 package kotlinx.reflect.lite.impl
 
-import kotlinx.metadata.*
+import kotlinx.metadata.jvm.*
 import kotlinx.reflect.lite.descriptors.*
 import kotlinx.reflect.lite.KVisibility
 import kotlinx.reflect.lite.descriptors.impl.*
 import kotlinx.reflect.lite.descriptors.impl.KotlinType
 import kotlinx.reflect.lite.calls.*
+import kotlinx.reflect.lite.internal.*
 import kotlinx.reflect.lite.misc.JvmPropertySignature
 import java.lang.reflect.*
 
@@ -118,13 +119,10 @@ internal abstract class FakeOverrideCallableMemberDescriptor(
     override val typeParameters: List<TypeParameterDescriptor>,
     override val returnType: KotlinType,
     val overridden: List<CallableDescriptor>
-) : CallableDescriptor, AbstractFunctionDescriptor() {
+) : CallableDescriptor {
     init {
         require(overridden.isNotEmpty())
     }
-
-    override val flags: Flags
-        get() = TODO("Not yet implemented")
 
     override val name: String
         get() = overridden.first().name
@@ -133,9 +131,6 @@ internal abstract class FakeOverrideCallableMemberDescriptor(
 
     override val container: ClassBasedDeclarationContainerDescriptor
         get() = containingClass
-
-    override val typeParameterTable: TypeParameterTable
-        get() = TODO("Not yet implemented")
 
     override val dispatchReceiverParameter: ReceiverParameterDescriptor?
         get() = ReceiverParameterDescriptorImpl(containingClass.defaultType, this)
@@ -161,7 +156,7 @@ internal class FakeOverrideFunctionDescriptor(
     overridden: List<FunctionDescriptor>
 ) : FakeOverrideCallableMemberDescriptor(
     module, containingClass, extensionReceiverParameter, valueParameters, typeParameters, returnType, overridden
-) {
+), FunctionDescriptor {
     @Suppress("UNCHECKED_CAST")
     val overriddenFunctions: List<FunctionDescriptor>
         get() = super.overridden as List<FunctionDescriptor>
@@ -175,14 +170,29 @@ internal class FakeOverrideFunctionDescriptor(
     override val isSuspend: Boolean
         get() = overriddenFunctions.first().isSuspend // TODO?
     override val isExternal: Boolean
-        get() = TODO("Not yet implemented")
+        get() = overriddenFunctions.first().isExternal
 
-    override val member: Member?
-        get() = overriddenFunctions.first().member
+    override val isAnnotationConstructor: Boolean
+        get() = overriddenFunctions.first().isAnnotationConstructor
 
-    override val defaultMember: Member?
-        get() = overriddenFunctions.first().defaultMember
+    override val member: Member? by ReflectProperties.lazy {
+        overriddenFunctions.first().member
+    }
+
+    override val defaultMember: Member? by ReflectProperties.lazy {
+        overriddenFunctions.first().defaultMember
+    }
+
+    override val caller: Caller<*> by ReflectProperties.lazy {
+        overriddenFunctions.first().caller
+    }
+
+    override val defaultCaller: Caller<*>? by ReflectProperties.lazy {
+        overriddenFunctions.first().defaultCaller
+    }
 }
+
+// TODO: fix inheritance hierarchy for overridden properties
 
 internal class FakeOverridePropertyDescriptor(
     module: ModuleDescriptor,
@@ -194,13 +204,10 @@ internal class FakeOverridePropertyDescriptor(
     overridden: List<PropertyDescriptor>
 ) : FakeOverrideCallableMemberDescriptor(
     module, containingClass, extensionReceiverParameter, valueParameters, typeParameters, returnType, overridden
-), PropertyDescriptor {
+),  PropertyDescriptor {
     @Suppress("UNCHECKED_CAST")
     val overriddenProperties: List<PropertyDescriptor>
         get() = super.overridden as List<PropertyDescriptor>
-
-    override val typeParameterTable: TypeParameterTable
-        get() = TODO()
 
     override val isVar: Boolean
         get() = overriddenProperties.any(PropertyDescriptor::isVar)
@@ -209,24 +216,129 @@ internal class FakeOverridePropertyDescriptor(
     override val isConst: Boolean
         get() = false
 
-    override val jvmSignature: JvmPropertySignature.KotlinProperty
-        get() = TODO("Not yet implemented")
+    override val jvmSignature: JvmPropertySignature.KotlinProperty by ReflectProperties.lazy {
+        // TODO: inherit this from PropertyDescriptorImpl
+        val property = overriddenProperties.first() as PropertyDescriptorImpl
+        JvmPropertySignature.KotlinProperty(
+            property,
+            property.kmProperty.fieldSignature,
+            property.kmProperty.getterSignature,
+            property.kmProperty.setterSignature
+        )
+    }
 
-    override val javaField: Field?
-        get() = TODO("Not yet implemented")
+    override val javaField: Field? by ReflectProperties.lazy {
+        // TODO: copied from PropertyDescriptorImpl, inherit the implementation
+        jvmSignature.fieldSignature?.let {
+            // TODO: support propertyWithBackingFieldInOuterClass
+            // TODO: support JavaField, JavaMethodProperty, MappedKotlinProperty
+            val owner = containingClass?.jClass ?: container.jClass
+            try {
+                owner.getDeclaredField(it.name)
+            } catch (e: NoSuchFieldException) {
+                null
+            }
+        }
+    }
 
     override val getter: PropertyGetterDescriptor?
-        get() = TODO("Not yet implemented")
+        get() = FakeOverridePropertyGetterDescriptor(this)
 
     override val setter: PropertySetterDescriptor?
-        get() = TODO("Not yet implemented")
+        get() =  if (isVar) FakeOverridePropertySetterDescriptor(this) else null
 
-    override val caller: Caller<*>
-        get() = TODO("Not yet implemented")
+    override val caller: Caller<*> by ReflectProperties.lazy {
+        getter?.caller ?: error("The property has no getter")
+    }
 
-    override val member: Member?
-        get() = TODO("Not yet implemented")
+    override val defaultCaller: Caller<*> by ReflectProperties.lazy {
+        getter?.defaultCaller ?: error("The property has no getter")
+    }
+}
 
-    override val defaultMember: Member?
-        get() = TODO("Not yet implemented")
+internal class FakeOverridePropertyGetterDescriptor(
+    override val property: FakeOverridePropertyDescriptor
+) : FakeOverrideCallableMemberDescriptor(
+    property.module,
+    property.containingClass,
+    property.extensionReceiverParameter,
+    property.valueParameters,
+    property.typeParameters,
+    property.returnType,
+    property.overriddenProperties.mapNotNull(PropertyDescriptor::getter)
+), PropertyGetterDescriptor {
+    @Suppress("UNCHECKED_CAST")
+    private val overriddenPropertyGetters: List<PropertyGetterDescriptor>
+        get() = super.overridden as List<PropertyGetterDescriptor>
+
+    override val isInline: Boolean
+        get() = overriddenPropertyGetters.first().isInline // TODO?
+    override val isOperator: Boolean get() = false
+    override val isInfix: Boolean get() = false
+    override val isSuspend: Boolean get() = false
+    override val isExternal: Boolean
+        get() = overriddenPropertyGetters.first().isExternal
+
+    override val isAnnotationConstructor: Boolean
+        get() = overriddenPropertyGetters.first().isAnnotationConstructor
+
+    override val member: Member? by ReflectProperties.lazy {
+        overriddenPropertyGetters.first().member
+    }
+
+    override val defaultMember: Member? by ReflectProperties.lazy {
+        overriddenPropertyGetters.first().defaultMember
+    }
+
+    override val caller: Caller<*> by ReflectProperties.lazy {
+        overriddenPropertyGetters.first().caller
+    }
+
+    override val defaultCaller: Caller<*>? by ReflectProperties.lazy {
+        overriddenPropertyGetters.first().defaultCaller
+    }
+}
+
+internal class FakeOverridePropertySetterDescriptor(
+    override val property: FakeOverridePropertyDescriptor
+) : FakeOverrideCallableMemberDescriptor(
+    property.module,
+    property.containingClass,
+    property.extensionReceiverParameter,
+    property.valueParameters,
+    property.typeParameters,
+    property.returnType,
+    property.overriddenProperties.mapNotNull(PropertyDescriptor::setter)
+), PropertySetterDescriptor {
+    @Suppress("UNCHECKED_CAST")
+    private val overriddenPropertySetters: List<PropertySetterDescriptor>
+        get() = super.overridden as List<PropertySetterDescriptor>
+
+    override val isInline: Boolean
+        get() = overriddenPropertySetters.first().isInline // TODO?
+    override val isOperator: Boolean get() = false
+    override val isInfix: Boolean get() = false
+    override val isSuspend: Boolean get() = false
+
+    override val isExternal: Boolean
+        get() = overriddenPropertySetters.first().isExternal
+
+    override val isAnnotationConstructor: Boolean
+        get() = overriddenPropertySetters.first().isAnnotationConstructor
+
+    override val member: Member? by ReflectProperties.lazy {
+        overriddenPropertySetters.first().member
+    }
+
+    override val defaultMember: Member? by ReflectProperties.lazy {
+        overriddenPropertySetters.first().defaultMember
+    }
+
+    override val caller: Caller<*> by ReflectProperties.lazy {
+        overriddenPropertySetters.first().caller
+    }
+
+    override val defaultCaller: Caller<*>? by ReflectProperties.lazy {
+        overriddenPropertySetters.first().defaultCaller
+    }
 }

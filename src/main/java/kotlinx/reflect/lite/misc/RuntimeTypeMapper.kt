@@ -9,7 +9,8 @@ import kotlinx.reflect.lite.descriptors.FunctionDescriptor
 import kotlinx.reflect.lite.descriptors.PropertyDescriptor
 import kotlinx.reflect.lite.descriptors.impl.*
 import kotlinx.reflect.lite.descriptors.impl.FunctionDescriptorImpl
-import kotlinx.reflect.lite.impl.KotlinReflectionInternalError
+import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.impl.FakeOverridePropertyDescriptor
 import kotlinx.reflect.lite.name.*
 import java.lang.reflect.*
 
@@ -148,11 +149,9 @@ internal object RuntimeTypeMapper {
             )
         }
 
-        // todo fake override property
-//        if (property is FakeOverridePropertyDescriptor) {
-//            return mapPropertySignature(property.overriddenProperties.first())
-//        }
-
+        if (property is FakeOverridePropertyDescriptor) {
+            return mapPropertySignature(property.overriddenProperties.first())
+        }
         TODO()
     }
 
