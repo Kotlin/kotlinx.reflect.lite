@@ -3,6 +3,7 @@ package kotlinx.reflect.lite.descriptors.impl
 import kotlinx.metadata.*
 import kotlinx.metadata.jvm.*
 import kotlinx.reflect.lite.descriptors.*
+import kotlinx.reflect.lite.internal.*
 import kotlinx.reflect.lite.misc.*
 import kotlinx.reflect.lite.name.*
 import java.lang.reflect.*
@@ -39,12 +40,15 @@ internal class ConstructorDescriptorImpl(
     override val returnType: KotlinType
         get() = containingClass.kotlinType
 
-    private val jvmSignature: JvmFunctionSignature.KotlinConstructor
-        get() = JvmFunctionSignature.KotlinConstructor(kmCons.signature ?: error("No constructor signature for ${kmCons}"))
+    private val jvmSignature: JvmFunctionSignature.KotlinConstructor by ReflectProperties.lazy {
+        JvmFunctionSignature.KotlinConstructor(kmCons.signature ?: error("No constructor signature for ${kmCons}"))
+    }
 
-    override val member: Member?
-        get() = container.findConstructorBySignature(jvmSignature.constructorDesc)
+    override val member: Member? by ReflectProperties.lazy {
+        container.findConstructorBySignature(jvmSignature.constructorDesc)
+    }
 
-    override val defaultMember: Member?
-        get() = container.findDefaultConstructor(jvmSignature.constructorDesc)
+    override val defaultMember: Member? by ReflectProperties.lazy {
+        container.findDefaultConstructor(jvmSignature.constructorDesc)
+    }
 }
