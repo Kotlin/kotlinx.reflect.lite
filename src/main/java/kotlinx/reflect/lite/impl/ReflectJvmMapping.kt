@@ -12,7 +12,40 @@ import java.lang.reflect.*
  * or `null` if the property has no backing field.
  */
 val KProperty<*>.javaField: Field?
-    get() = (this as KPropertyImpl).descriptor.javaField
+    get() = (this as? KPropertyImpl)?.descriptor?.javaField
+
+/**
+ * Returns a Java [Method] instance corresponding to the getter of the given property,
+ * or `null` if the property has no getter, for example in case of a simple private `val` in a class.
+ */
+val KProperty<*>.javaGetter: Method?
+    get() = getter.javaMethod
+
+/**
+ * Returns a Java [Method] instance corresponding to the setter of the given mutable property,
+ * or `null` if the property has no setter, for example in case of a simple private `var` in a class.
+ */
+val KMutableProperty<*>.javaSetter: Method?
+    get() = setter.javaMethod
+
+/**
+ * Returns a Java [Method] instance corresponding to the given Kotlin function,
+ * or `null` if this function is a constructor or cannot be represented by a Java [Method].
+ */
+val KFunction<*>.javaMethod: Method?
+    get() = (this as? KCallableImpl<*>)?.let {
+        return it.descriptor.caller.member as? Method
+    }
+
+/**
+ * Returns a Java [Constructor] instance corresponding to the given Kotlin function,
+ * or `null` if this function is not a constructor or cannot be represented by a Java [Constructor].
+ */
+@Suppress("UNCHECKED_CAST")
+val <T> KFunction<T>.javaConstructor: Constructor<T>?
+    get() = (this as? KCallableImpl<*>)?.let {
+        return it.descriptor.caller.member as? Constructor<T>
+    }
 
 // Java reflection -> Kotlin reflection
 
