@@ -55,6 +55,9 @@ class KCallableTest {
     @Test
     fun testProtectedMembers() = test("call.protectedMembers") { tests.call.protectedMembers.box() }
 
+    @Test
+    fun testReturnUnit() = test("call.returnUnit") { tests.call.returnUnit.box() }
+
     // callBy
     @Test
     fun testSimpleMemberFunciton() = test("call.simpleMemberFunciton") { tests.callBy.simpleMemberFunciton.box() }

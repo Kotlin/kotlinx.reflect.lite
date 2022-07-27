@@ -1,5 +1,8 @@
 package tests.call.simpleTopLevelFunctions
 
+import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.tests.*
+
 fun String.foo(): Int = length
 
 var state = "Fail"
@@ -9,21 +12,24 @@ fun bar(result: String) {
 }
 
 fun box(): String {
-    val f = (String::foo).call("abc")
+    val clazz = Class.forName("tests.call.simpleTopLevelFunctions.SimpleTopLevelFunctionsKt").kotlinClass
+    val foo = clazz.getMemberByName("foo")
+    val f = foo.call("abc")
     if (f != 3) return "Fail: $f"
 
     try {
-        (String::foo).call()
+        foo.call()
         return "Fail: IllegalArgumentException should have been thrown"
     }
     catch (e: IllegalArgumentException) {}
 
     try {
-        (String::foo).call(42)
+        foo.call(42)
         return "Fail: IllegalArgumentException should have been thrown"
     }
     catch (e: IllegalArgumentException) {}
 
-    (::bar).call("OK")
+    val bar = clazz.getMemberByName("bar")
+    bar.call("OK")
     return state
 }

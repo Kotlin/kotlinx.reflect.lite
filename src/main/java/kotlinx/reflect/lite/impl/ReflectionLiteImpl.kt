@@ -31,7 +31,7 @@ internal object ReflectionLiteImpl {
     fun <T : Any> loadClassMetadata(jClass: Class<T>): KDeclarationContainer {
         return when (jClass.getAnnotation(Metadata::class.java)?.kind) {
             // if the class may be builtin or it's kind == CLASS_KIND -> try create a KClass
-            // TODO: null case, check if is primitive or isAray
+            // TODO: null case, check if is primitive or isArray
             null, 1 -> KClassImpl(ClassDescriptorImpl(jClass))
             // if it's kind == FILE_FACADE_KIND -> try create a KPackage
             // TODO: support header kinds MULTI_FILE_CLASS_FACADE_KIND, MULTI_FILE_CLASS_PART_KIND

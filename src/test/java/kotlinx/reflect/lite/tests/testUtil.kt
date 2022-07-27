@@ -2,6 +2,7 @@ package kotlinx.reflect.lite.tests
 
 import kotlinx.reflect.lite.*
 
+// TODO: replace with Class<T>.kotlinClass everywhere in tests
 internal fun <T: Any> Class<T>.toLiteKDeclarationContainer() = ReflectionLite.loadClassMetadata(this)
 internal fun <T : Any> Class<T>.toLiteKClass() = toLiteKDeclarationContainer() as KClass<T>
 
