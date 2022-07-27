@@ -6,6 +6,7 @@ import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.calls.*
 import kotlinx.reflect.lite.calls.Caller
 import kotlinx.reflect.lite.descriptors.*
+import kotlinx.reflect.lite.impl.KotlinReflectionInternalError
 import kotlinx.reflect.lite.misc.JvmPropertySignature
 import kotlinx.reflect.lite.name.*
 import java.lang.reflect.*
@@ -100,8 +101,6 @@ internal abstract class PropertyAccessorDescriptorImpl(
 
     override val typeParameterTable: TypeParameterTable
         get() = property.typeParameterTable
-    override val valueParameters: List<ValueParameterDescriptor>
-        get() = emptyList()
     override val typeParameters: List<TypeParameterDescriptor>
         get() = property.typeParameters
     override val returnType: KotlinType
@@ -132,7 +131,9 @@ internal abstract class PropertyAccessorDescriptorImpl(
                     ) {
                         TODO("Inline class aware caller is not supported yet")
                     } else {
-                        TODO("Implement PropertyDescriptor.javaField")
+                        val javaField = property.javaField
+                            ?: throw KotlinReflectionInternalError("No accessors or field is found for property $property")
+                        computeFieldCaller(javaField)
                     }
                 }
                 !Modifier.isStatic(accessor.modifiers) ->
@@ -147,10 +148,30 @@ internal abstract class PropertyAccessorDescriptorImpl(
             }
         }
 
-    fun isJvmStaticProperty(): Boolean {
+    protected abstract fun computeFieldCaller(field: Field): Caller<*>
+
+    protected fun isJvmStaticProperty(): Boolean {
         return false
         TODO("Implement isJvmStaticProperty: check annotations")
     }
+
+    // Logic from: https://github.com/JetBrains/kotlin/blob/3b5179686eaba0a71bcca53c2cc922a54cc9241f/core/reflection.jvm/src/kotlin/reflect/jvm/internal/KPropertyImpl.kt#L321-L320
+    protected fun PropertyDescriptor.isJvmFieldPropertyInCompanionObject(): Boolean {
+        val container = containingClass
+        if (container == null || !container.isCompanion) return false
+        val outerClass = container.containingClass
+        return when {
+            // TODO: support isAnnotationClass, || outerClass?.isAnnotationClass == true
+            outerClass?.isInterface == true  ->
+                // TODO
+                // this is DeserializedPropertyDescriptor && JvmProtoBufUtil.isMovedFromInterfaceCompanion(proto)
+                false
+            else -> true
+        }
+    }
+
+    protected fun isNotNullProperty(): Boolean =
+        !property.returnType.isNullableType()
 }
 
 internal class PropertyGetterDescriptorImpl(
@@ -162,10 +183,26 @@ internal class PropertyGetterDescriptorImpl(
     override val flags: Flags
         get() = property.kmProperty.getterFlags
 
+    override val valueParameters: List<ValueParameterDescriptor>
+        get() = emptyList()
+
     override val member: Method?
         get() = property.jvmSignature.getterSignature?.let { signature ->
             property.container.findMethodBySignature(signature.name, signature.desc)
         }
+
+    override fun computeFieldCaller(field: Field): Caller<*> = when {
+        property.isJvmFieldPropertyInCompanionObject() || !Modifier.isStatic(field.modifiers) ->
+            // TODO: bound receiver
+            // if (isBound) CallerImpl.FieldGetter.BoundInstance(field, boundReceiver)
+            CallerImpl.FieldGetter.Instance(field)
+        isJvmStaticProperty() ->
+            // TODO: bound receiver
+            // if (isBound) CallerImpl.FieldGetter.BoundJvmStaticInObject(field)
+            CallerImpl.FieldGetter.JvmStaticInObject(field)
+        else ->
+            CallerImpl.FieldGetter.Static(field)
+    }
 }
 
 internal class PropertySetterDescriptorImpl(
@@ -177,10 +214,26 @@ internal class PropertySetterDescriptorImpl(
     override val flags: Flags
         get() = property.kmProperty.setterFlags
 
+    override val valueParameters: List<ValueParameterDescriptor>
+        get() = listOf(PropertySetterParameterDescriptor(property.kmProperty.setterParameter, this))
+
     override val member: Method?
         get() = property.jvmSignature.setterSignature?.let { signature ->
             property.container.findMethodBySignature(signature.name, signature.desc)
         }
+
+    override fun computeFieldCaller(field: Field): Caller<*> = when {
+        property.isJvmFieldPropertyInCompanionObject() || !Modifier.isStatic(field.modifiers) ->
+            // TODO: bound receiver
+            // if (isBound) CallerImpl.FieldSetter.BoundInstance(field, isNotNullProperty(), boundReceiver)
+            CallerImpl.FieldSetter.Instance(field, isNotNullProperty())
+        isJvmStaticProperty() ->
+            // TODO: bound receiver
+            // if (isBound) CallerImpl.FieldSetter.BoundJvmStaticInObject(field, isNotNullProperty())
+            CallerImpl.FieldSetter.JvmStaticInObject(field, isNotNullProperty())
+        else ->
+            CallerImpl.FieldSetter.Static(field, isNotNullProperty())
+    }
 }
 
 // todo KProperty2Descriptor

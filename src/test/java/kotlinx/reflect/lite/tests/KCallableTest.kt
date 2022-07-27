@@ -20,10 +20,16 @@ class KCallableTest {
     fun testEqualsHashCodeToString() = test("call.equalsHashCodeToString") { tests.call.equalsHashCodeToString.box() }
 
     @Test
+    fun testExceptionHappened() = test("call.exceptionHappened") { tests.call.exceptionHappened.box() }
+
+    @Test
     fun testFakeOverride() = test("call.fakeOverride") { tests.call.fakeOverride.box() }
 
     @Test
     fun testFakeOverrideSubstituted() = test("call.fakeOverrideSubstituted") { tests.call.fakeOverrideSubstituted.box() }
+
+    @Test
+    fun testIncorrectNumberOfArguments() = test("call.incorrectNumberOfArguments") { tests.call.incorrectNumberOfArguments.box() }
 
     @Test
     fun testInnerClassConstructor() = test("call.innerClassConstructor") { tests.call.innerClassConstructor.box() }

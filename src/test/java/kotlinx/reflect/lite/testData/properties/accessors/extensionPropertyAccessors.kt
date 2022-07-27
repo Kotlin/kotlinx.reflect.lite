@@ -11,8 +11,8 @@ var String.prop: String
     set(value) { state = this + value }
 
 fun box(): String {
-    val clazz = Class.forName("tests.properties.accessors.extensionPropertyAccessors.ExtensionPropertyAccessorsKt").toKDeclarationContainer()
-    val prop = clazz.getPropertyByName("prop") as KMutableProperty1<String, String>
+    val clazz = Class.forName("tests.properties.accessors.extensionPropertyAccessors.ExtensionPropertyAccessorsKt").toLiteKDeclarationContainer()
+    val prop = clazz.getMemberByName("prop") as KMutableProperty1<String, String>
 
     assertEquals("3", prop.getter.invoke("abc"))
     assertEquals("5", prop.getter("defgh"))

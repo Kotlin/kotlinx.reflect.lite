@@ -16,6 +16,10 @@ internal class KotlinType(
     val isMarkedNullable: Boolean // todo pass annotations
 ) : Annotated
 
+internal fun KotlinType.isNullableType(): Boolean =
+    // TODO: check if this is correct
+    isMarkedNullable || (descriptor is TypeParameterDescriptor && descriptor.upperBounds.any { it.isNullableType() })
+
 internal class TypeParameterTable(
     val typeParameters: List<TypeParameterDescriptorImpl>,
     private val parent: TypeParameterTable? = null

@@ -2,16 +2,11 @@ package kotlinx.reflect.lite.tests
 
 import kotlinx.reflect.lite.*
 
-internal fun <T: Any> Class<T>.toKDeclarationContainer() = ReflectionLite.loadClassMetadata(this)
-internal fun <T : Any> Class<T>.toLiteKClass() = toKDeclarationContainer() as KClass<T>
+internal fun <T: Any> Class<T>.toLiteKDeclarationContainer() = ReflectionLite.loadClassMetadata(this)
+internal fun <T : Any> Class<T>.toLiteKClass() = toLiteKDeclarationContainer() as KClass<T>
 
-internal fun <T: Any> KClass<T>.getMemberByName(name: String) =
+internal fun KDeclarationContainer.getMemberByName(name: String) =
     members.single { it.name == name }
-
-internal fun KDeclarationContainer.getPropertyByName(name: String) =
-    members.single { it.name == name }
-
-// todo util function getFunctionByName<ReturnType> to cast
 
 internal fun <T: Any> KClass<T>.getPrimaryConstructor() = constructors.first() as KFunction<T>
 
