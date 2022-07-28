@@ -1,5 +1,6 @@
 package tests.callBy.manyMaskArguments
 
+import kotlinx.reflect.lite.impl.*
 import kotlin.test.assertEquals
 
 // Generate:
@@ -48,7 +49,7 @@ class A {
             p39: Int = 39,
             p40: Int = 40,
             p41: Int = 41,
-            p42: Int,
+            p42: Int = 42,
             p43: Int = 43,
             p44: Int = 44,
             p45: Int = 45,
@@ -87,11 +88,11 @@ class A {
 }
 
 fun box(): String {
-    val f = A::class.members.single { it.name == "foo" }
-    val parameters = f.parameters
-    f.callBy(mapOf(
-            parameters.first() to A(),
-            parameters.single { it.name == "p42" } to 239
+    val foo = (A::class.java).kotlinClass.members.single { it.name == "foo" }
+    val parameters = foo.parameters
+    foo.callBy(mapOf(
+            //parameters.first() to A()
+            //parameters.single { it.name == "p42" } to 239
     ))
     return "OK"
 }

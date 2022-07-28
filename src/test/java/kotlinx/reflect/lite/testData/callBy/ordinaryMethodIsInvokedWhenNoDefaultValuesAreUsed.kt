@@ -1,5 +1,7 @@
 package tests.callBy.ordinaryMethodIsInvokedWhenNoDefaultValuesAreUsed
 
+import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.tests.*
 import kotlin.test.assertEquals
 
 fun foo(result: String = "foo") {
@@ -15,6 +17,8 @@ fun foo(result: String = "foo") {
 }
 
 fun box(): String {
-    ::foo.callBy(mapOf(::foo.parameters.single() to "box"))
+    val clazz = Class.forName("tests.callBy.ordinaryMethodIsInvokedWhenNoDefaultValuesAreUsed.OrdinaryMethodIsInvokedWhenNoDefaultValuesAreUsedKt").kotlinClass
+    val foo = clazz.getMemberByName("foo")
+    foo.callBy(mapOf(foo.parameters.single() to "box"))
     return "OK"
 }

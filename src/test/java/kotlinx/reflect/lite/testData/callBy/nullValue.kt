@@ -1,5 +1,7 @@
 package tests.callBy.nullValue
 
+import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.tests.*
 import kotlin.test.assertNull
 
 fun foo(x: String? = "Fail") {
@@ -7,6 +9,7 @@ fun foo(x: String? = "Fail") {
 }
 
 fun box(): String {
-    ::foo.callBy(mapOf(::foo.parameters.single() to null))
+    val foo = Class.forName("tests.callBy.nullValue.NullValueKt").kotlinClass.getMemberByName("foo")
+    foo.callBy(mapOf(foo.parameters.single() to null))
     return "OK"
 }

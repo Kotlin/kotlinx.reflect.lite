@@ -1,6 +1,5 @@
 package tests.callBy.primitiveDefaultValues
 
-import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.tests.*
 import kotlin.test.assertEquals

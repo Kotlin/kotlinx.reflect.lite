@@ -70,4 +70,18 @@ class KCallableTest {
 
     @Test
     fun testPrimitiveDefaultValuesCallBy() = test("callBy.primitiveDefaultValues") { tests.callBy.primitiveDefaultValues.box() }
+
+    @Test
+    fun testOrdinaryMethodIsInvokedWhenNoDefaultValuesAreUsed() = test("callBy.ordinaryMethodIsInvokedWhenNoDefaultValuesAreUsed") { tests.callBy.ordinaryMethodIsInvokedWhenNoDefaultValuesAreUsed.box() }
+
+    @Test
+    fun testNullValue() = test("callBy.nullValue") { tests.callBy.nullValue.box() }
+
+    @Test
+    fun testNonDefaultParameterOmitted() = test("callBy.nonDefaultParameterOmitted") { tests.callBy.nonDefaultParameterOmitted.box() }
+
+    @Test
+    fun testManyMaskArguments() = test("callBy.manyMaskArguments") { tests.callBy.manyMaskArguments.box() }
+
+
 }
