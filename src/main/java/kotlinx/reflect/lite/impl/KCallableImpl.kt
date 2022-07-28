@@ -2,10 +2,9 @@ package kotlinx.reflect.lite.impl
 
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.descriptors.*
+import kotlinx.reflect.lite.descriptors.impl.*
 import java.util.ArrayList
 import kotlin.coroutines.*
-import kotlin.reflect.jvm.*
-import kotlin.reflect.jvm.internal.*
 
 internal abstract class KCallableImpl<out R>: KCallable<R> {
     abstract val descriptor: CallableDescriptor
@@ -83,7 +82,9 @@ internal abstract class KCallableImpl<out R>: KCallable<R> {
                     arguments.add(args[parameter])
                 }
                 parameter.isOptional -> {
-                    TODO("Support optional parameters")
+                    // TODO: support inline class type
+                    arguments.add(defaultPrimitiveValue(parameter.type?.javaType))
+                    mask = mask or (1 shl (index % Integer.SIZE))
                     anyOptional = true
                 }
                 parameter.isVararg -> {

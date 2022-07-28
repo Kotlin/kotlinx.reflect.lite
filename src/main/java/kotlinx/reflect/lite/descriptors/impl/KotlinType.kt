@@ -9,6 +9,7 @@ import kotlinx.reflect.lite.descriptors.ClassifierDescriptor
 import kotlinx.reflect.lite.descriptors.DeclarationDescriptor
 import kotlinx.reflect.lite.descriptors.ModuleDescriptor
 import kotlinx.reflect.lite.descriptors.TypeParameterDescriptor
+import java.lang.reflect.*
 
 internal class KotlinType(
     val descriptor: ClassifierDescriptor,
@@ -91,6 +92,23 @@ internal val ClassifierDescriptor.defaultType: KotlinType
         }.orEmpty(),
         false
     )
+
+// Copied from here: https://github.com/JetBrains/kotlin/blob/0a6d010d1c7258e25be8e4d99a44a5ab0e66ded2/core/reflection.jvm/src/kotlin/reflect/jvm/internal/util.kt#L260
+internal fun defaultPrimitiveValue(type: Type?): Any? =
+    if (type is Class<*>) {
+        when (type.name) {
+            "java.lang.Boolean" -> false
+            "java.lang.Character" -> 0.toChar()
+            "java.lang.Byte" -> 0.toByte()
+            "java.lang.Short" -> 0.toShort()
+            "java.lang.Integer" -> 0
+            "java.lang.Float" -> 0f
+            "java.lang.Long" -> 0L
+            "java.lang.Double" -> 0.0
+            "java.lang.Void" -> throw IllegalStateException("Parameter with void type is illegal")
+            else -> throw UnsupportedOperationException("Unknown primitive: $type")
+        }
+    } else null
 
 private fun KmVariance.toVariance(): KVariance =
     when (this) {

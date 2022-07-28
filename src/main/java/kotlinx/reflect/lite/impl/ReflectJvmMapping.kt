@@ -2,6 +2,12 @@
 package kotlinx.reflect.lite.impl
 
 import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.KClass
+import kotlinx.reflect.lite.KDeclarationContainer
+import kotlinx.reflect.lite.KFunction
+import kotlinx.reflect.lite.KMutableProperty
+import kotlinx.reflect.lite.KProperty
+import kotlinx.reflect.lite.KType
 import kotlinx.reflect.lite.descriptors.impl.*
 import java.lang.reflect.*
 
@@ -71,6 +77,14 @@ val KDeclarationContainer.companionObject: KClass<*>?
             (it as KClassImpl<*>).descriptor.isCompanion
         }
     }
+
+/**
+ * Returns a Java [Type] instance corresponding to the given Kotlin type.
+ * Note that one Kotlin type may correspond to different JVM types depending on where it appears. For example, [Unit] corresponds to
+ * the JVM class [Unit] when it's the type of a parameter, or to `void` when it's the return type of a function.
+ */
+val KType.javaType: Type
+    get() = this.computeJavaType()
 
 /**
  * Returns a [KProperty] instance corresponding to the given Java [Field] instance,

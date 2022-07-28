@@ -1,5 +1,8 @@
 package tests.callBy.primitiveDefaultValues
 
+import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.tests.*
 import kotlin.test.assertEquals
 
 fun primitives(
@@ -23,6 +26,8 @@ fun primitives(
 }
 
 fun box(): String {
-    ::primitives.callBy(emptyMap())
+    val clazz = Class.forName("tests.callBy.primitiveDefaultValues.PrimitiveDefaultValuesKt").kotlinClass
+    val primitives = clazz.getMemberByName("primitives")
+    primitives.callBy(mapOf())
     return "OK"
 }

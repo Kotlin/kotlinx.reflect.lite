@@ -60,5 +60,14 @@ class KCallableTest {
 
     // callBy
     @Test
-    fun testSimpleMemberFunciton() = test("call.simpleMemberFunciton") { tests.callBy.simpleMemberFunciton.box() }
+    fun testSimpleMemberFunciton() = test("callBy.simpleMemberFunciton") { tests.callBy.simpleMemberFunciton.box() }
+
+    @Test
+    fun testSimpleTopLevelFunction() = test("callBy.simpleTopLevelFunction") { tests.callBy.simpleTopLevelFunction.box() }
+
+    @Test
+    fun testSimpleConstructorCallBy() = test("callBy.simpleConstructor") { tests.callBy.simpleConstructor.box() }
+
+    @Test
+    fun testPrimitiveDefaultValuesCallBy() = test("callBy.primitiveDefaultValues") { tests.callBy.primitiveDefaultValues.box() }
 }
