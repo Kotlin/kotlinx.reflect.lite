@@ -26,6 +26,7 @@ data class FqName(val fqName: String) {
     }
 }
 
+// Partially from: https://github.com/JetBrains/kotlin/blob/ea836fd46a1fef07d77c96f9d7e8d7807f793453/core/compiler.common/src/org/jetbrains/kotlin/name/ClassId.java#L34
 data class ClassId(val packageFqName: FqName, val relativeClassName: FqName, val isLocal: Boolean = false) {
     constructor(packageFqName: FqName, relativeClassName: Name) : this(packageFqName, FqName(relativeClassName))
 
@@ -72,8 +73,3 @@ data class ClassId(val packageFqName: FqName, val relativeClassName: FqName, val
             ClassId(topLevelFqName.parent(), FqName(topLevelFqName.shortName()))
     }
 }
-
-private val SANITIZE_AS_JAVA_INVALID_CHARACTERS = "[^\\p{L}\\p{Digit}]".toRegex()
-
-fun sanitizeAsJavaIdentifier(name: String): String =
-    SANITIZE_AS_JAVA_INVALID_CHARACTERS.replace(name, "_")

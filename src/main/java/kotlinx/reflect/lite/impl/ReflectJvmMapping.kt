@@ -2,12 +2,6 @@
 package kotlinx.reflect.lite.impl
 
 import kotlinx.reflect.lite.*
-import kotlinx.reflect.lite.KClass
-import kotlinx.reflect.lite.KDeclarationContainer
-import kotlinx.reflect.lite.KFunction
-import kotlinx.reflect.lite.KMutableProperty
-import kotlinx.reflect.lite.KProperty
-import kotlinx.reflect.lite.KType
 import kotlinx.reflect.lite.descriptors.impl.*
 import java.lang.reflect.*
 
@@ -53,6 +47,12 @@ val <T> KFunction<T>.javaConstructor: Constructor<T>?
         return it.descriptor.caller.member as? Constructor<T>
     }
 
+/**
+ * Returns a Java [Class] instance corresponding to the given [KClass] instance.
+ */
+public val <T> KClass<T>.java: Class<T>
+    get() = (this as KClassImpl<T>).descriptor.jClass as Class<T>
+
 // Java reflection -> Kotlin reflection
 
 val <T : Any> Class<T>.kotlinClass: KDeclarationContainer
@@ -91,18 +91,13 @@ val KType.javaType: Type
  * or `null` if this field cannot be represented by a Kotlin property
  * (for example, if it is a synthetic field).
  */
-// TODO renamed for now for resolution
 val Field.kotlinLiteProperty: KProperty<*>?
     get() {
         if (isSynthetic) return null
-
-        // TODO: optimize (search by name)
-
         val kotlinPackage = getKPackage()
         if (kotlinPackage != null) {
             return kotlinPackage.members.filterIsInstance<KProperty<*>>().firstOrNull { it.name == this.name }
         }
-        // TODO comapare by javaField: { it.javaField == this }
         return declaringClass.kotlinClass.members.filterIsInstance<KProperty<*>>().firstOrNull { it.name == this.name }
     }
 
@@ -115,7 +110,6 @@ val Method.kotlinLiteFunction: KFunction<*>?
         if (Modifier.isStatic(modifiers)) {
             val kotlinPackage = getKPackage()
             if (kotlinPackage != null) {
-                // TODO comapare by javaMethod: { it.javaField == this }
                 return kotlinPackage.members.filterIsInstance<KFunction<*>>().firstOrNull { it.name == this.name }
             }
 
@@ -123,10 +117,6 @@ val Method.kotlinLiteFunction: KFunction<*>?
             val companion = declaringClass.kotlinClass.companionObject
             if (companion != null) {
                 companion.members.filterIsInstance<KFunction<*>>().firstOrNull {
-                    // TODO comapare by javaMethod: { it.javaField == this }
-                    //val m = it.javaMethod
-//                    m != null && m.name == this.name &&
-//                            m.parameterTypes!!.contentEquals(this.parameterTypes) && m.returnType == this.returnType
                     it.name == this.name
                 }?.let { return it }
             }

@@ -3,39 +3,33 @@ package kotlinx.reflect.lite.impl
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.descriptors.*
 import kotlinx.reflect.lite.descriptors.impl.*
+import kotlinx.reflect.lite.internal.*
 import java.util.ArrayList
 import kotlin.coroutines.*
 
 internal abstract class KCallableImpl<out R>: KCallable<R> {
     abstract val descriptor: CallableDescriptor
 
-    override val parameters: List<KParameter>
-        get() {
-            val descriptor = descriptor
-            val result = mutableListOf<KParameter>()
-            var index = 0
-            // TODO bound receiver
-            val instanceReceiver = descriptor.dispatchReceiverParameter
+    override val parameters: List<KParameter> by ReflectProperties.lazy {
+        val descriptor = descriptor
+        val result = mutableListOf<KParameter>()
+        var index = 0
+        val instanceReceiver = descriptor.dispatchReceiverParameter
 
-            if (instanceReceiver != null) {
-                result.add(KParameterImpl(instanceReceiver, index++, KParameter.Kind.INSTANCE))
-            }
-
-            val extensionReceiver = descriptor.extensionReceiverParameter
-            if (extensionReceiver != null) {
-                result.add(KParameterImpl(extensionReceiver, index++, KParameter.Kind.EXTENSION_RECEIVER))
-            }
-
-            for (valueParameterDesc in descriptor.valueParameters) {
-                result.add(KParameterImpl(valueParameterDesc, index++, KParameter.Kind.VALUE))
-            }
-
-            // Constructor parameters of Java annotations are not ordered in any way, we order them by name here to be more stable.
-            // Note that positional call (via "call") is not allowed unless there's a single non-"value" parameter,
-            // so the order of parameters of Java annotation constructors here can be arbitrary
-            // TODO annotation constructors
-            return result
+        if (instanceReceiver != null) {
+            result.add(KParameterImpl(instanceReceiver, index++, KParameter.Kind.INSTANCE))
         }
+
+        val extensionReceiver = descriptor.extensionReceiverParameter
+        if (extensionReceiver != null) {
+            result.add(KParameterImpl(extensionReceiver, index++, KParameter.Kind.EXTENSION_RECEIVER))
+        }
+
+        for (valueParameterDesc in descriptor.valueParameters) {
+            result.add(KParameterImpl(valueParameterDesc, index++, KParameter.Kind.VALUE))
+        }
+        result
+    }
 
     override val visibility: KVisibility?
         get() = descriptor.visibility
@@ -62,7 +56,7 @@ internal abstract class KCallableImpl<out R>: KCallable<R> {
         return callDefaultMethod(args, null)
     }
 
-    // See ArgumentGenerator#generate
+    // Logic from: https://github.com/JetBrains/kotlin/blob/ea836fd46a1fef07d77c96f9d7e8d7807f793453/core/reflection.jvm/src/kotlin/reflect/jvm/internal/KCallableImpl.kt#L116
     internal fun callDefaultMethod(args: Map<KParameter, Any?>, continuationArgument: Continuation<*>?): R {
         val parameters = parameters
         val arguments = ArrayList<Any?>(parameters.size)
@@ -82,7 +76,6 @@ internal abstract class KCallableImpl<out R>: KCallable<R> {
                     arguments.add(args[parameter])
                 }
                 parameter.isOptional -> {
-                    // TODO: support inline class type
                     arguments.add(defaultPrimitiveValue(parameter.type?.javaType))
                     mask = mask or (1 shl (index % Integer.SIZE))
                     anyOptional = true

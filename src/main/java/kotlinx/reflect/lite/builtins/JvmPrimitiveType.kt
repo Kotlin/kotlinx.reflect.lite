@@ -2,7 +2,7 @@ package kotlinx.reflect.lite.builtins
 
 import kotlinx.reflect.lite.name.*
 
-enum class JvmPrimitiveType(val primitiveType: PrimitiveType, val javaKeywordName: String, wrapperClassName: String) {
+internal enum class JvmPrimitiveType(val primitiveType: PrimitiveType, val javaKeywordName: String, wrapperClassName: String) {
     BOOLEAN(PrimitiveType.BOOLEAN, "boolean", "Boolean"),
     CHAR(PrimitiveType.CHAR, "char", "Character"),
     BYTE(PrimitiveType.BYTE, "byte", "Byte"),

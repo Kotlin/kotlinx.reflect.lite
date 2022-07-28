@@ -6,11 +6,14 @@ import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.calls.*
 import kotlinx.reflect.lite.calls.Caller
 import kotlinx.reflect.lite.descriptors.*
+import kotlinx.reflect.lite.impl.KClassImpl
 import kotlinx.reflect.lite.impl.KotlinReflectionInternalError
 import kotlinx.reflect.lite.internal.*
+import kotlinx.reflect.lite.internal.ReflectProperties
 import kotlinx.reflect.lite.misc.JvmPropertySignature
 import kotlinx.reflect.lite.name.*
 import java.lang.reflect.*
+import kotlin.reflect.jvm.internal.*
 
 internal class PropertyDescriptorImpl(
     val kmProperty: KmProperty,
@@ -55,7 +58,6 @@ internal class PropertyDescriptorImpl(
             ReceiverParameterDescriptorImpl(it.toKotlinType(module, typeParameterTable), this)
         }
 
-    // TODO: also support overriden properties
     override val jvmSignature: JvmPropertySignature.KotlinProperty by ReflectProperties.lazy {
         JvmPropertySignature.KotlinProperty(
             this,
@@ -68,8 +70,6 @@ internal class PropertyDescriptorImpl(
     // Logic from: https://github.com/JetBrains/kotlin/blob/3b5179686eaba0a71bcca53c2cc922a54cc9241f/core/reflection.jvm/src/kotlin/reflect/jvm/internal/KPropertyImpl.kt#L51
     override val javaField: Field? by ReflectProperties.lazy {
         jvmSignature.fieldSignature?.let {
-            // TODO: support propertyWithBackingFieldInOuterClass
-            // TODO: support JavaField, JavaMethodProperty, MappedKotlinProperty
             val owner = containingClass?.jClass ?: container.jClass
             try {
                 owner.getDeclaredField(it.name)
@@ -124,23 +124,15 @@ internal abstract class PropertyAccessorDescriptorImpl(
     abstract override val member: Method?
 
     override val defaultMember: Member?
-        get() = null // TODO: no defaultMember for properties
+        get() = null
 
-    // TODO: support: JavaField, JavaMethodProperty, MappedKotlinProperty
     override val caller: Caller<*> by ReflectProperties.lazy {
         val accessor = member
         when {
             accessor == null -> {
-                // todo inlineClassAwareCaller
-                if (property.isUnderlyingPropertyOfInlineClass() &&
-                    property.visibility == KVisibility.INTERNAL
-                ) {
-                    TODO("Inline class aware caller is not supported yet")
-                } else {
-                    val javaField = property.javaField
-                        ?: throw KotlinReflectionInternalError("No accessors or field is found for property $property")
-                    computeFieldCaller(javaField)
-                }
+                val javaField = property.javaField
+                    ?: throw KotlinReflectionInternalError("No accessors or field is found for property $property")
+                computeFieldCaller(javaField)
             }
             !Modifier.isStatic(accessor.modifiers) ->
                 // todo isBound
@@ -157,8 +149,10 @@ internal abstract class PropertyAccessorDescriptorImpl(
     protected abstract fun computeFieldCaller(field: Field): Caller<*>
 
     protected fun isJvmStaticProperty(): Boolean {
-        return false
-        TODO("Implement isJvmStaticProperty: check annotations")
+        val annotationsMethodSignature = property.kmProperty.syntheticMethodForAnnotations ?: return false
+        val kClass = property.container as? KClassImpl<*> ?: return false
+        val annotationsMethod = kClass.descriptor.jClass.declaredMethods.single { it.name == annotationsMethodSignature.name }
+        return annotationsMethod.getDeclaredAnnotation(JvmStatic::class.java) != null
     }
 
     // Logic from: https://github.com/JetBrains/kotlin/blob/3b5179686eaba0a71bcca53c2cc922a54cc9241f/core/reflection.jvm/src/kotlin/reflect/jvm/internal/KPropertyImpl.kt#L321-L320
@@ -166,14 +160,7 @@ internal abstract class PropertyAccessorDescriptorImpl(
         val container = containingClass
         if (container == null || !container.isCompanion) return false
         val outerClass = container.containingClass
-        return when {
-            // TODO: support isAnnotationClass, || outerClass?.isAnnotationClass == true
-            outerClass?.isInterface == true  ->
-                // TODO
-                // this is DeserializedPropertyDescriptor && JvmProtoBufUtil.isMovedFromInterfaceCompanion(proto)
-                false
-            else -> true
-        }
+        return outerClass?.isInterface != true
     }
 
     protected fun isNotNullProperty(): Boolean =
@@ -201,11 +188,9 @@ internal class PropertyGetterDescriptorImpl(
     override fun computeFieldCaller(field: Field): Caller<*> = when {
         property.isJvmFieldPropertyInCompanionObject() || !Modifier.isStatic(field.modifiers) ->
             // TODO: bound receiver
-            // if (isBound) CallerImpl.FieldGetter.BoundInstance(field, boundReceiver)
             CallerImpl.FieldGetter.Instance(field)
         isJvmStaticProperty() ->
             // TODO: bound receiver
-            // if (isBound) CallerImpl.FieldGetter.BoundJvmStaticInObject(field)
             CallerImpl.FieldGetter.JvmStaticInObject(field)
         else ->
             CallerImpl.FieldGetter.Static(field)
@@ -233,11 +218,9 @@ internal class PropertySetterDescriptorImpl(
     override fun computeFieldCaller(field: Field): Caller<*> = when {
         property.isJvmFieldPropertyInCompanionObject() || !Modifier.isStatic(field.modifiers) ->
             // TODO: bound receiver
-            // if (isBound) CallerImpl.FieldSetter.BoundInstance(field, isNotNullProperty(), boundReceiver)
             CallerImpl.FieldSetter.Instance(field, isNotNullProperty())
         isJvmStaticProperty() ->
             // TODO: bound receiver
-            // if (isBound) CallerImpl.FieldSetter.BoundJvmStaticInObject(field, isNotNullProperty())
             CallerImpl.FieldSetter.JvmStaticInObject(field, isNotNullProperty())
         else ->
             CallerImpl.FieldSetter.Static(field, isNotNullProperty())

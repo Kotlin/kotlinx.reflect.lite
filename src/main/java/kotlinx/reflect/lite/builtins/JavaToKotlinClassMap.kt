@@ -5,7 +5,7 @@ import kotlinx.reflect.lite.builtins.StandardNames.FQ_NAMES
 import kotlinx.reflect.lite.misc.*
 import kotlinx.reflect.lite.name.*
 
-object JavaToKotlinClassMap {
+internal object JavaToKotlinClassMap {
     private const val BIG_FUNCTION_ARITY = 23
 
     private const val NUMBERED_FUNCTION_PREFIX = "kotlin.Function"

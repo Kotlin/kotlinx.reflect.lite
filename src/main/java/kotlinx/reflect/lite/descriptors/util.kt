@@ -23,19 +23,3 @@ internal fun KmVariance.toVariance(): KVariance =
         KmVariance.IN -> KVariance.IN
         KmVariance.OUT -> KVariance.OUT
     }
-
-internal fun CallableDescriptor.isGetterOfUnderlyingPropertyOfInlineClass() =
-    this is PropertyGetterDescriptor && property.isUnderlyingPropertyOfInlineClass()
-
-internal fun CallableDescriptor.isUnderlyingPropertyOfInlineClass(): Boolean {
-    if (this !is PropertyDescriptor || extensionReceiverParameter != null) return false
-    val container = containingClass
-    return container is ClassDescriptorImpl && container.kmClass.inlineClassUnderlyingPropertyName == name
-}
-
-// TODO: do we need it?
-internal fun DeclarationDescriptor?.toInlineClass(): Class<*>? =
-    if (this is ClassDescriptor<*> && isValue)
-        this.jClass
-    else
-        null

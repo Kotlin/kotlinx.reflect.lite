@@ -21,13 +21,11 @@ internal fun createKCallable(descriptor: CallableDescriptor): KCallableImpl<*> {
                     0 -> return KMutableProperty0Impl<Any?>(descriptor)
                     1 -> return KMutableProperty1Impl<Any?, Any?>(descriptor)
                     else -> TODO("Implement mutable properties for other numbers of receivers")
-//                2 -> return KMutableProperty2Impl<Any?, Any?, Any?>(container, descriptor)
             }
             else -> when (receiverCount) {
                 0 -> return KProperty0Impl<Any?>(descriptor)
                 1 -> return KProperty1Impl<Any?, Any?>(descriptor)
                 else -> TODO("Implement properties for other numbers of receivers")
-//                2 -> return KProperty2Impl<Any?, Any?, Any?>(container, descriptor)
             }
         }
     }

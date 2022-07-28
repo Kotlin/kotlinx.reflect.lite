@@ -12,8 +12,6 @@ internal class ValueParameterDescriptorImpl(
     override val name: Name
         get() = kmValueParam.name
 
-    // todo implement annotations
-
     override val type: KotlinType
         get() = kmValueParam.type.toKotlinType(containingDeclaration.module, containingDeclaration.typeParameterTable)
 
@@ -30,8 +28,6 @@ internal class PropertySetterParameterDescriptor(
 ) : ValueParameterDescriptor {
     override val name: Name
         get() = kmSetterParam?.name ?: "<set-?>"
-
-    // todo implement annotations
 
     override val containingDeclaration: CallableDescriptor
         get() = setter

@@ -27,7 +27,6 @@ internal class ClassDescriptorImpl<T : Any?> internal constructor(
             val className = jClass.name
             val builtinClassId = when (className) {
                 "[Ljava.lang.Object;" -> ClassId(FqName("kotlin"), "Array")
-                // TODO: move this into mapJavaToKotlin
                 "[Z" -> ClassId(FqName("kotlin"), "BooleanArray")
                 "[B" -> ClassId(FqName("kotlin"), "ByteArray")
                 "[C" -> ClassId(FqName("kotlin"), "CharArray")
@@ -59,9 +58,9 @@ internal class ClassDescriptorImpl<T : Any?> internal constructor(
                 // kotlin.collections -> kotlin/collections/collections.kotlin_builtins
                 val resourcePath = packageName.asString().replace('.', '/') + '/' + packageName.shortName() + ".kotlin_builtins"
                 val bytes = Unit::class.java.classLoader.getResourceAsStream(resourcePath)?.readBytes()
-                    ?: error("No builtins metadata file found: $resourcePath") // TODO: return null
+                    ?: error("No builtins metadata file found: $resourcePath")
                 val packageFragment = KotlinCommonMetadata.read(bytes)?.toKmModuleFragment()
-                    ?: error("Incompatible metadata version: $resourcePath") // TODO
+                    ?: error("Incompatible metadata version: $resourcePath")
                 return packageFragment.classes.find { it.name == builtinClassId.asClassName() }
                     ?: error("Built-in class not found: $builtinClassId in $resourcePath")
             } else {
