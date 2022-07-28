@@ -105,6 +105,7 @@ internal fun defaultPrimitiveValue(type: Type?): Any? =
             "java.lang.Float" -> 0f
             "java.lang.Long" -> 0L
             "java.lang.Double" -> 0.0
+            "java.lang.String" -> ""
             "java.lang.Void" -> throw IllegalStateException("Parameter with void type is illegal")
             else -> throw UnsupportedOperationException("Unknown primitive: $type")
         }
