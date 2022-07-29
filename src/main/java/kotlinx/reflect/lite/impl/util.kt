@@ -17,14 +17,14 @@ internal fun createKCallable(descriptor: CallableDescriptor): KCallableImpl<*> {
 
         when {
             descriptor.isVar ->
-                when (receiverCount) {
-                    0 -> return KMutableProperty0Impl<Any?>(descriptor)
-                    1 -> return KMutableProperty1Impl<Any?, Any?>(descriptor)
+                return when (receiverCount) {
+                    0 -> KMutableProperty0Impl<Any?>(descriptor)
+                    1 -> KMutableProperty1Impl<Any?, Any?>(descriptor)
                     else -> TODO("Implement mutable properties for other numbers of receivers")
-            }
-            else -> when (receiverCount) {
-                0 -> return KProperty0Impl<Any?>(descriptor)
-                1 -> return KProperty1Impl<Any?, Any?>(descriptor)
+                }
+            else -> return when (receiverCount) {
+                0 -> KProperty0Impl<Any?>(descriptor)
+                1 -> KProperty1Impl<Any?, Any?>(descriptor)
                 else -> TODO("Implement properties for other numbers of receivers")
             }
         }

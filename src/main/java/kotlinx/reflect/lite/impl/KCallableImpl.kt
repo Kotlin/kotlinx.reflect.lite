@@ -57,7 +57,7 @@ internal abstract class KCallableImpl<out R>: KCallable<R> {
     }
 
     // Logic from: https://github.com/JetBrains/kotlin/blob/ea836fd46a1fef07d77c96f9d7e8d7807f793453/core/reflection.jvm/src/kotlin/reflect/jvm/internal/KCallableImpl.kt#L116
-    internal fun callDefaultMethod(args: Map<KParameter, Any?>, continuationArgument: Continuation<*>?): R {
+    private fun callDefaultMethod(args: Map<KParameter, Any?>, continuationArgument: Continuation<*>?): R {
         val parameters = parameters
         val arguments = ArrayList<Any?>(parameters.size)
         var mask = 0

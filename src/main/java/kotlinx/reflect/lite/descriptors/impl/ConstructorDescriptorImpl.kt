@@ -9,7 +9,7 @@ import kotlinx.reflect.lite.name.*
 import java.lang.reflect.*
 
 internal class ConstructorDescriptorImpl(
-    val kmCons: KmConstructor,
+    private val kmCons: KmConstructor,
     override val module: ModuleDescriptor,
     override val containingClass: ClassDescriptor<*>,
     override val container: ClassBasedDeclarationContainerDescriptor

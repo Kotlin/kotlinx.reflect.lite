@@ -50,29 +50,25 @@ internal abstract class AbstractFunctionDescriptor : AbstractCallableDescriptor,
             else -> throw KotlinReflectionInternalError("Could not compute caller for function: $this (member = $member)")
         }
 
-    // TODO: support bound receiver -> CallerImpl.BoundConstructor
     private fun createConstructorCaller(member: Constructor<*>): CallerImpl<Constructor<*>> {
         return CallerImpl.Constructor(member)
     }
 
-    // TODO: support bound receiver -> CallerImpl.Method.BoundInstance
     private fun createInstanceMethodCaller(member: Method): CallerImpl<Method> {
         return CallerImpl.Method.Instance(member)
     }
 
-    // TODO: support bound receiver -> CallerImpl.Method.BoundInstance
     private fun createStaticMethodCaller(member: Method): CallerImpl<Method> {
         return CallerImpl.Method.Static(member)
     }
 
-    // TODO: support bound receiver -> CallerImpl.Method.BoundInstance
     private fun createJvmStaticInObjectCaller(member: Method): CallerImpl<Method> {
         return CallerImpl.Method.JvmStaticInObject(member)
     }
 }
 
 internal class FunctionDescriptorImpl(
-    val kmFunction: KmFunction,
+    private val kmFunction: KmFunction,
     override val module: ModuleDescriptor,
     override val containingClass: ClassDescriptor<*>?,
     override val container: ClassBasedDeclarationContainerDescriptor

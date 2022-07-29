@@ -18,21 +18,21 @@ internal abstract class ClassBasedDeclarationContainerDescriptorImpl(
     abstract val memberScope: MemberScope
     abstract val staticScope: MemberScope
 
-    val declaredNonStaticMembers: Collection<KCallableImpl<*>>
+    private val declaredNonStaticMembers: Collection<KCallableImpl<*>>
         get() = getMembers(memberScope, MemberBelonginess.DECLARED)
 
-    val declaredStaticMembers: Collection<KCallableImpl<*>>
+    private val declaredStaticMembers: Collection<KCallableImpl<*>>
         get() = getMembers(staticScope, MemberBelonginess.DECLARED)
 
-    val inheritedNonStaticMembers: Collection<KCallableImpl<*>>
+    private val inheritedNonStaticMembers: Collection<KCallableImpl<*>>
         get() = getMembers(memberScope, MemberBelonginess.INHERITED)
 
-    val inheritedStaticMembers: Collection<KCallableImpl<*>>
+    private val inheritedStaticMembers: Collection<KCallableImpl<*>>
         get() = getMembers(staticScope, MemberBelonginess.INHERITED)
 
-    val allNonStaticMembers: Collection<KCallableImpl<*>>
+    private val allNonStaticMembers: Collection<KCallableImpl<*>>
             by ReflectProperties.lazySoft { declaredNonStaticMembers + inheritedNonStaticMembers }
-    val allStaticMembers: Collection<KCallableImpl<*>>
+    private val allStaticMembers: Collection<KCallableImpl<*>>
             by ReflectProperties.lazySoft { declaredStaticMembers + inheritedStaticMembers }
     override val declaredMembers: Collection<KCallableImpl<*>>
             by ReflectProperties.lazySoft { declaredNonStaticMembers + declaredStaticMembers }
@@ -198,7 +198,5 @@ internal abstract class ClassBasedDeclarationContainerDescriptorImpl(
 
     companion object {
         private val DEFAULT_CONSTRUCTOR_MARKER = Class.forName("kotlin.jvm.internal.DefaultConstructorMarker")
-
-        internal val LOCAL_PROPERTY_SIGNATURE = "<v#(\\d+)>".toRegex()
     }
 }

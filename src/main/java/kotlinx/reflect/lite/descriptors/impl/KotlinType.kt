@@ -30,11 +30,6 @@ internal class TypeParameterTable(
 
     fun get(id: Int): TypeParameterDescriptor =
         getOrNull(id) ?: error("Unknown type parameter with id=$id")
-
-    companion object {
-        @JvmField
-        val EMPTY = TypeParameterTable(emptyList())
-    }
 }
 
 internal class TypeProjection(
@@ -48,7 +43,7 @@ internal fun KmType.toKotlinType(module: ModuleDescriptor, typeParameterTable: T
         when (classifier) {
             is KmClassifier.Class -> module.findClass<Any?>(classifier.name)
             is KmClassifier.TypeParameter -> typeParameterTable.get(classifier.id)
-            is KmClassifier.TypeAlias -> TODO()
+            is KmClassifier.TypeAlias -> TODO("Support KmClassifier.TypeAlias")
         }
     }
     return KotlinType(

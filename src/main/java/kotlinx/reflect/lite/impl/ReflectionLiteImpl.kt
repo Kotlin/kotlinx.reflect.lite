@@ -16,16 +16,8 @@
 
 package kotlinx.reflect.lite.impl
 
-import kotlinx.metadata.*
-import kotlinx.metadata.internal.common.*
-import kotlinx.metadata.jvm.*
 import kotlinx.reflect.lite.*
-import kotlinx.reflect.lite.builtins.*
-import kotlinx.reflect.lite.descriptors.*
-import kotlinx.reflect.lite.descriptors.ClassDescriptor
 import kotlinx.reflect.lite.descriptors.impl.*
-import kotlinx.reflect.lite.misc.*
-import kotlinx.reflect.lite.name.*
 
 internal object ReflectionLiteImpl {
     fun <T : Any> loadClassMetadata(jClass: Class<T>): KDeclarationContainer {

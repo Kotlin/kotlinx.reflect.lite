@@ -187,10 +187,8 @@ internal class PropertyGetterDescriptorImpl(
 
     override fun computeFieldCaller(field: Field): Caller<*> = when {
         property.isJvmFieldPropertyInCompanionObject() || !Modifier.isStatic(field.modifiers) ->
-            // TODO: bound receiver
             CallerImpl.FieldGetter.Instance(field)
         isJvmStaticProperty() ->
-            // TODO: bound receiver
             CallerImpl.FieldGetter.JvmStaticInObject(field)
         else ->
             CallerImpl.FieldGetter.Static(field)
@@ -217,10 +215,8 @@ internal class PropertySetterDescriptorImpl(
 
     override fun computeFieldCaller(field: Field): Caller<*> = when {
         property.isJvmFieldPropertyInCompanionObject() || !Modifier.isStatic(field.modifiers) ->
-            // TODO: bound receiver
             CallerImpl.FieldSetter.Instance(field, isNotNullProperty())
         isJvmStaticProperty() ->
-            // TODO: bound receiver
             CallerImpl.FieldSetter.JvmStaticInObject(field, isNotNullProperty())
         else ->
             CallerImpl.FieldSetter.Static(field, isNotNullProperty())
