@@ -1,5 +1,6 @@
 package tests.callBy.jvmStaticInObject
 
+import kotlinx.reflect.lite.impl.*
 import kotlin.test.assertEquals
 
 object Obj {
@@ -8,7 +9,7 @@ object Obj {
 }
 
 fun box(): String {
-    val f = Obj::class.members.single { it.name == "foo" }
+    val f = (Obj::class.java).kotlinClass.members.single { it.name == "foo" }
 
     // Any object method currently requires the object instance passed
     try {

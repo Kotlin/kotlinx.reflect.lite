@@ -1,5 +1,6 @@
 package tests.callBy.manyArgumentsNoneDefaultFunction
 
+import kotlinx.reflect.lite.impl.*
 import kotlin.test.assertEquals
 
 // Generate:
@@ -87,7 +88,7 @@ class A {
 }
 
 fun box(): String {
-    val f = A::class.members.single { it.name == "foo" }
+    val f = (A::class.java).kotlinClass.members.single { it.name == "foo" }
     val parameters = f.parameters
 
     f.callBy(mapOf(

@@ -83,5 +83,32 @@ class KCallableTest {
     @Test
     fun testManyMaskArguments() = test("callBy.manyMaskArguments") { tests.callBy.manyMaskArguments.box() }
 
+    @Test
+    fun testManyArgumentsNoneDefaultFunction() = test("callBy.manyArgumentsNoneDefaultFunction") { tests.callBy.manyArgumentsNoneDefaultFunction.box() }
 
+    @Test
+    fun testManyArgumentsNoneDefaultConstructor() = test("callBy.manyArgumentsNoneDefaultConstructor") { tests.callBy.manyArgumentsNoneDefaultConstructor.box() }
+
+    @Test
+    fun testJvmStaticInObject() = test("callBy.jvmStaticInObject") { tests.callBy.jvmStaticInObject.box() }
+
+    @Test
+    fun testJvmStaticInCompanionObject() = test("callBy.jvmStaticInCompanionObject") { tests.callBy.jvmStaticInCompanionObject.box() }
+
+    @Test
+    fun testManyArgumentsOnlyOneDefault() = test("callBy.manyArgumentsOnlyOneDefault") { tests.callBy.manyArgumentsOnlyOneDefault.box() }
+
+    @Test
+    fun testExtensionFunction() = test("callBy.extensionFunction") { tests.callBy.extensionFunction.box() }
+
+    @Test
+    fun testBoundExtensionFunctionWA() = test("callBy.boundExtensionFunctionWA") { tests.callBy.boundExtensionFunctionWA.box() }
+
+    @Test
+    fun testBoundExtensionPropertyAcessorWA() = test("callBy.boundExtensionPropertyAcessorWA") { tests.callBy.boundExtensionPropertyAcessorWA.box() }
+    @Test
+    fun testBoundJvmStaticInObjectWA() = test("callBy.boundJvmStaticInObjectWA") { tests.callBy.boundJvmStaticInObjectWA.box() }
+
+    @Test
+    fun testCompanionObject() = test("callBy.companionObject") { tests.callBy.companionObject.box() }
 }

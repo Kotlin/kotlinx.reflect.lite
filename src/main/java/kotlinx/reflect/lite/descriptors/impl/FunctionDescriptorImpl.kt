@@ -35,19 +35,20 @@ internal abstract class AbstractFunctionDescriptor : AbstractCallableDescriptor,
         defaultMember?.let { createDefaultCaller(it) }
     }
 
-    private fun createDefaultCaller(member: Member?) =
-        when (member) {
+    private fun createDefaultCaller(defaultMember: Member) =
+        when (defaultMember) {
             is Constructor<*> ->
-                createConstructorCaller(member)
+                createConstructorCaller(defaultMember)
             is Method -> when {
                 // Note that static $default methods for @JvmStatic functions are generated differently in objects and companion objects.
                 // In objects, $default's signature does _not_ contain the additional object instance parameter,
                 // as opposed to companion objects where the first parameter is the companion object instance.
-                    member.declaredAnnotations.find { it.annotationClass.java.name == "kotlin.jvm.JvmStatic" } != null &&
-                    containingClass?.isCompanion == false ->
-                        createJvmStaticInObjectCaller(member)
+                // TODO implement Annotated
+                (this.member as Method).declaredAnnotations.find { it.annotationClass.java.name == "kotlin.jvm.JvmStatic" } != null &&
+                containingClass?.isCompanion == false ->
+                    createJvmStaticInObjectCaller(defaultMember)
                 else ->
-                    createStaticMethodCaller(member)
+                    createStaticMethodCaller(defaultMember)
             }
             else -> null
         }

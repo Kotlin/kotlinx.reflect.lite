@@ -1,5 +1,6 @@
 package tests.callBy.companionObject
 
+import kotlinx.reflect.lite.impl.*
 import kotlin.test.assertEquals
 
 class C {
@@ -9,7 +10,7 @@ class C {
 }
 
 fun box(): String {
-    val f = C.Companion::class.members.single { it.name == "foo" }
+    val f = (C.Companion::class.java).kotlinClass.members.single { it.name == "foo" }
 
     // Any object method currently requires the object instance passed
     try {

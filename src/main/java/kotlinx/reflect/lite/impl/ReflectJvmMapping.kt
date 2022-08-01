@@ -55,6 +55,9 @@ public val <T> KClass<T>.java: Class<T>
 
 // Java reflection -> Kotlin reflection
 
+/**
+ * Returns a [KDeclarationContainer] instance representing a Kotlin class or package.
+ */
 val <T : Any> Class<T>.kotlinClass: KDeclarationContainer
     @JvmName("getKotlinClass")
     get() = ReflectionLiteImpl.loadClassMetadata(this)
