@@ -84,6 +84,9 @@ class KCallableTest {
     fun testManyMaskArguments() = test("callBy.manyMaskArguments") { tests.callBy.manyMaskArguments.box() }
 
     @Test
+    fun testDefaultAndNonDefaultIntertwined() = test("callBy.defaultAndNonDefaultIntertwined") { tests.callBy.defaultAndNonDefaultIntertwined.box() }
+
+    @Test
     fun testManyArgumentsNoneDefaultFunction() = test("callBy.manyArgumentsNoneDefaultFunction") { tests.callBy.manyArgumentsNoneDefaultFunction.box() }
 
     @Test
@@ -106,9 +109,16 @@ class KCallableTest {
 
     @Test
     fun testBoundExtensionPropertyAcessorWA() = test("callBy.boundExtensionPropertyAcessorWA") { tests.callBy.boundExtensionPropertyAcessorWA.box() }
+
     @Test
     fun testBoundJvmStaticInObjectWA() = test("callBy.boundJvmStaticInObjectWA") { tests.callBy.boundJvmStaticInObjectWA.box() }
 
     @Test
     fun testCompanionObject() = test("callBy.companionObject") { tests.callBy.companionObject.box() }
+
+    @Test
+    fun testDefaultInSuperClassFakeOverride() = test("callBy.defaultInSuperClassFakeOverride") { tests.callBy.defaultInSuperClassFakeOverride.box() }
+
+    @Test
+    fun testDefaultInSuperInterface() = test("callBy.defaultInSuperInterface") { tests.callBy.defaultInSuperInterface.box() }
 }
