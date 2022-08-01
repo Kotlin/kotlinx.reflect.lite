@@ -4,11 +4,11 @@ import kotlinx.metadata.*
 import kotlinx.metadata.jvm.*
 import kotlinx.reflect.lite.calls.*
 import kotlinx.reflect.lite.descriptors.*
-import kotlinx.reflect.lite.impl.*
-import kotlinx.reflect.lite.internal.*
-import kotlinx.reflect.lite.misc.*
+import kotlinx.reflect.lite.impl.KotlinReflectionInternalError
+import kotlinx.reflect.lite.internal.ReflectProperties
 import kotlinx.reflect.lite.name.*
 import java.lang.reflect.*
+import kotlinx.reflect.lite.misc.JvmFunctionSignature
 
 internal abstract class AbstractFunctionDescriptor : AbstractCallableDescriptor, FunctionDescriptor {
     override val isInline: Boolean
@@ -32,8 +32,25 @@ internal abstract class AbstractFunctionDescriptor : AbstractCallableDescriptor,
     }
 
     override val defaultCaller: Caller<*>? by ReflectProperties.lazy {
-        defaultMember?.let { createCaller(it) }
+        defaultMember?.let { createDefaultCaller(it) }
     }
+
+    private fun createDefaultCaller(member: Member?) =
+        when (member) {
+            is Constructor<*> ->
+                createConstructorCaller(member)
+            is Method -> when {
+                // Note that static $default methods for @JvmStatic functions are generated differently in objects and companion objects.
+                // In objects, $default's signature does _not_ contain the additional object instance parameter,
+                // as opposed to companion objects where the first parameter is the companion object instance.
+                    member.declaredAnnotations.find { it.annotationClass.java.name == "kotlin.jvm.JvmStatic" } != null &&
+                    containingClass?.isCompanion == false ->
+                        createJvmStaticInObjectCaller(member)
+                else ->
+                    createStaticMethodCaller(member)
+            }
+            else -> null
+        }
 
     private fun createCaller(member: Member?) =
         when (member) {
@@ -110,6 +127,6 @@ internal class FunctionDescriptorImpl(
     }
 
     override val defaultMember: Member? by ReflectProperties.lazy {
-        container.findDefaultMethod(jvmSignature.methodName, jvmSignature.methodDesc, !Modifier.isStatic(caller.member!!.modifiers))
+        container.findDefaultMethod(jvmSignature.methodName, jvmSignature.methodDesc, !Modifier.isStatic(member!!.modifiers))
     }
 }

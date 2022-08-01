@@ -2,17 +2,9 @@
 package kotlinx.reflect.lite.misc
 
 import kotlinx.metadata.jvm.*
-import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.builtins.*
-import kotlinx.reflect.lite.descriptors.*
-import kotlinx.reflect.lite.descriptors.FunctionDescriptor
-import kotlinx.reflect.lite.descriptors.PropertyDescriptor
 import kotlinx.reflect.lite.descriptors.impl.*
-import kotlinx.reflect.lite.descriptors.impl.FunctionDescriptorImpl
-import kotlinx.reflect.lite.impl.*
-import kotlinx.reflect.lite.impl.FakeOverridePropertyDescriptor
 import kotlinx.reflect.lite.name.*
-import java.lang.reflect.*
 
 sealed class JvmFunctionSignature {
     abstract fun asString(): String

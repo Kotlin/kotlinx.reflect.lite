@@ -44,7 +44,7 @@ internal class KTypeImpl(
         get() = type.isMarkedNullable
 }
 
-// Logis from: https://github.com/JetBrains/kotlin/blob/a6b51da3081b11dc2167a0cbb8ebca6f0e805d03/libraries/stdlib/jvm/src/kotlin/reflect/TypesJVM.kt#L37
+// Logic from: https://github.com/JetBrains/kotlin/blob/a6b51da3081b11dc2167a0cbb8ebca6f0e805d03/libraries/stdlib/jvm/src/kotlin/reflect/TypesJVM.kt#L37
 fun KType.computeJavaType(forceWrapper: Boolean = false): Type {
     when (val classifier = classifier) {
         // TODO: support KTypeParameter

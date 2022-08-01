@@ -49,7 +49,7 @@ class A {
             p39: Int = 39,
             p40: Int = 40,
             p41: Int = 41,
-            p42: Int = 42,
+            p42: Int,
             p43: Int = 43,
             p44: Int = 44,
             p45: Int = 45,
@@ -89,10 +89,9 @@ class A {
 
 fun box(): String {
     val foo = (A::class.java).kotlinClass.members.single { it.name == "foo" }
-    val parameters = foo.parameters
     foo.callBy(mapOf(
-            //parameters.first() to A()
-            //parameters.single { it.name == "p42" } to 239
+       foo.parameters.first() to A(),
+       foo.parameters.single { it.name == "p42" } to 239
     ))
     return "OK"
 }
