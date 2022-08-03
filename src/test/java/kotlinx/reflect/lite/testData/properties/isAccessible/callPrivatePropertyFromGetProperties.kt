@@ -1,0 +1,24 @@
+package tests.properties.callPrivatePropertyFromGetProperties
+
+import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.tests.*
+import kotlin.test.*
+
+class K(private val value: String)
+
+fun box(): String {
+    val p = (K::class.java).kotlinClass.getMemberByName("value") as KProperty1<K, String>
+
+    try {
+        return p.get(K("Fail: private property should not be accessible by default"))
+    }
+    catch (e: IllegalAccessException) {
+        assertEquals("class kotlinx.reflect.lite.calls.CallerImpl\$FieldGetter cannot access a member of class tests.properties.callPrivatePropertyFromGetProperties.K with modifiers \"private final\"", e.message)
+        // OK
+    }
+
+    p.isAccessible = true
+
+    return p.get(K("OK"))
+}

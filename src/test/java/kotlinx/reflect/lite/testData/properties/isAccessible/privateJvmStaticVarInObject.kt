@@ -1,7 +1,7 @@
 package tests.properties.privateJvmStaticVarInObject
 
-import kotlin.reflect.*
-import kotlin.reflect.jvm.*
+import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.impl.*
 
 object Obj {
     @JvmStatic
@@ -9,7 +9,7 @@ object Obj {
 }
 
 fun box(): String {
-    val p = Obj::class.members.single { it.name == "result" } as KMutableProperty1<Any?, String>
+    val p = (Obj::class.java).kotlinClass.members.single { it.name == "result" } as KMutableProperty1<Any?, String>
     p.isAccessible = true
 
     try {

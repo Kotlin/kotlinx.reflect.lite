@@ -1,4 +1,4 @@
-package tests.properties.simpleGetProperties
+package tests.properties.simpleGetProperties1
 
 import kotlin.reflect.full.*
 

@@ -1,5 +1,6 @@
 package tests.properties.getPropertiesMutableVsReadonly
 
+import kotlinx.reflect.lite.impl.*
 import kotlin.reflect.*
 import kotlin.reflect.full.*
 
@@ -8,10 +9,10 @@ class A(val readonly: String) {
 }
 
 fun box(): String {
-    val props = A::class.memberProperties
-    val readonly = props.single { it.name == "readonly" }
+    val props = (A::class.java).kotlinClass.members
+    val readonly = props.single { it.name == "readonly" } as KProperty1<A, String>
     assert(readonly !is KMutableProperty1<A, *>) { "Fail 1: $readonly" }
-    val mutable = props.single { it.name == "mutable" }
+    val mutable = props.single { it.name == "mutable" } as KMutableProperty1<A, String>
     assert(mutable is KMutableProperty1<A, *>) { "Fail 2: $mutable" }
 
     val a = A("")

@@ -123,3 +123,32 @@ internal open class KMutableProperty1Impl<T, V>(
         override fun invoke(receiver: T, value: V): Unit = property.set(receiver, value)
     }
 }
+
+internal open class KProperty2Impl<D, E, out V>(
+    override val descriptor: PropertyDescriptor
+): KPropertyImpl<V>(descriptor), KProperty2<D, E, V> {
+    override val getter: Getter<D, E, V>
+        get() = Getter(this)
+
+    override fun get(receiver1: D, receiver2: E): V = getter.call(receiver1, receiver2)
+
+    override fun invoke(receiver1: D, receiver2: E): V = get(receiver1, receiver2)
+
+    class Getter<D, E, out V>(override val property: KProperty2Impl<D, E, V>) :KPropertyImpl.Getter<V>(), KProperty2.Getter<D, E, V> {
+        override fun invoke(receiver1: D, receiver2: E): V = property.get(receiver1, receiver2)
+    }
+}
+
+internal open class KMutableProperty2Impl<D, E, V>(
+    override val descriptor: PropertyDescriptor
+): KProperty2Impl<D, E, V>(descriptor), KMutableProperty2<D, E, V> {
+
+    override val setter: Setter<D, E, V>
+        get() = Setter(this)
+
+    override fun set(receiver1: D, receiver2: E, value: V) = setter.call(receiver1, receiver2, value)
+
+    class Setter<D, E, V>(override val property: KMutableProperty2Impl<D, E, V>) : KPropertyImpl.Setter<V>(), KMutableProperty2.Setter<D, E, V> {
+        override fun invoke(receiver1: D, receiver2: E, value: V): Unit = property.set(receiver1, receiver2, value)
+    }
+}

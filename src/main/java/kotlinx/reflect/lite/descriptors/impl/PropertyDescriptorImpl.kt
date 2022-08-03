@@ -135,13 +135,10 @@ internal abstract class PropertyAccessorDescriptorImpl(
                 computeFieldCaller(javaField)
             }
             !Modifier.isStatic(accessor.modifiers) ->
-                // todo isBound
                 CallerImpl.Method.Instance(accessor)
             isJvmStaticProperty() ->
-                // todo isBound
                 CallerImpl.Method.JvmStaticInObject(accessor)
             else ->
-                // todo isBound
                 CallerImpl.Method.Static(accessor)
         }
     }
@@ -150,8 +147,7 @@ internal abstract class PropertyAccessorDescriptorImpl(
 
     protected fun isJvmStaticProperty(): Boolean {
         val annotationsMethodSignature = property.kmProperty.syntheticMethodForAnnotations ?: return false
-        val kClass = property.container as? KClassImpl<*> ?: return false
-        val annotationsMethod = kClass.descriptor.jClass.declaredMethods.single { it.name == annotationsMethodSignature.name }
+        val annotationsMethod = property.container.jClass.declaredMethods.single { it.name == annotationsMethodSignature.name }
         return annotationsMethod.getDeclaredAnnotation(JvmStatic::class.java) != null
     }
 
@@ -223,6 +219,5 @@ internal class PropertySetterDescriptorImpl(
     }
 }
 
-// todo KProperty2Descriptor
 
 
