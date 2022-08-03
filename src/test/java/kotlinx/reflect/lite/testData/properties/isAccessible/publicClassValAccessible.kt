@@ -1,13 +1,15 @@
 package tests.properties.publicClassValAccessible
 
-import kotlin.reflect.jvm.isAccessible
+import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.tests.*
 
 class Result {
     public val value: String = "OK"
 }
 
 fun box(): String {
-    val p = Result::value
+    val p = (Result::class.java).kotlinClass.getMemberByName("value") as KProperty1<Result, String>
     p.isAccessible = false
     // setAccessible(false) should have no effect on the accessibility of a public reflection object
     return p.get(Result())
