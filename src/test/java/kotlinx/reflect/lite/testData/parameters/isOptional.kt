@@ -1,7 +1,11 @@
 package tests.parameters.isOptional
 
+import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.tests.*
 import kotlin.test.*
 
+// Part of the test: https://github.com/Kotlin/kotlinx.reflect.lite/blob/mvicsokolova/dev/src/test/java/kotlinx/reflect/lite/unusedTestData/parameters/isOptionalOverridesParameters.kt
+// Only fake overrides are supported for now
 open class A {
     open fun foo(x: Int, y: Int = 1) {}
 }
@@ -16,11 +20,9 @@ class C : A()
 fun Int.extFun() {}
 
 fun box(): String {
-    assertEquals(listOf(false, false, true), A::foo.parameters.map { it.isOptional })
-    assertEquals(listOf(false, false, true), B::foo.parameters.map { it.isOptional })
-    assertEquals(listOf(false, false, true), C::foo.parameters.map { it.isOptional })
+    assertEquals(listOf(false, false, true), (A::class.java).kotlinClass.getMemberByName("foo").parameters.map { it.isOptional })
 
-    assertFalse(Int::extFun.parameters.single().isOptional)
+    assertFalse(Class.forName("tests.parameters.isOptional.IsOptionalKt").kotlinClass.getMemberByName("extFun").parameters.single().isOptional)
 
     return "OK"
 }

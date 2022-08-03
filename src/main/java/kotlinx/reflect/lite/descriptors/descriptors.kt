@@ -134,7 +134,7 @@ internal interface FunctionDescriptor : CallableDescriptor {
 
 internal interface ParameterDescriptor : DeclarationDescriptor {
     val containingDeclaration: CallableDescriptor
-    val type: KotlinType?
+    val type: KotlinType
 }
 
 internal interface ValueParameterDescriptor : ParameterDescriptor {

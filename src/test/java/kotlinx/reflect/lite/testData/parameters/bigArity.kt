@@ -1,5 +1,6 @@
 package tests.parameters.bigArity
 
+import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.tests.*
 import kotlin.test.assertEquals
 
@@ -12,17 +13,11 @@ data class BigDataClass(
 )
 
 fun box(): String {
-    // TODO: ::copy is not supported, kotlin.reflect.KCallable.parameters is called
+    val copy = (BigDataClass::class.java).kotlinClass.getMemberByName("copy")
     assertEquals(
         "[null, p00, p01, p02, p03, p04, p05, p06, p07, p08, p09, p10, p11, p12, p13, p14, " +
                 "p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29]",
-        BigDataClass::copy.parameters.map { it.name }.toString()
-    )
-    val kClass = BigDataClass::class.java.toLiteKClass()
-    assertEquals(
-        "[p00, p01, p02, p03, p04, p05, p06, p07, p08, p09, p10, p11, p12, p13, p14, " +
-                "p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29]",
-        kClass.constructors.first().parameters.map { it.name }.toString()
+        copy.parameters.map { it.name }.toString()
     )
     return "OK"
 }

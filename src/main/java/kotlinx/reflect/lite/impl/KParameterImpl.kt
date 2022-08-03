@@ -8,11 +8,13 @@ internal class KParameterImpl(
     override val index: Int,
     override val kind: KParameter.Kind
 ): KParameter {
-    override val name: String
-        get() = descriptor.name
+    override val name: String?
+        get() = (descriptor as? ValueParameterDescriptor)?.let {
+            if (it.name.startsWith("<")) null else it.name
+        }
 
-    override val type: KType?
-        get() = descriptor.type?.let(::KTypeImpl)
+    override val type: KType
+        get() = descriptor.type.let(::KTypeImpl)
 
     override val isOptional: Boolean
         get() = (descriptor as? ValueParameterDescriptor)?.declaresDefaultValue ?: false

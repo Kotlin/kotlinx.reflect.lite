@@ -7,11 +7,32 @@ class KParameterTest {
     fun testBigArity() = test("parameters.bigArity") { tests.parameters.bigArity.box() }
 
     @Test
-    fun testBoundInnerClassConstructor() = test("parameters.boundInnerClassConstructor") { tests.parameters.boundInnerClassConstructor.box() }
+    fun testInnerClassConstructor() = test("parameters.innerClassConstructor") { tests.parameters.innerClassConstructor.box() }
 
     @Test
-    fun testBoundObjectMemberReferences() = test("parameters.boundObjectMemberReferences") { tests.parameters.boundObjectMemberReferences.box() }
+    fun testObjectMemberReferences() = test("parameters.objectMemberReferences") { tests.parameters.objectMemberReferences.box() }
 
     @Test
-    fun testBoundReferences() = test("parameters.boundReferences") { tests.parameters.boundReferences.box() }
+    fun testReferences() = test("parameters.references") { tests.parameters.references.box() }
+
+    @Test
+    fun testFunctionParameterNameAndIndex() = test("parameters.functionParameterNameAndIndex") { tests.parameters.functionParameterNameAndIndex.box() }
+
+    @Test
+    fun testInstanceExtensionReceiverAndValueParameters() = test("parameters.instanceExtensionReceiverAndValueParameters") { tests.parameters.instanceExtensionReceiverAndValueParameters.box() }
+
+    @Test
+    fun testInstanceParameterOfFakeOverride() = test("parameters.instanceParameterOfFakeOverride") { tests.parameters.instanceParameterOfFakeOverride.box() }
+
+    @Test
+    fun testIsMarkedNullable() = test("parameters.isMarkedNullable") { tests.parameters.isMarkedNullable.box() }
+
+    @Test
+    fun testIsOptional() = test("parameters.isOptional") { tests.parameters.isOptional.box() }
+
+    @Test
+    fun testKinds() = test("parameters.kinds") { tests.parameters.kinds.box() }
+
+    @Test
+    fun testPropertySetter() = test("parameters.propertySetter") { tests.parameters.propertySetter.box() }
 }
