@@ -72,51 +72,7 @@ val KDeclarationContainer.companionObject: KClass<*>?
  * the JVM class [Unit] when it's the type of a parameter, or to `void` when it's the return type of a function.
  */
 val KType.javaType: Type
-    get() = this.computeJavaType()
-
-/**
- * Returns a Java [Class] instance representing the primitive type corresponding to the given [KDeclarationContainer] if it exists.
- */
-public val KDeclarationContainer.javaPrimitiveType: Class<*>?
-    get() {
-        val thisJClass = (this as KDeclarationContainerImpl).descriptor.jClass
-        if (thisJClass.isPrimitive) return thisJClass
-
-        return when (thisJClass.name) {
-            "java.lang.Boolean"   -> Boolean::class.java
-            "java.lang.Character" -> Char::class.java
-            "java.lang.Byte"      -> Byte::class.java
-            "java.lang.Short"     -> Short::class.java
-            "java.lang.Integer"   -> Int::class.java
-            "java.lang.Float"     -> Float::class.java
-            "java.lang.Long"      -> Long::class.java
-            "java.lang.Double"    -> Double::class.java
-            "java.lang.Void"      -> Void.TYPE
-            else -> null
-        }
-    }
-
-/**
- * Returns a Java [Class] instance corresponding to the given [KClass] instance. In case of primitive types it returns corresponding wrapper classes.
- */
-public val KDeclarationContainer.javaObjectType: Class<*>
-    get() {
-        val thisJClass = (this as KDeclarationContainerImpl).descriptor.jClass
-        if (!thisJClass.isPrimitive) return thisJClass
-
-        return when (thisJClass.name) {
-            "boolean" -> java.lang.Boolean::class.java
-            "char"    -> Character::class.java
-            "byte"    -> java.lang.Byte::class.java
-            "short"   -> java.lang.Short::class.java
-            "int"     -> Integer::class.java
-            "float"   -> java.lang.Float::class.java
-            "long"    -> java.lang.Long::class.java
-            "double"  -> java.lang.Double::class.java
-            "void"    -> Void::class.java
-            else -> thisJClass
-        }
-    }
+    get() = (this as KTypeImpl).javaType ?: this.computeJavaType()
 
 // Java reflection -> Kotlin reflection
 

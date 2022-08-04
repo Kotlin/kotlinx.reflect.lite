@@ -17,16 +17,16 @@ internal abstract class KCallableImpl<out R>: KCallable<R> {
         val instanceReceiver = descriptor.dispatchReceiverParameter
 
         if (instanceReceiver != null) {
-            result.add(KParameterImpl(instanceReceiver, index++, KParameter.Kind.INSTANCE))
+            result.add(KParameterImpl(instanceReceiver, index++, KParameter.Kind.INSTANCE, descriptor))
         }
 
         val extensionReceiver = descriptor.extensionReceiverParameter
         if (extensionReceiver != null) {
-            result.add(KParameterImpl(extensionReceiver, index++, KParameter.Kind.EXTENSION_RECEIVER))
+            result.add(KParameterImpl(extensionReceiver, index++, KParameter.Kind.EXTENSION_RECEIVER, descriptor))
         }
 
         for (valueParameterDesc in descriptor.valueParameters) {
-            result.add(KParameterImpl(valueParameterDesc, index++, KParameter.Kind.VALUE))
+            result.add(KParameterImpl(valueParameterDesc, index++, KParameter.Kind.VALUE, descriptor))
         }
         result
     }

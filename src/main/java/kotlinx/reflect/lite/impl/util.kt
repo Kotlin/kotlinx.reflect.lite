@@ -37,6 +37,11 @@ internal fun createKCallable(descriptor: CallableDescriptor): KCallableImpl<*> {
     throw KotlinReflectionInternalError("Unsupported callable: $descriptor")
 }
 
+internal val CallableDescriptor.instanceReceiverParameter: ReceiverParameterDescriptor?
+    get() =
+        if (dispatchReceiverParameter != null) containingClass?.let { ReceiverParameterDescriptorImpl(it.defaultType, this) }
+        else null
+
 internal fun <D : CallableDescriptor> overrides(derived: D, base: D): Boolean {
     require(derived.name == base.name) { "Names should be equal: $derived, $base" }
     if (derived is PropertyDescriptor && base is PropertyDescriptor) {

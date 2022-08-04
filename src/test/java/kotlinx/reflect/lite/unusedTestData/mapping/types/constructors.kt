@@ -1,7 +1,7 @@
 package tests.mapping.types.constructors
 
-import kotlin.reflect.*
-import kotlin.reflect.jvm.*
+import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.impl.*
 import kotlin.test.assertEquals
 
 class A(d: Double, s: String, parent: A?) {
@@ -12,14 +12,18 @@ class A(d: Double, s: String, parent: A?) {
 enum class E(val i: Int) { ENTRY(1) }
 
 fun box(): String {
-    assertEquals(listOf(java.lang.Double.TYPE, String::class.java, A::class.java), ::A.parameters.map { it.type.javaType })
-    assertEquals(listOf(A::class.java), A::Nested.parameters.map { it.type.javaType })
-    assertEquals(listOf(A::class.java, A.Nested::class.java), A::Inner.parameters.map { it.type.javaType })
-    assertEquals(listOf(java.lang.Integer.TYPE), E::class.constructors.single().parameters.map { it.type.javaType })
+    val aCons = (A::class.java.kotlinClass as KClass<A>).constructors.first()
+    assertEquals(listOf(java.lang.Double.TYPE, String::class.java, A::class.java), aCons.parameters.map { it.type.javaType })
+    val aNestedCons = (A::class.java.kotlinClass as KClass<A>).nestedClasses.single { it.simpleName == "Nested" }.constructors.first()
+    assertEquals(listOf(A::class.java), aNestedCons.parameters.map { it.type.javaType })
+    val aInnerCons = (A::class.java.kotlinClass as KClass<A>).nestedClasses.single { it.simpleName == "Inner" }.constructors.first()
+    assertEquals(listOf(A::class.java, A.Nested::class.java), aInnerCons.parameters.map { it.type.javaType })
+    val eCons = (E::class.java.kotlinClass as KClass<E>).constructors.single()
+    assertEquals(listOf(java.lang.Integer.TYPE), eCons.parameters.map { it.type.javaType })
 
-    assertEquals(A::class.java, ::A.returnType.javaType)
-    assertEquals(A.Nested::class.java, A::Nested.returnType.javaType)
-    assertEquals(A.Inner::class.java, A::Inner.returnType.javaType)
+    assertEquals(A::class.java, aCons.returnType.javaType)
+    assertEquals(A.Nested::class.java, aNestedCons.returnType.javaType)
+    assertEquals(A.Inner::class.java, aInnerCons.returnType.javaType)
 
     return "OK"
 }
