@@ -161,14 +161,17 @@ internal class FakeOverrideFunctionDescriptor(
     val overriddenFunctions: List<FunctionDescriptor>
         get() = super.overridden as List<FunctionDescriptor>
 
+    override val signature: JvmMethodSignature?
+        get() = overriddenFunctions.first().signature
+
     override val isInline: Boolean
-        get() = overriddenFunctions.first().isInline // TODO?
+        get() = overriddenFunctions.first().isInline
     override val isOperator: Boolean
-        get() = overriddenFunctions.first().isOperator // TODO?
+        get() = overriddenFunctions.first().isOperator
     override val isInfix: Boolean
-        get() = overriddenFunctions.first().isInfix // TODO?
+        get() = overriddenFunctions.first().isInfix
     override val isSuspend: Boolean
-        get() = overriddenFunctions.first().isSuspend // TODO?
+        get() = overriddenFunctions.first().isSuspend
     override val isExternal: Boolean
         get() = overriddenFunctions.first().isExternal
 
@@ -271,8 +274,11 @@ internal class FakeOverridePropertyGetterDescriptor(
     private val overriddenPropertyGetters: List<PropertyGetterDescriptor>
         get() = super.overridden as List<PropertyGetterDescriptor>
 
+    override val signature: JvmMethodSignature?
+        get() = overriddenPropertyGetters.first().signature
+
     override val isInline: Boolean
-        get() = overriddenPropertyGetters.first().isInline // TODO?
+        get() = overriddenPropertyGetters.first().isInline
     override val isOperator: Boolean get() = false
     override val isInfix: Boolean get() = false
     override val isSuspend: Boolean get() = false
@@ -313,6 +319,9 @@ internal class FakeOverridePropertySetterDescriptor(
     @Suppress("UNCHECKED_CAST")
     private val overriddenPropertySetters: List<PropertySetterDescriptor>
         get() = super.overridden as List<PropertySetterDescriptor>
+
+    override val signature: JvmMethodSignature?
+        get() = overriddenPropertySetters.first().signature
 
     override val isInline: Boolean
         get() = overriddenPropertySetters.first().isInline // TODO?

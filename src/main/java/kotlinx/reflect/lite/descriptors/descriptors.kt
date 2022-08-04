@@ -1,6 +1,7 @@
 package kotlinx.reflect.lite.descriptors
 
 import kotlinx.metadata.*
+import kotlinx.metadata.jvm.*
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.calls.Caller
 import kotlinx.reflect.lite.descriptors.impl.KotlinType
@@ -127,6 +128,8 @@ internal interface FunctionDescriptor : CallableDescriptor {
     val isInfix: Boolean
     val isSuspend: Boolean
     val isAnnotationConstructor: Boolean
+
+    val signature: JvmMethodSignature?
 
     val member: Member?
     val defaultMember: Member?

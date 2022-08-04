@@ -57,4 +57,9 @@ internal class KClassImpl<T : Any?>(
         get() = descriptor.isFun
     override val isValue: Boolean
         get() = descriptor.isValue
+
+    override fun equals(other: Any?): Boolean =
+        other is KClassImpl<*> && descriptor == other.descriptor
+
+    override fun hashCode(): Int = descriptor.hashCode()
 }

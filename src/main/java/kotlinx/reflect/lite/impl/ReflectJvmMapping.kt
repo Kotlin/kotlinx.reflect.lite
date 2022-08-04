@@ -53,21 +53,6 @@ val <T> KFunction<T>.javaConstructor: Constructor<T>?
 public val <T> KClass<T>.java: Class<T>
     get() = (this as KClassImpl<T>).descriptor.jClass as Class<T>
 
-// Java reflection -> Kotlin reflection
-
-/**
- * Returns a [KDeclarationContainer] instance representing a Kotlin class or package.
- */
-val <T : Any> Class<T>.kotlinClass: KDeclarationContainer
-    @JvmName("getKotlinClass")
-    get() = ReflectionLiteImpl.loadClassMetadata(this)
-
-private fun Member.getKPackage(): KDeclarationContainer? =
-    when (declaringClass.getAnnotation(Metadata::class.java)?.kind) {
-        2, 4, 5 -> KPackageImpl(PackageDescriptorImpl(declaringClass))
-        else -> null
-    }
-
 /**
  * Returns a [KClass] instance representing the companion object of a given class,
  * or `null` if the class doesn't have a companion object.
@@ -90,11 +75,70 @@ val KType.javaType: Type
     get() = this.computeJavaType()
 
 /**
+ * Returns a Java [Class] instance representing the primitive type corresponding to the given [KDeclarationContainer] if it exists.
+ */
+public val KDeclarationContainer.javaPrimitiveType: Class<*>?
+    get() {
+        val thisJClass = (this as KDeclarationContainerImpl).descriptor.jClass
+        if (thisJClass.isPrimitive) return thisJClass
+
+        return when (thisJClass.name) {
+            "java.lang.Boolean"   -> Boolean::class.java
+            "java.lang.Character" -> Char::class.java
+            "java.lang.Byte"      -> Byte::class.java
+            "java.lang.Short"     -> Short::class.java
+            "java.lang.Integer"   -> Int::class.java
+            "java.lang.Float"     -> Float::class.java
+            "java.lang.Long"      -> Long::class.java
+            "java.lang.Double"    -> Double::class.java
+            "java.lang.Void"      -> Void.TYPE
+            else -> null
+        }
+    }
+
+/**
+ * Returns a Java [Class] instance corresponding to the given [KClass] instance. In case of primitive types it returns corresponding wrapper classes.
+ */
+public val KDeclarationContainer.javaObjectType: Class<*>
+    get() {
+        val thisJClass = (this as KDeclarationContainerImpl).descriptor.jClass
+        if (!thisJClass.isPrimitive) return thisJClass
+
+        return when (thisJClass.name) {
+            "boolean" -> java.lang.Boolean::class.java
+            "char"    -> Character::class.java
+            "byte"    -> java.lang.Byte::class.java
+            "short"   -> java.lang.Short::class.java
+            "int"     -> Integer::class.java
+            "float"   -> java.lang.Float::class.java
+            "long"    -> java.lang.Long::class.java
+            "double"  -> java.lang.Double::class.java
+            "void"    -> Void::class.java
+            else -> thisJClass
+        }
+    }
+
+// Java reflection -> Kotlin reflection
+
+/**
+ * Returns a [KDeclarationContainer] instance representing a Kotlin class or package.
+ */
+val <T : Any> Class<T>.kotlinClass: KDeclarationContainer
+    @JvmName("getKotlinClass")
+    get() = ReflectionLiteImpl.loadClassMetadata(this)
+
+private fun Member.getKPackage(): KDeclarationContainer? =
+    when (declaringClass.getAnnotation(Metadata::class.java)?.kind) {
+        2, 4, 5 -> KPackageImpl(PackageDescriptorImpl(declaringClass))
+        else -> null
+    }
+
+/**
  * Returns a [KProperty] instance corresponding to the given Java [Field] instance,
  * or `null` if this field cannot be represented by a Kotlin property
  * (for example, if it is a synthetic field).
  */
-val Field.kotlinLiteProperty: KProperty<*>?
+val Field.kotlinProperty: KProperty<*>?
     get() {
         if (isSynthetic) return null
         val kotlinPackage = getKPackage()
@@ -108,7 +152,7 @@ val Field.kotlinLiteProperty: KProperty<*>?
  * Returns a [KFunction] instance corresponding to the given Java [Method] instance,
  * or `null` if this method cannot be represented by a Kotlin function.
  */
-val Method.kotlinLiteFunction: KFunction<*>?
+val Method.kotlinFunction: KFunction<*>?
     get() {
         if (Modifier.isStatic(modifiers)) {
             val kotlinPackage = getKPackage()
@@ -125,4 +169,14 @@ val Method.kotlinLiteFunction: KFunction<*>?
             }
         }
         return declaringClass.kotlinClass.members.filterIsInstance<KFunction<*>>().firstOrNull { it.name == this.name }
+    }
+
+/**
+ * Returns a [KFunction] instance corresponding to the given Java [Constructor] instance,
+ * or `null` if this constructor cannot be represented by a Kotlin function
+ * (for example, if it is a synthetic constructor).
+ */
+val <T : Any> Constructor<T>.kotlinFunction: KFunction<T>?
+    get() {
+        return (declaringClass.kotlinClass as KClass<T>).constructors.firstOrNull { it.javaConstructor == this }
     }

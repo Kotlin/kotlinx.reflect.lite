@@ -169,6 +169,9 @@ internal class PropertyGetterDescriptorImpl(
     override val name: Name
         get() = "<get-${property.name}>"
 
+    override val signature: JvmMethodSignature?
+        get() = property.kmProperty.getterSignature
+
     override val flags: Flags
         get() = property.kmProperty.getterFlags
 
@@ -196,6 +199,9 @@ internal class PropertySetterDescriptorImpl(
 ) : PropertyAccessorDescriptorImpl(property), PropertySetterDescriptor {
     override val name: Name
         get() = "<set-${property.name}>"
+
+    override val signature: JvmMethodSignature?
+        get() = property.kmProperty.setterSignature
 
     override val flags: Flags
         get() = property.kmProperty.setterFlags

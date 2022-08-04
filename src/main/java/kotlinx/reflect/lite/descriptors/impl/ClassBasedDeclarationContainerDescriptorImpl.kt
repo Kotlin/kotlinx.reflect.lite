@@ -199,4 +199,10 @@ internal abstract class ClassBasedDeclarationContainerDescriptorImpl(
     companion object {
         private val DEFAULT_CONSTRUCTOR_MARKER = Class.forName("kotlin.jvm.internal.DefaultConstructorMarker")
     }
+
+    override fun equals(other: Any?): Boolean {
+        return other is ClassBasedDeclarationContainerDescriptor && jClass == other.jClass
+    }
+
+    override fun hashCode(): Int = jClass.hashCode()
 }

@@ -20,6 +20,9 @@ internal class ConstructorDescriptorImpl(
     override val name: Name
         get() = "<init>"
 
+    override val signature: JvmMethodSignature?
+        get() = kmCons.signature
+
     override val valueParameters: List<ValueParameterDescriptor>
         get() = kmCons.valueParameters.mapIndexed { index, parameter ->
             ValueParameterDescriptorImpl(parameter, this, index)
@@ -51,4 +54,12 @@ internal class ConstructorDescriptorImpl(
     override val defaultMember: Member? by ReflectProperties.lazy {
         container.findDefaultConstructor(jvmSignature.constructorDesc)
     }
+
+    override fun equals(other: Any?): Boolean {
+        val that = (other as? FunctionDescriptor) ?: return false
+        return container == that.container && name == that.name && signature == that.signature
+    }
+
+    override fun hashCode(): Int =
+        (container.hashCode() * 31 + name.hashCode()) * 31 + signature.hashCode()
 }

@@ -1,7 +1,8 @@
 package tests.mapping.functions
 
-import kotlin.reflect.*
-import kotlin.reflect.jvm.*
+import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.tests.*
 
 class K {
     fun foo(s: String): Int = s.length
@@ -21,9 +22,10 @@ fun check(f: KFunction<Int>) {
 }
 
 fun box(): String {
-    check(K::foo)
-    check(::bar)
-    check(String::baz)
+    check((K::class.java.kotlinClass).getMemberByName("foo") as KFunction<Int>)
+    val clazz = Class.forName("tests.mapping.functions.FunctionsKt").kotlinClass
+    check(clazz.getMemberByName("bar") as KFunction<Int>)
+    check(clazz.getMemberByName("baz") as KFunction<Int>)
 
     return "OK"
 }

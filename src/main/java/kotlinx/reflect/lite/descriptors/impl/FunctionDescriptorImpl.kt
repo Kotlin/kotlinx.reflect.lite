@@ -97,6 +97,9 @@ internal class FunctionDescriptorImpl(
     override val name: Name
         get() = kmFunction.name
 
+    override val signature: JvmMethodSignature?
+        get() = kmFunction.signature
+
     override val valueParameters: List<ValueParameterDescriptor>
         get() = kmFunction.valueParameters.mapIndexed { index, kmValueParam ->
             ValueParameterDescriptorImpl(kmValueParam, this, index)
@@ -130,4 +133,12 @@ internal class FunctionDescriptorImpl(
     override val defaultMember: Member? by ReflectProperties.lazy {
         container.findDefaultMethod(jvmSignature.methodName, jvmSignature.methodDesc, !Modifier.isStatic(member!!.modifiers))
     }
+
+    override fun equals(other: Any?): Boolean {
+        val that = (other as? FunctionDescriptor) ?: return false
+        return container == that.container && name == that.name && signature == that.signature
+    }
+
+    override fun hashCode(): Int =
+        (container.hashCode() * 31 + name.hashCode()) * 31 + signature.hashCode()
 }

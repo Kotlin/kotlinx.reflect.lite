@@ -2,6 +2,7 @@ package kotlinx.reflect.lite.impl
 
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.descriptors.*
+import kotlin.reflect.jvm.internal.*
 
 internal class KFunctionImpl(
     override val descriptor: FunctionDescriptor
@@ -19,4 +20,9 @@ internal class KFunctionImpl(
         get() = descriptor.isInfix
     override val isSuspend: Boolean
         get() = descriptor.isSuspend
+
+    override fun equals(other: Any?): Boolean =
+        other is KFunctionImpl && descriptor == other.descriptor
+
+    override fun hashCode(): Int = descriptor.hashCode()
 }
