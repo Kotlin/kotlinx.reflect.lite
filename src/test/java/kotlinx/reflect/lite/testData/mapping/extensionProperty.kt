@@ -1,6 +1,8 @@
 package tests.mapping.extensionProperty
 
-import kotlin.reflect.jvm.*
+import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.tests.*
 import kotlin.test.assertEquals
 
 class K(var value: Long)
@@ -14,7 +16,8 @@ var K.ext: Double
 val fileFacadeClass = object {}::class.java.enclosingClass
 
 fun box(): String {
-    val p = K::ext
+    val clazz = Class.forName("tests.mapping.extensionProperty.ExtensionPropertyKt").kotlinClass
+    val p = clazz.getMemberByName("ext") as KMutableProperty1<K, Double>
 
     val getter = p.javaGetter!!
     val setter = p.javaSetter!!

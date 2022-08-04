@@ -1,6 +1,8 @@
 package tests.mapping.topLevelProperty
 
-import kotlin.reflect.jvm.*
+import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.tests.*
 import kotlin.test.*
 
 var topLevel = "123"
@@ -8,10 +10,13 @@ var topLevel = "123"
 val fileFacadeClass = object {}::class.java.enclosingClass
 
 fun box(): String {
-    val p = ::topLevel
+    val p = Class.forName("tests.mapping.topLevelProperty.TopLevelPropertyKt").kotlinClass.getMemberByName("topLevel") as KMutableProperty0<String>
 
     assertNotNull(p.javaField, "Fail p field")
     assertEquals(p.javaField!!.getDeclaringClass(), fileFacadeClass)
+
+    val pp = p.javaField!!.kotlinProperty
+    assert(p == pp) { "Fail p != pp" }
 
     val getter = p.javaGetter!!
     val setter = p.javaSetter!!

@@ -218,6 +218,11 @@ internal class FakeOverridePropertyDescriptor(
         get() = false
     override val isConst: Boolean
         get() = false
+    override val isMovedFromInterfaceCompanion: Boolean
+        get() = overriddenProperties.first().isMovedFromInterfaceCompanion
+
+    override val signature: JvmFieldSignature?
+        get() = overriddenProperties.first().signature
 
     override val jvmSignature: JvmPropertySignature.KotlinProperty by ReflectProperties.lazy {
         // TODO: inherit this from PropertyDescriptorImpl

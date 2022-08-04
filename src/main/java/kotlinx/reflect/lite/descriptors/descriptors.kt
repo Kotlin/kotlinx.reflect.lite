@@ -154,6 +154,9 @@ internal interface PropertyDescriptor : CallableDescriptor {
     private val isDelegated: Boolean
         get() = TODO()
 
+    val isMovedFromInterfaceCompanion: Boolean
+
+    val signature: JvmFieldSignature?
     val jvmSignature: JvmPropertySignature.KotlinProperty
     val javaField: Field?
 

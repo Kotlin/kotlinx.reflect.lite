@@ -47,6 +47,8 @@ internal class PropertyDescriptorImpl(
         get() = Flag.Property.IS_VAR(flags)
     override val isReal: Boolean
         get() = true
+    override val isMovedFromInterfaceCompanion: Boolean
+        get() = JvmFlag.Property.IS_MOVED_FROM_INTERFACE_COMPANION(kmProperty.jvmFlags)
 
     override val dispatchReceiverParameter: ReceiverParameterDescriptor?
         get() = containingClass?.let {
@@ -57,6 +59,9 @@ internal class PropertyDescriptorImpl(
         get() = kmProperty.receiverParameterType?.let {
             ReceiverParameterDescriptorImpl(it.toKotlinType(module, typeParameterTable), this)
         }
+
+    override val signature: JvmFieldSignature?
+        get() = kmProperty.fieldSignature
 
     override val jvmSignature: JvmPropertySignature.KotlinProperty by ReflectProperties.lazy {
         JvmPropertySignature.KotlinProperty(
@@ -70,7 +75,11 @@ internal class PropertyDescriptorImpl(
     // Logic from: https://github.com/JetBrains/kotlin/blob/3b5179686eaba0a71bcca53c2cc922a54cc9241f/core/reflection.jvm/src/kotlin/reflect/jvm/internal/KPropertyImpl.kt#L51
     override val javaField: Field? by ReflectProperties.lazy {
         jvmSignature.fieldSignature?.let {
-            val owner = containingClass?.jClass ?: container.jClass
+            val owner = if (isMovedFromInterfaceCompanion) {
+                container.jClass.enclosingClass
+            } else {
+                containingClass?.jClass ?: container.jClass
+            }
             try {
                 owner.getDeclaredField(it.name)
             } catch (e: NoSuchFieldException) {
@@ -94,6 +103,14 @@ internal class PropertyDescriptorImpl(
     override val defaultCaller: Caller<*> by ReflectProperties.lazy {
         getter?.defaultCaller ?: error("The property has no getter")
     }
+
+    override fun equals(other: Any?): Boolean {
+        val that = (other as? PropertyDescriptor) ?: return false
+        return container == that.container && name == that.name && signature == that.signature
+    }
+
+    override fun hashCode(): Int =
+        (container.hashCode() * 31 + name.hashCode()) * 31 + signature.hashCode()
 }
 
 internal abstract class PropertyAccessorDescriptorImpl(
@@ -142,6 +159,8 @@ internal abstract class PropertyAccessorDescriptorImpl(
                 CallerImpl.Method.Static(accessor)
         }
     }
+
+
 
     protected abstract fun computeFieldCaller(field: Field): Caller<*>
 

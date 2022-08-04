@@ -20,6 +20,11 @@ internal abstract class KPropertyImpl<out T>(
 
     abstract override val getter: KProperty.Getter<T>
 
+    override fun equals(other: Any?): Boolean =
+        other is KPropertyImpl<*> && descriptor == other.descriptor
+
+    override fun hashCode(): Int = descriptor.hashCode()
+
     abstract class Accessor<out PropertyType, out ReturnType> : KCallableImpl<ReturnType>(), KProperty.Accessor<PropertyType>, KFunction<ReturnType> {
         abstract override val descriptor: PropertyAccessorDescriptor
 
