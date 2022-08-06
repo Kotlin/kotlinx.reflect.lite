@@ -2,6 +2,7 @@ package kotlinx.reflect.lite.impl
 
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.descriptors.ClassDescriptor
+import kotlinx.reflect.lite.internal.*
 
 internal class KClassImpl<T : Any?>(
     override val descriptor: ClassDescriptor<T>
@@ -36,8 +37,25 @@ internal class KClassImpl<T : Any?>(
     override val typeParameters: List<KTypeParameter>
         get() = descriptor.typeParameters.map { KTypeParameterImpl(it) }
 
-    override val supertypes: List<KType>
-        get() = descriptor.supertypes.map(::KTypeImpl)
+    // Logic from: https://github.com/JetBrains/kotlin/blob/bfa3f89aeb727518703f0a167153cb048724a6d1/core/reflection.jvm/src/kotlin/reflect/jvm/internal/KClassImpl.kt#L124
+    override val supertypes: List<KType> by ReflectProperties.lazySoft {
+        val kotlinTypes = descriptor.supertypes
+        val result = ArrayList<KTypeImpl>(kotlinTypes.size)
+        kotlinTypes.mapTo(result) { kotlinType ->
+            KTypeImpl(kotlinType) {
+                val superClass = kotlinType.descriptor
+                if (superClass !is ClassDescriptor<*>) throw KotlinReflectionInternalError("Supertype not a class: $superClass")
+                val superJavaClass = superClass.jClass
+                if (descriptor.jClass.superclass == superJavaClass) {
+                    descriptor.jClass.genericSuperclass
+                } else {
+                    val index = descriptor.jClass.interfaces.indexOf(superJavaClass)
+                    if (index < 0) throw KotlinReflectionInternalError("No superclass of $this in Java reflection for $superClass")
+                    descriptor.jClass.genericInterfaces[index]
+                }
+            }
+        }
+    }
 
     override val isFinal: Boolean
         get() = descriptor.isFinal

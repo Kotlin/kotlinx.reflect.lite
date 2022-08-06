@@ -1,8 +1,9 @@
 package tests.mapping.types.supertypes
 
+import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.impl.*
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.TypeVariable
-import kotlin.reflect.jvm.javaType
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.test.fail
@@ -14,7 +15,7 @@ interface Interface2
 class A<Z> : Interface<String, Z>, Klass(), Interface2
 
 fun box(): String {
-    val (i, k, i2) = A::class.supertypes.map { it.javaType }
+    val (i, k, i2) = (A::class.java.kotlinClass as KClass<A<*>>).supertypes.map { it.javaType }
 
     i as? ParameterizedType ?: fail("Not a parameterized type: $i")
     assertEquals(Interface::class.java, i.rawType)

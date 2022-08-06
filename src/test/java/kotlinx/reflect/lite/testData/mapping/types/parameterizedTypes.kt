@@ -1,8 +1,9 @@
 package tests.mapping.types.parameterizedTypes
 
+import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.tests.*
 import java.lang.reflect.ParameterizedType
-import kotlin.reflect.*
-import kotlin.reflect.jvm.javaType
 import kotlin.test.assertEquals
 
 class A(private var foo: List<String>)
@@ -23,19 +24,23 @@ fun assertGenericType(type: KType) {
 }
 
 fun box(): String {
-    val foo = A::class.members.single { it.name == "foo" } as KMutableProperty<*>
+    val foo = A::class.java.kotlinClass.members.single { it.name == "foo" } as KMutableProperty<*>
     assertGenericType(foo.returnType)
     assertGenericType(foo.getter.returnType)
     assertGenericType(foo.setter.parameters.last().type)
 
-    val bar = O::class.members.single { it.name == "bar" } as KMutableProperty<*>
+    val bar = O::class.java.kotlinClass.members.single { it.name == "bar" } as KMutableProperty<*>
     assertGenericType(bar.returnType)
     assertGenericType(bar.getter.returnType)
     assertGenericType(bar.setter.parameters.last().type)
 
-    assertGenericType(::topLevel.returnType)
-    assertGenericType(Any::extension.returnType)
-    assertGenericType(::A.parameters.single().type)
+    val clazz = Class.forName("tests.mapping.types.parameterizedTypes.ParameterizedTypesKt").kotlinClass
+    val topLevel = clazz.getMemberByName("topLevel")
+    assertGenericType(topLevel.returnType)
 
+    val extension = clazz.getMemberByName("extension")
+    assertGenericType(extension.returnType)
+    assertGenericType((A::class.java.kotlinClass as KClass<A>).constructors.first().parameters.single().type)
+ 
     return "OK"
 }

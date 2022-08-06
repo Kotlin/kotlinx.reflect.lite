@@ -24,11 +24,30 @@ internal class KTypeImpl(
         get() {
             val typeArguments = type.arguments
             if (typeArguments.isEmpty()) return emptyList()
-            return typeArguments.map { typeProjection ->
+            return typeArguments.mapIndexed { i, typeProjection ->
                 if (typeProjection.isStarProjection) {
                     KTypeProjection.STAR
                 } else {
-                    val type = KTypeImpl(typeProjection.type)
+                    val type = KTypeImpl(typeProjection.type,
+                        if (computeJavaType == null) null else fun(): Type {
+                            return when (val javaType = javaType) {
+                                is Class<*> -> {
+                                    // It's either an array or a raw type.
+                                    if (javaType.isArray) javaType.componentType else Any::class.java
+                                }
+                                is GenericArrayType -> {
+                                    if (i != 0) throw KotlinReflectionInternalError("Array type has been queried for a non-0th argument: $this")
+                                    javaType.genericComponentType
+                                }
+                                is ParameterizedType -> {
+                                    val argument = javaType.parameterizedTypeArguments[i]
+                                    // In "Foo<out Bar>", the JVM type of the first type argument should be "Bar", not "? extends Bar"
+                                    if (argument !is WildcardType) argument
+                                    else argument.lowerBounds.firstOrNull() ?: argument.upperBounds.first()
+                                }
+                                else -> throw KotlinReflectionInternalError("Non-generic type has been queried for arguments: $this")
+                            }
+                        })
                     when (typeProjection.projectionKind) {
                         KVariance.INVARIANT -> KTypeProjection.invariant(type)
                         KVariance.IN -> KTypeProjection.contravariant(type)
@@ -70,5 +89,19 @@ fun KType.computeJavaType(): Type {
         }
         else -> throw UnsupportedOperationException("Unsupported type classifier: $this")
     }
-    throw UnsupportedOperationException("Unsupported type classifier: $this")
+    throw UnsupportedOperationException("Unsupported type classifier: ${this.classifier}")
 }
+
+// Logic from here: https://github.com/JetBrains/kotlin/blob/fb296b5b95a56fe380bdbe7c9f61d092bd21f275/core/descriptors.runtime/src/org/jetbrains/kotlin/descriptors/runtime/structure/reflectClassUtil.kt#L92
+/**
+ * @return all arguments of a parameterized type, including those of outer classes in case this type represents an inner generic.
+ * The returned list starts with the arguments to the innermost class, then continues with those of its outer class, and so on.
+ * For example, for the type `Outer<A, B>.Inner<C, D>` the result would be `[C, D, A, B]`.
+ */
+val Type.parameterizedTypeArguments: List<Type>
+    get() {
+        if (this !is ParameterizedType) return emptyList()
+        if (ownerType == null) return actualTypeArguments.toList()
+
+        return generateSequence(this) { it.ownerType as? ParameterizedType }.flatMap { it.actualTypeArguments.asSequence() }.toList()
+    }

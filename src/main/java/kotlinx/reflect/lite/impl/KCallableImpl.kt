@@ -38,7 +38,9 @@ internal abstract class KCallableImpl<out R>: KCallable<R> {
         get() = descriptor.typeParameters.map { KTypeParameterImpl(it) }
 
     override val returnType: KType
-        get() = KTypeImpl(descriptor.returnType)
+        get() = KTypeImpl(descriptor.returnType) {
+            descriptor.caller.returnType
+        }
 
     override val isAbstract: Boolean
         get() = descriptor.isAbstract

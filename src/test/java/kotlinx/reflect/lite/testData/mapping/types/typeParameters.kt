@@ -1,7 +1,9 @@
 package tests.mapping.types.typeParameters
 
+import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.tests.*
 import java.lang.reflect.TypeVariable
-import kotlin.reflect.jvm.*
 import kotlin.test.assertEquals
 
 class A<T : CharSequence> {
@@ -9,14 +11,14 @@ class A<T : CharSequence> {
 }
 
 fun box(): String {
-    val f = A<String>::foo
+    val f = A::class.java.kotlinClass.getMemberByName("foo") as KFunction<Unit>
     val t = f.parameters.last().type.javaType
     if (t !is TypeVariable<*>) return "Fail, t should be a type variable: $t"
 
     assertEquals("T", t.name)
     assertEquals(A::class.java, (t.genericDeclaration as Class<*>))
 
-    val tp = A::class.typeParameters
+    val tp = (A::class.java.kotlinClass as KClass<A<*>>).typeParameters
     assertEquals(CharSequence::class.java, tp.single().upperBounds.single().javaType)
 
     return "OK"
