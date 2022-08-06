@@ -1,6 +1,8 @@
 package tests.mapping.propertyAccessorsWithJvmName
 
-import kotlin.reflect.jvm.*
+import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.tests.*
 
 var state: String = "value"
     @JvmName("getter")
@@ -9,7 +11,8 @@ var state: String = "value"
     set
 
 fun box(): String {
-    val p = ::state
+    val clazz = Class.forName("tests.mapping.propertyAccessorsWithJvmName.PropertyAccessorsWithJvmNameKt").kotlinClass
+    val p = clazz.getMemberByName("state") as KMutableProperty0<String>
 
     if (p.name != "state") return "Fail name: ${p.name}"
     if (p.get() != "value") return "Fail get: ${p.get()}"

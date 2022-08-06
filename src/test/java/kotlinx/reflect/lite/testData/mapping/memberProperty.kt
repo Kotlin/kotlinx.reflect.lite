@@ -1,12 +1,14 @@
 package tests.mapping.memberProperty
 
-import kotlin.reflect.jvm.*
+import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.tests.*
 import kotlin.test.*
 
 class K(var value: Long)
 
 fun box(): String {
-    val p = K::value
+    val p = K::class.java.kotlinClass.getMemberByName("value") as KMutableProperty1<K, Long>
 
     assertNotNull(p.javaField, "Fail p field")
 

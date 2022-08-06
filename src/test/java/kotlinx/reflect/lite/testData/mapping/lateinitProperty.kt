@@ -1,6 +1,8 @@
 package tests.mapping.lateinitProperty
 
-import kotlin.reflect.jvm.*
+import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.tests.*
 import kotlin.test.*
 
 class K {
@@ -8,7 +10,7 @@ class K {
 }
 
 fun box(): String {
-    val p = K::value
+    val p = K::class.java.kotlinClass.getMemberByName("value") as KMutableProperty1<K, String>
 
     assertNotNull(p.javaField, "Fail p field")
 

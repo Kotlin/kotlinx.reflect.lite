@@ -18,6 +18,30 @@ class MappingTest {
     @Test
     fun testInterfaceCompanionPropertyWithJvmField() = test("mapping.interfaceCompanionPropertyWithJvmField") { tests.mapping.interfaceCompanionPropertyWithJvmField.box() }
 
+    @Test
+    fun testMemberProperty() = test("mapping.memberProperty") { tests.mapping.memberProperty.box() }
+
+    @Test
+    fun testPrivateProperty() = test("mapping.privateProperty") { tests.mapping.privateProperty.box() }
+
+    @Test
+    fun testPropertyAccessorsWithJvmName() = test("mapping.propertyAccessorsWithJvmName") { tests.mapping.propertyAccessorsWithJvmName.box() }
+
+    @Test
+    fun testSyntheticFields() = test("mapping.syntheticFields") { tests.mapping.syntheticFields.box() }
+
+    @Test
+    fun testMethodsFromSuperInterface() = test("mapping.methodsFromSuperInterface") { tests.mapping.methodsFromSuperInterface.box() }
+
+    @Test
+    fun testMethodsFromObjectWithoutCustomMembers() = test("mapping.methodsFromObjectWithoutCustomMembers") { tests.mapping.methodsFromObjectWithoutCustomMembers.box() }
+
+    @Test
+    fun testLateinitProperty() = test("mapping.lateinitProperty") { tests.mapping.lateinitProperty.box() }
+
+    @Test
+    fun testInlineReifiedFun() = test("mapping.inlineReifiedFun") { tests.mapping.inlineReifiedFun.box() }
+
     // javaType
     @Test
     fun testTypesConstructors() = test("mapping.mapping.types.constructors") { tests.mapping.types.constructors.box() }

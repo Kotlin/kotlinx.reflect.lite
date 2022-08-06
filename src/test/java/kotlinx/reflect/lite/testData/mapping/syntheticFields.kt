@@ -1,6 +1,6 @@
 package tests.mapping.syntheticFields
 
-import kotlin.reflect.jvm.kotlinProperty
+import kotlinx.reflect.lite.impl.kotlinProperty
 
 enum class A {
     // There's a synthetic field "$VALUES" here

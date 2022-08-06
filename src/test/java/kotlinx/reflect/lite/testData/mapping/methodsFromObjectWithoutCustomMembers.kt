@@ -1,4 +1,6 @@
-package tests.mapping.methodsFromObject
+// Part of the test: https://github.com/Kotlin/kotlinx.reflect.lite/blob/mvicsokolova/dev/src/test/java/kotlinx/reflect/lite/unusedTestData/mapping/methodsFromObject.kt
+
+package tests.mapping.methodsFromObjectWithoutCustomMembers
 
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.impl.*
@@ -24,10 +26,10 @@ fun box(): String {
     assertEquals(listOf("equals", "hashCode", "toString"), (C::class.java.kotlinClass as KClass<*>).functions())
 
     // Now we can get only declared functions: equals(), hashCode(), toString()
-    assertEquals(
-        listOf("equals", "equals", "hashCode", "hashCode", "toString", "toString"),
-        (MyCustomMembers::class.java.kotlinClass as KClass<*>).functions()
-    )
+//    assertEquals(
+//        listOf("equals", "equals", "hashCode", "hashCode", "toString", "toString"),
+//        (MyCustomMembers::class.java.kotlinClass as KClass<*>).functions()
+//    )
 
     assertEquals(listOf("clone", "equals", "hashCode", "toString"), (MyCloneable::class.java.kotlinClass as KClass<*>).functions())
 
