@@ -3,7 +3,6 @@ package kotlinx.reflect.lite.impl
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.descriptors.*
 import kotlinx.reflect.lite.descriptors.impl.*
-import kotlinx.reflect.lite.internal.*
 import java.lang.reflect.*
 import java.util.ArrayList
 import kotlin.coroutines.*
@@ -11,7 +10,7 @@ import kotlin.coroutines.*
 internal abstract class KCallableImpl<out R>: KCallable<R> {
     abstract val descriptor: CallableDescriptor
 
-    override val parameters: List<KParameter> by ReflectProperties.lazy {
+    override val parameters: List<KParameter> by lazy {
         val descriptor = descriptor
         val result = mutableListOf<KParameter>()
         var index = 0

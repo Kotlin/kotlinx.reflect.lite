@@ -6,7 +6,6 @@ import kotlinx.reflect.lite.KVisibility
 import kotlinx.reflect.lite.descriptors.impl.*
 import kotlinx.reflect.lite.descriptors.impl.KotlinType
 import kotlinx.reflect.lite.calls.*
-import kotlinx.reflect.lite.internal.*
 import kotlinx.reflect.lite.misc.JvmPropertySignature
 import java.lang.reflect.*
 
@@ -183,19 +182,19 @@ internal class FakeOverrideFunctionDescriptor(
     override val isAnnotationConstructor: Boolean
         get() = overriddenFunctions.first().isAnnotationConstructor
 
-    override val member: Member? by ReflectProperties.lazy {
+    override val member: Member? by lazy {
         overriddenFunctions.first().member
     }
 
-    override val defaultMember: Member? by ReflectProperties.lazy {
+    override val defaultMember: Member? by lazy {
         overriddenFunctions.first().defaultMember
     }
 
-    override val caller: Caller<*> by ReflectProperties.lazy {
+    override val caller: Caller<*> by lazy {
         overriddenFunctions.first().caller
     }
 
-    override val defaultCaller: Caller<*>? by ReflectProperties.lazy {
+    override val defaultCaller: Caller<*>? by lazy {
         overriddenFunctions.first().defaultCaller
     }
 }
@@ -229,7 +228,7 @@ internal class FakeOverridePropertyDescriptor(
     override val signature: JvmFieldSignature?
         get() = overriddenProperties.first().signature
 
-    override val jvmSignature: JvmPropertySignature.KotlinProperty by ReflectProperties.lazy {
+    override val jvmSignature: JvmPropertySignature.KotlinProperty by lazy {
         // TODO: inherit this from PropertyDescriptorImpl
         val property = overriddenProperties.first() as PropertyDescriptorImpl
         JvmPropertySignature.KotlinProperty(
@@ -240,7 +239,7 @@ internal class FakeOverridePropertyDescriptor(
         )
     }
 
-    override val javaField: Field? by ReflectProperties.lazy {
+    override val javaField: Field? by lazy {
         // TODO: copied from PropertyDescriptorImpl, inherit the implementation
         jvmSignature.fieldSignature?.let {
             // TODO: support propertyWithBackingFieldInOuterClass
@@ -260,11 +259,11 @@ internal class FakeOverridePropertyDescriptor(
     override val setter: PropertySetterDescriptor?
         get() =  if (isVar) FakeOverridePropertySetterDescriptor(this) else null
 
-    override val caller: Caller<*> by ReflectProperties.lazy {
+    override val caller: Caller<*> by lazy {
         getter?.caller ?: error("The property has no getter")
     }
 
-    override val defaultCaller: Caller<*> by ReflectProperties.lazy {
+    override val defaultCaller: Caller<*> by lazy {
         getter?.defaultCaller ?: error("The property has no getter")
     }
 }
@@ -298,19 +297,19 @@ internal class FakeOverridePropertyGetterDescriptor(
     override val isAnnotationConstructor: Boolean
         get() = overriddenPropertyGetters.first().isAnnotationConstructor
 
-    override val member: Member? by ReflectProperties.lazy {
+    override val member: Member? by lazy {
         overriddenPropertyGetters.first().member
     }
 
-    override val defaultMember: Member? by ReflectProperties.lazy {
+    override val defaultMember: Member? by lazy {
         overriddenPropertyGetters.first().defaultMember
     }
 
-    override val caller: Caller<*> by ReflectProperties.lazy {
+    override val caller: Caller<*> by lazy {
         overriddenPropertyGetters.first().caller
     }
 
-    override val defaultCaller: Caller<*>? by ReflectProperties.lazy {
+    override val defaultCaller: Caller<*>? by lazy {
         overriddenPropertyGetters.first().defaultCaller
     }
 }
@@ -345,19 +344,19 @@ internal class FakeOverridePropertySetterDescriptor(
     override val isAnnotationConstructor: Boolean
         get() = overriddenPropertySetters.first().isAnnotationConstructor
 
-    override val member: Member? by ReflectProperties.lazy {
+    override val member: Member? by lazy {
         overriddenPropertySetters.first().member
     }
 
-    override val defaultMember: Member? by ReflectProperties.lazy {
+    override val defaultMember: Member? by lazy {
         overriddenPropertySetters.first().defaultMember
     }
 
-    override val caller: Caller<*> by ReflectProperties.lazy {
+    override val caller: Caller<*> by lazy {
         overriddenPropertySetters.first().caller
     }
 
-    override val defaultCaller: Caller<*>? by ReflectProperties.lazy {
+    override val defaultCaller: Caller<*>? by lazy {
         overriddenPropertySetters.first().defaultCaller
     }
 }

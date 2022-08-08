@@ -5,7 +5,6 @@ import kotlinx.reflect.lite.builtins.*
 import kotlinx.reflect.lite.descriptors.*
 import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.impl.KotlinReflectionInternalError
-import kotlinx.reflect.lite.internal.*
 import kotlinx.reflect.lite.misc.*
 import java.lang.reflect.*
 
@@ -31,13 +30,13 @@ internal abstract class ClassBasedDeclarationContainerDescriptorImpl(
         get() = getMembers(staticScope, MemberBelonginess.INHERITED)
 
     private val allNonStaticMembers: Collection<KCallableImpl<*>>
-            by ReflectProperties.lazySoft { declaredNonStaticMembers + inheritedNonStaticMembers }
+            by lazy { declaredNonStaticMembers + inheritedNonStaticMembers }
     private val allStaticMembers: Collection<KCallableImpl<*>>
-            by ReflectProperties.lazySoft { declaredStaticMembers + inheritedStaticMembers }
+            by lazy { declaredStaticMembers + inheritedStaticMembers }
     override val declaredMembers: Collection<KCallableImpl<*>>
-            by ReflectProperties.lazySoft { declaredNonStaticMembers + declaredStaticMembers }
+            by lazy { declaredNonStaticMembers + declaredStaticMembers }
     override val allMembers: Collection<KCallableImpl<*>>
-            by ReflectProperties.lazySoft { allNonStaticMembers + allStaticMembers }
+            by lazy { allNonStaticMembers + allStaticMembers }
 
     private fun getMembers(scope: MemberScope, belonginess: MemberBelonginess): Collection<KCallableImpl<*>> =
         (scope.functions + scope.properties).mapNotNull { descriptor ->

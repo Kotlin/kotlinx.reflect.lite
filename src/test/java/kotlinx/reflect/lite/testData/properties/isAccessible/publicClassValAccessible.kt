@@ -10,7 +10,6 @@ class Result {
 
 fun box(): String {
     val p = (Result::class.java).kotlinClass.getMemberByName("value") as KProperty1<Result, String>
-    p.isAccessible = false
-    // setAccessible(false) should have no effect on the accessibility of a public reflection object
+    p.isAccessible = false // should have no effect on the accessibility of a public reflection object
     return p.get(Result())
 }

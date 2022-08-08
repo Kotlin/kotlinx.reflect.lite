@@ -2,18 +2,13 @@ package kotlinx.reflect.lite.descriptors.impl
 
 import kotlinx.metadata.*
 import kotlinx.metadata.jvm.*
-import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.calls.*
 import kotlinx.reflect.lite.calls.Caller
 import kotlinx.reflect.lite.descriptors.*
-import kotlinx.reflect.lite.impl.KClassImpl
 import kotlinx.reflect.lite.impl.KotlinReflectionInternalError
-import kotlinx.reflect.lite.internal.*
-import kotlinx.reflect.lite.internal.ReflectProperties
 import kotlinx.reflect.lite.misc.JvmPropertySignature
 import kotlinx.reflect.lite.name.*
 import java.lang.reflect.*
-import kotlin.reflect.jvm.internal.*
 
 internal class PropertyDescriptorImpl(
     val kmProperty: KmProperty,
@@ -63,7 +58,7 @@ internal class PropertyDescriptorImpl(
     override val signature: JvmFieldSignature?
         get() = kmProperty.fieldSignature
 
-    override val jvmSignature: JvmPropertySignature.KotlinProperty by ReflectProperties.lazy {
+    override val jvmSignature: JvmPropertySignature.KotlinProperty by lazy {
         JvmPropertySignature.KotlinProperty(
             this,
             kmProperty.fieldSignature,
@@ -73,7 +68,7 @@ internal class PropertyDescriptorImpl(
     }
 
     // Logic from: https://github.com/JetBrains/kotlin/blob/3b5179686eaba0a71bcca53c2cc922a54cc9241f/core/reflection.jvm/src/kotlin/reflect/jvm/internal/KPropertyImpl.kt#L51
-    override val javaField: Field? by ReflectProperties.lazy {
+    override val javaField: Field? by lazy {
         jvmSignature.fieldSignature?.let {
             val owner = if (isMovedFromInterfaceCompanion) {
                 container.jClass.enclosingClass
@@ -88,19 +83,19 @@ internal class PropertyDescriptorImpl(
         }
     }
 
-    override val getter: PropertyGetterDescriptor? by ReflectProperties.lazy {
+    override val getter: PropertyGetterDescriptor? by lazy {
         if (Flag.Property.HAS_GETTER(flags)) PropertyGetterDescriptorImpl(this) else null
     }
 
-    override val setter: PropertySetterDescriptor? by ReflectProperties.lazy {
+    override val setter: PropertySetterDescriptor? by lazy {
         if (Flag.Property.HAS_SETTER(flags)) PropertySetterDescriptorImpl(this) else null
     }
 
-    override val caller: Caller<*> by ReflectProperties.lazy {
+    override val caller: Caller<*> by lazy {
         getter?.caller ?: error("The property has no getter")
     }
 
-    override val defaultCaller: Caller<*> by ReflectProperties.lazy {
+    override val defaultCaller: Caller<*> by lazy {
         getter?.defaultCaller ?: error("The property has no getter")
     }
 
@@ -143,7 +138,7 @@ internal abstract class PropertyAccessorDescriptorImpl(
     override val defaultMember: Member?
         get() = null
 
-    override val caller: Caller<*> by ReflectProperties.lazy {
+    override val caller: Caller<*> by lazy {
         val accessor = member
         when {
             accessor == null -> {
@@ -197,7 +192,7 @@ internal class PropertyGetterDescriptorImpl(
     override val valueParameters: List<ValueParameterDescriptor>
         get() = emptyList()
 
-    override val member: Method? by ReflectProperties.lazy {
+    override val member: Method? by lazy {
         property.jvmSignature.getterSignature?.let { signature ->
             property.container.findMethodBySignature(signature.name, signature.desc)
         }
@@ -228,7 +223,7 @@ internal class PropertySetterDescriptorImpl(
     override val valueParameters: List<ValueParameterDescriptor>
         get() = listOf(PropertySetterParameterDescriptor(property.kmProperty.setterParameter, this))
 
-    override val member: Method? by ReflectProperties.lazy {
+    override val member: Method? by lazy {
         property.jvmSignature.setterSignature?.let { signature ->
             property.container.findMethodBySignature(signature.name, signature.desc)
         }

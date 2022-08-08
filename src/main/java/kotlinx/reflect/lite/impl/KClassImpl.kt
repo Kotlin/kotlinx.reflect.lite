@@ -2,7 +2,6 @@ package kotlinx.reflect.lite.impl
 
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.descriptors.ClassDescriptor
-import kotlinx.reflect.lite.internal.*
 
 internal class KClassImpl<T : Any?>(
     override val descriptor: ClassDescriptor<T>
@@ -38,7 +37,7 @@ internal class KClassImpl<T : Any?>(
         get() = descriptor.typeParameters.map { KTypeParameterImpl(it) }
 
     // Logic from: https://github.com/JetBrains/kotlin/blob/bfa3f89aeb727518703f0a167153cb048724a6d1/core/reflection.jvm/src/kotlin/reflect/jvm/internal/KClassImpl.kt#L124
-    override val supertypes: List<KType> by ReflectProperties.lazySoft {
+    override val supertypes: List<KType> by lazy {
         val kotlinTypes = descriptor.supertypes
         val result = ArrayList<KTypeImpl>(kotlinTypes.size)
         kotlinTypes.mapTo(result) { kotlinType ->

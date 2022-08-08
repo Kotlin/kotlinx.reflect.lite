@@ -5,7 +5,6 @@ import kotlinx.metadata.jvm.*
 import kotlinx.reflect.lite.calls.*
 import kotlinx.reflect.lite.descriptors.*
 import kotlinx.reflect.lite.impl.KotlinReflectionInternalError
-import kotlinx.reflect.lite.internal.ReflectProperties
 import kotlinx.reflect.lite.name.*
 import java.lang.reflect.*
 import kotlinx.reflect.lite.misc.JvmFunctionSignature
@@ -27,11 +26,11 @@ internal abstract class AbstractFunctionDescriptor : AbstractCallableDescriptor,
     override val isAnnotationConstructor: Boolean
         get() = name == "<init>" && container.jClass.isAnnotation
 
-    override val caller: Caller<*> by ReflectProperties.lazy {
+    override val caller: Caller<*> by lazy {
         createCaller(member)
     }
 
-    override val defaultCaller: Caller<*>? by ReflectProperties.lazy {
+    override val defaultCaller: Caller<*>? by lazy {
         defaultMember?.let { createDefaultCaller(it) }
     }
 
@@ -122,15 +121,15 @@ internal class FunctionDescriptorImpl(
     override val returnType: KotlinType
         get() = kmFunction.returnType.toKotlinType(module, typeParameterTable)
 
-    private val jvmSignature: JvmFunctionSignature.KotlinFunction by ReflectProperties.lazy {
+    private val jvmSignature: JvmFunctionSignature.KotlinFunction by lazy {
         JvmFunctionSignature.KotlinFunction(kmFunction.signature ?: error("No signature for ${kmFunction}"))
     }
 
-    override val member: Member? by ReflectProperties.lazy {
+    override val member: Member? by lazy {
         container.findMethodBySignature(jvmSignature.methodName, jvmSignature.methodDesc)
     }
 
-    override val defaultMember: Member? by ReflectProperties.lazy {
+    override val defaultMember: Member? by lazy {
         container.findDefaultMethod(jvmSignature.methodName, jvmSignature.methodDesc, !Modifier.isStatic(member!!.modifiers))
     }
 
