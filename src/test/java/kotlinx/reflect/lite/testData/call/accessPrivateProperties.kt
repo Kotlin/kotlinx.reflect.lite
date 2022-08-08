@@ -7,7 +7,7 @@ import kotlin.reflect.jvm.*
 import kotlin.test.*
 
 private class A(private var bar: String = "") {
-    fun getBar() = (A::class.java).toLiteKClass().getMemberByName("bar")
+    fun getBar() = ((A::class.java).kotlinClass as KClass<A>).getMemberByName("bar")
     fun getKotlinReflectBar() = A::bar
 }
 
@@ -15,12 +15,18 @@ private class A(private var bar: String = "") {
 fun box(): String {
     // kotlinx.reflect.lite
     val getBar = A().getBar() as KMutableProperty1<A, String>
-    val bar = tests.call.incorrectNumberOfArguments.A::class.java.toLiteKClass().getMemberByName("bar")
+    val bar =
+        (tests.call.incorrectNumberOfArguments.A::class.java.kotlinClass as KClass<tests.call.incorrectNumberOfArguments.A>).getMemberByName(
+            "bar"
+        )
     bar.isAccessible = true
     try {
         getBar.call(A())
     } catch (e: Throwable) {
-        assertEquals("class kotlinx.reflect.lite.calls.CallerImpl\$FieldGetter cannot access a member of class tests.call.accessPrivateProperties.A with modifiers \"private\"", e.message)
+        assertEquals(
+            "class kotlinx.reflect.lite.calls.CallerImpl\$FieldGetter cannot access a member of class tests.call.accessPrivateProperties.A with modifiers \"private\"",
+            e.message
+        )
     }
 
     // via kotlin.reflect
@@ -32,7 +38,10 @@ fun box(): String {
     try {
         kotlinReflectGetBar.call(A())
     } catch (e: Throwable) {
-        assertEquals("java.lang.IllegalAccessException: class kotlin.reflect.jvm.internal.calls.CallerImpl\$FieldGetter cannot access a member of class tests.call.accessPrivateProperties.A with modifiers \"private\"", e.message)
+        assertEquals(
+            "java.lang.IllegalAccessException: class kotlin.reflect.jvm.internal.calls.CallerImpl\$FieldGetter cannot access a member of class tests.call.accessPrivateProperties.A with modifiers \"private\"",
+            e.message
+        )
     }
     return "OK"
 }

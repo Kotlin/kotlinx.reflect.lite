@@ -1,10 +1,12 @@
 package kotlinx.reflect.lite.tests
 
 import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.impl.*
 
-// TODO: replace with Class<T>.kotlinClass everywhere in tests
-internal fun <T: Any> Class<T>.toLiteKDeclarationContainer() = ReflectionLite.loadClassMetadata(this)
-internal fun <T : Any> Class<T>.toLiteKClass() = toLiteKDeclarationContainer() as KClass<T>
+@Deprecated(
+    message = "Better use the <T : Any> Class<T>.kotlinClass: KDeclarationContainer extension",
+    replaceWith = ReplaceWith("(this.kotlinClass as KClass<T>)", imports = arrayOf("kotlinx.reflect.lite.*, kotlinx.reflect.lite.impl.*")))
+internal fun <T : Any> Class<T>.toLiteKClass() = kotlinClass as KClass<T>
 
 internal fun KDeclarationContainer.getMemberByName(name: String) =
     members.single { it.name == name }

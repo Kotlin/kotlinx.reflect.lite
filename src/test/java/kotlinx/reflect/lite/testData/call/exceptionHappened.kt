@@ -1,5 +1,6 @@
 package tests.call.exceptionHappened
 
+import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.tests.*
 import java.lang.reflect.InvocationTargetException
 
@@ -8,7 +9,7 @@ fun fail(message: String) {
 }
 
 fun box(): String {
-    val clazz = Class.forName("tests.call.exceptionHappened.ExceptionHappenedKt").toLiteKDeclarationContainer()
+    val clazz = Class.forName("tests.call.exceptionHappened.ExceptionHappenedKt").kotlinClass
     val fail = clazz.getMemberByName("fail")
     try {
         fail.call("OK")

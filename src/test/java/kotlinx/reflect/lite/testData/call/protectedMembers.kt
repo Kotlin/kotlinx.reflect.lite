@@ -17,7 +17,9 @@ abstract class Base {
 
 class Derived : Base()
 
-fun member(name: String): KCallable<*> = (Derived::class.java).toLiteKClass().members.single { it.name == name }.apply { isAccessible = true }
+fun member(name: String): KCallable<*> =
+    ((Derived::class.java).kotlinClass as KClass<Derived>).members.single { it.name == name }
+        .apply { isAccessible = true }
 
 fun box(): String {
     val a = Derived()

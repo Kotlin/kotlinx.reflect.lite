@@ -1,5 +1,7 @@
 package tests.constructors.enumEntry
 
+import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.tests.*
 import kotlin.test.assertEquals
 
@@ -18,7 +20,7 @@ enum class TestEnum(val id: String? = null) {
 
 fun box(): String {
     assertEquals(listOf("fun <init>(kotlin.String?): tests.constructors.enumEntry.TestEnum"), TestEnum.ENUM1::class.java.toLiteKClass().constructors.map { it.toString() })
-    assertEquals(listOf(), TestEnum.ENUM2::class.java.toLiteKClass().constructors.map { it.toString() })
+    assertEquals(listOf(), (TestEnum.ENUM2::class.java.kotlinClass as KClass<*>).constructors.map { it.toString() })
 
     return "OK"
 }

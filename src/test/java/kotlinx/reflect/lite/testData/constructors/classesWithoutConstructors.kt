@@ -1,6 +1,8 @@
 package tests.constructors.classesWithoutConstructors
 
 import kotlinx.reflect.lite.tests.*
+import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.*
 import kotlin.test.assertTrue
 
 interface Interface
@@ -11,9 +13,9 @@ class C {
 }
 
 fun box(): String {
-    assertTrue(Interface::class.java.toLiteKClass().constructors.isEmpty())
-    assertTrue(Obj::class.java.toLiteKClass().constructors.isEmpty())
-    assertTrue(C.Companion::class.java.toLiteKClass().constructors.isEmpty())
+    assertTrue((Interface::class.java.kotlinClass as KClass<Interface>).constructors.isEmpty())
+    assertTrue((Obj::class.java.kotlinClass as KClass<Obj>).constructors.isEmpty())
+    assertTrue((C.Companion::class.java.kotlinClass as KClass<C.Companion>).constructors.isEmpty())
     assertTrue(object {}::class.java.toLiteKClass().constructors.isEmpty())
 
     return "OK"

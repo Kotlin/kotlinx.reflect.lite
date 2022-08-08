@@ -1,5 +1,7 @@
 package tests.call.returnUnit
 
+import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.tests.*
 import kotlin.test.assertEquals
 
@@ -16,12 +18,12 @@ object O {
 fun nullableUnit(unit: Boolean): Unit? = if (unit) Unit else null
 
 fun box(): String {
-    val clazz = Class.forName("tests.call.returnUnit.ReturnUnitKt").toLiteKDeclarationContainer()
+    val clazz = Class.forName("tests.call.returnUnit.ReturnUnitKt").kotlinClass
     val foo = clazz.getMemberByName("foo")
     assertEquals(Unit, foo.call())
-    val bar = A::class.java.toLiteKClass().getMemberByName("bar")
+    val bar = (A::class.java.kotlinClass as KClass<A>).getMemberByName("bar")
     assertEquals(Unit, bar.call(A()))
-    assertEquals(Unit, (O::class.java.toLiteKClass()).members.single { it.name == "baz" }.call(O))
+    assertEquals(Unit, ((O::class.java.kotlinClass as KClass<O>)).members.single { it.name == "baz" }.call(O))
 
     val nullableUnit = clazz.getMemberByName("nullableUnit")
     assertEquals(Unit, nullableUnit.call(true))

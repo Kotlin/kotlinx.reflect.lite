@@ -1,7 +1,7 @@
 package tests.classes.sealedSubclasses
 
 import kotlinx.reflect.lite.*
-import kotlinx.reflect.lite.tests.*
+import kotlinx.reflect.lite.impl.*
 import kotlin.test.assertEquals
 
 // --
@@ -28,9 +28,12 @@ sealed class SealedClassWithNoSubclasses
 fun sealedSubclassNames(c: KClass<*>) = c.sealedSubclasses.map { it.simpleName ?: throw AssertionError("Unnamed class: ${it}") }.sorted()
 
 fun box(): String {
-    assertEquals(listOf("TL1", "TL2"), sealedSubclassNames(SealedClassWithTopLevelSubclasses::class.java.toLiteKClass()))
-    assertEquals(listOf("N1", "N2"), sealedSubclassNames(SealedClassWithNestedSubclasses::class.java.toLiteKClass()))
-    assertEquals(emptyList(), sealedSubclassNames(SealedClassWithNoSubclasses::class.java.toLiteKClass()))
+    assertEquals(listOf("TL1", "TL2"),
+        sealedSubclassNames((SealedClassWithTopLevelSubclasses::class.java.kotlinClass as KClass<SealedClassWithTopLevelSubclasses>)))
+    assertEquals(listOf("N1", "N2"),
+        sealedSubclassNames((SealedClassWithNestedSubclasses::class.java.kotlinClass as KClass<SealedClassWithNestedSubclasses>)))
+    assertEquals(emptyList(),
+        sealedSubclassNames((SealedClassWithNoSubclasses::class.java.kotlinClass as KClass<SealedClassWithNoSubclasses>)))
 
 //    assertEquals(emptyList(), sealedSubclassNames(String::class.java.toLiteKClass()))
 //    assertEquals(emptyList(), sealedSubclassNames(Thread::class.java.toLiteKClass()))

@@ -2,7 +2,7 @@ package tests.classes.nestedClasses
 
 import kotlin.test.assertEquals
 import kotlinx.reflect.lite.*
-import kotlinx.reflect.lite.tests.*
+import kotlinx.reflect.lite.impl.*
 
 class A {
     companion object {}
@@ -15,9 +15,10 @@ fun nestedNames(c: KClass<*>) = c.nestedClasses.map { it.simpleName ?: throw Ass
 
 fun box(): String {
     // Kotlin class without nested classes
-    assertEquals(emptyList<String>(), nestedNames(A.Inner::class.java.toLiteKClass()))
+    assertEquals(emptyList<String>(), nestedNames((A.Inner::class.java.kotlinClass as KClass<A.Inner>)))
     // Kotlin class with nested classes
-    assertEquals(listOf("Companion", "Inner", "Nested", "PrivateNested"), nestedNames(A::class.java.toLiteKClass()))
+    assertEquals(listOf("Companion", "Inner", "Nested", "PrivateNested"),
+        nestedNames((A::class.java.kotlinClass as KClass<A>)))
 
     // Java class without nested classes
     //assertEquals(emptyList<String>(), nestedNames(Error::class.java.toLiteKClass()))
