@@ -4,6 +4,7 @@ import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.descriptors.*
 import kotlinx.reflect.lite.descriptors.impl.*
 import kotlinx.reflect.lite.internal.*
+import java.lang.reflect.*
 import java.util.ArrayList
 import kotlin.coroutines.*
 
@@ -39,7 +40,7 @@ internal abstract class KCallableImpl<out R>: KCallable<R> {
 
     override val returnType: KType
         get() = KTypeImpl(descriptor.returnType) {
-            descriptor.caller.returnType
+            extractContinuationArgument() ?: descriptor.caller.returnType
         }
 
     override val isAbstract: Boolean
@@ -114,5 +115,20 @@ internal abstract class KCallableImpl<out R>: KCallable<R> {
 
         @Suppress("UNCHECKED_CAST")
         return caller.call(arguments.toTypedArray()) as R
+    }
+
+    private fun extractContinuationArgument(): Type? {
+        if ((descriptor as? FunctionDescriptor)?.isSuspend == true) {
+            // kotlin.coroutines.Continuation<? super java.lang.String>
+            val continuationType = descriptor.caller.parameterTypes.lastOrNull() as? ParameterizedType
+            if (continuationType?.rawType == Continuation::class.java) {
+                // ? super java.lang.String
+                val wildcard = continuationType.actualTypeArguments.single() as? WildcardType
+                // java.lang.String
+                return wildcard?.lowerBounds?.first()
+            }
+        }
+
+        return null
     }
 }

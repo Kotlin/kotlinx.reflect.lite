@@ -7,5 +7,6 @@ class C {
 }
 
 fun box(): String {
+
     return C().x.reflect()?.parameters?.singleOrNull()?.name ?: "null"
 }
