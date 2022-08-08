@@ -1,3 +1,5 @@
+@file:JvmName("ReflectJvmMapping")
+
 // Some logic copied from: https://github.com/JetBrains/kotlin/blob/26cdb2f928982dad7f0c9ab8e3bd509665d9d537/core/reflection.jvm/src/kotlin/reflect/jvm/ReflectJvmMapping.kt
 package kotlinx.reflect.lite.impl
 
