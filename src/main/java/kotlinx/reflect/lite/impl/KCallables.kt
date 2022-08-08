@@ -1,3 +1,5 @@
+@file:JvmName("KCallables")
+
 package kotlinx.reflect.lite.impl
 
 import kotlinx.reflect.lite.*

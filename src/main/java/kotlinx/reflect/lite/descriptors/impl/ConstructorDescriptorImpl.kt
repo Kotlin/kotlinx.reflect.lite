@@ -22,6 +22,9 @@ internal class ConstructorDescriptorImpl(
     override val signature: JvmMethodSignature?
         get() = kmCons.signature
 
+    override val isPrimary: Boolean
+        get() = !Flag.Constructor.IS_SECONDARY(flags)
+
     override val valueParameters: List<ValueParameterDescriptor>
         get() = kmCons.valueParameters.mapIndexed { index, parameter ->
             ValueParameterDescriptorImpl(parameter, this, index)

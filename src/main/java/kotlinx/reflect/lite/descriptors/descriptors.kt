@@ -170,7 +170,9 @@ internal interface PropertyAccessorDescriptor : FunctionDescriptor {
 internal interface PropertyGetterDescriptor : PropertyAccessorDescriptor
 internal interface PropertySetterDescriptor : PropertyAccessorDescriptor
 
-internal interface ConstructorDescriptor : FunctionDescriptor
+internal interface ConstructorDescriptor : FunctionDescriptor {
+    val isPrimary: Boolean
+}
 
 internal interface ClassifierDescriptor : DeclarationDescriptor
 
