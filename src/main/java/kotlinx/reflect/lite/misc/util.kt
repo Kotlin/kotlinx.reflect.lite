@@ -4,7 +4,7 @@ package kotlinx.reflect.lite.misc
 import kotlinx.reflect.lite.name.*
 import java.lang.reflect.Array
 
-val Class<*>.safeClassLoader: ClassLoader
+internal val Class<*>.safeClassLoader: ClassLoader
     get() = classLoader ?: ClassLoader.getSystemClassLoader()
 
 private val PRIMITIVE_CLASSES =
@@ -17,7 +17,7 @@ val Class<*>.wrapperByPrimitive: Class<*>?
 /**
  * NOTE: does not perform a Java -> Kotlin mapping. If this is not expected, consider using KClassImpl#classId instead
  */
-val Class<*>.classId: ClassId
+internal val Class<*>.classId: ClassId
     get() = when {
         isPrimitive -> throw IllegalArgumentException("Can't compute ClassId for primitive type: $this")
         isArray -> throw IllegalArgumentException("Can't compute ClassId for array type: $this")
@@ -28,10 +28,10 @@ val Class<*>.classId: ClassId
         else -> declaringClass?.classId?.createNestedClassId(simpleName) ?: ClassId.topLevel(FqName(name))
     }
 
-fun Class<*>.createArrayType(): Class<*> =
+internal fun Class<*>.createArrayType(): Class<*> =
     Array.newInstance(this, 0)::class.java
 
-fun ClassLoader.tryLoadClass(fqName: String) =
+internal fun ClassLoader.tryLoadClass(fqName: String) =
     try {
         Class.forName(fqName, false, this)
     } catch (e: ClassNotFoundException) {

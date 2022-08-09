@@ -6,7 +6,7 @@ import kotlinx.reflect.lite.builtins.*
 import kotlinx.reflect.lite.descriptors.impl.*
 import kotlinx.reflect.lite.name.*
 
-sealed class JvmFunctionSignature {
+internal sealed class JvmFunctionSignature {
     abstract fun asString(): String
 
     class KotlinFunction(val signature: JvmMethodSignature) : JvmFunctionSignature() {

@@ -5,7 +5,7 @@ import kotlinx.metadata.isLocal
 
 typealias Name = String
 
-data class FqName(val fqName: String) {
+internal data class FqName(val fqName: String) {
     val isRoot: Boolean get() = fqName.isEmpty()
 
     fun parent(): FqName = fqName.lastIndexOf('.').let { i ->
@@ -27,7 +27,7 @@ data class FqName(val fqName: String) {
 }
 
 // Partially from: https://github.com/JetBrains/kotlin/blob/ea836fd46a1fef07d77c96f9d7e8d7807f793453/core/compiler.common/src/org/jetbrains/kotlin/name/ClassId.java#L34
-data class ClassId(val packageFqName: FqName, val relativeClassName: FqName, val isLocal: Boolean = false) {
+internal data class ClassId(val packageFqName: FqName, val relativeClassName: FqName, val isLocal: Boolean = false) {
     constructor(packageFqName: FqName, relativeClassName: Name) : this(packageFqName, FqName(relativeClassName))
 
     constructor(className: ClassName) : this(
