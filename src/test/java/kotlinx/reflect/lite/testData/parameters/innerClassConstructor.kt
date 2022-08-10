@@ -19,7 +19,7 @@ fun KParameter.check(name: String?, kind: KParameter.Kind) {
 }
 
 fun box(): String {
-    val inner = ((Outer::class.java).kotlinClass as KClass<Outer>).nestedClasses.single { it.simpleName == "Inner" }
+    val inner = ((Outer::class.java).kDeclarationContainer as KClass<Outer>).nestedClasses.single { it.simpleName == "Inner" }
     val ctor = inner.constructors.first()
     val ctorPararms = ctor.parameters
 

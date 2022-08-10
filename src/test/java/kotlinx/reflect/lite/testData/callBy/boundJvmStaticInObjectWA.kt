@@ -12,7 +12,7 @@ object Host {
 }
 
 fun box(): String {
-    val concat = (Host::class.java).kotlinClass.getMemberByName("concat") as KFunction<String>
+    val concat = (Host::class.java).kDeclarationContainer.getMemberByName("concat") as KFunction<String>
     val concatParams = concat.parameters
     return concat.callBy(mapOf(
         concatParams[0] to Host,

@@ -88,7 +88,7 @@ class A {
 }
 
 fun box(): String {
-    val foo = (A::class.java).kotlinClass.members.single { it.name == "foo" }
+    val foo = (A::class.java).kDeclarationContainer.members.single { it.name == "foo" }
     foo.callBy(mapOf(
        foo.parameters.first() to A(),
        foo.parameters.single { it.name == "p42" } to 239

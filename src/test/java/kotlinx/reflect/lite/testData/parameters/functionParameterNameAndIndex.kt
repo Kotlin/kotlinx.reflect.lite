@@ -22,15 +22,15 @@ fun checkParameters(f: KCallable<*>, names: List<String?>) {
 }
 
 fun box(): String {
-    val clazz = Class.forName("tests.parameters.functionParameterNameAndIndex.FunctionParameterNameAndIndexKt").kotlinClass
+    val clazz = Class.forName("tests.parameters.functionParameterNameAndIndex.FunctionParameterNameAndIndexKt").kDeclarationContainer
     checkParameters(clazz.getMemberByName("box"), listOf())
     checkParameters(clazz.getMemberByName("foo"), listOf("bar"))
-    checkParameters((A::class.java).kotlinClass.getMemberByName("foz"), listOf(null, "baz"))
+    checkParameters((A::class.java).kDeclarationContainer.getMemberByName("foz"), listOf(null, "baz"))
     checkParameters(clazz.getMemberByName("qux"), listOf(null, "zux"))
 
-    checkParameters((A::class.java).kotlinClass.getMemberByName("mext"), listOf(null, null, "mez"))
+    checkParameters((A::class.java).kDeclarationContainer.getMemberByName("mext"), listOf(null, null, "mez"))
 
-    checkParameters(((A::class.java).kotlinClass as KClass<A>).constructors.first(), listOf("c"))
+    checkParameters(((A::class.java).kotlin).constructors.first(), listOf("c"))
 
     return "OK"
 }

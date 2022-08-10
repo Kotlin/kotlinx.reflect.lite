@@ -7,7 +7,7 @@ import kotlin.reflect.jvm.*
 import kotlin.test.*
 
 private class A(private var bar: String = "") {
-    fun getBar() = ((A::class.java).kotlinClass as KClass<A>).getMemberByName("bar")
+    fun getBar() = ((A::class.java).kotlin).getMemberByName("bar")
     fun getKotlinReflectBar() = A::bar
 }
 
@@ -15,8 +15,7 @@ private class A(private var bar: String = "") {
 fun box(): String {
     // kotlinx.reflect.lite
     val getBar = A().getBar() as KMutableProperty1<A, String>
-    val bar =
-        (tests.call.incorrectNumberOfArguments.A::class.java.kotlinClass as KClass<tests.call.incorrectNumberOfArguments.A>).getMemberByName(
+    val bar = (A::class.java.kotlin).getMemberByName(
             "bar"
         )
     bar.isAccessible = true

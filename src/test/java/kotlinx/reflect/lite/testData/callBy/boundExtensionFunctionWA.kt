@@ -13,7 +13,7 @@ import kotlinx.reflect.lite.tests.*
 fun String.extFun(k: String, s: String = "") = this + k + s
 
 fun box(): String {
-    val sExtFun = Class.forName("tests.callBy.boundExtensionFunctionWA.BoundExtensionFunctionWAKt").kotlinClass.
+    val sExtFun = Class.forName("tests.callBy.boundExtensionFunctionWA.BoundExtensionFunctionWAKt").kDeclarationContainer.
         getMemberByName("extFun") as KFunction<String>
     return sExtFun.callBy(mapOf(
         sExtFun.parameters[0] to "O",

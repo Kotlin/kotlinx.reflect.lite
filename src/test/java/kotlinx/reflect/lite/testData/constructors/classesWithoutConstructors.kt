@@ -13,9 +13,9 @@ class C {
 }
 
 fun box(): String {
-    assertTrue((Interface::class.java.kotlinClass as KClass<Interface>).constructors.isEmpty())
-    assertTrue((Obj::class.java.kotlinClass as KClass<Obj>).constructors.isEmpty())
-    assertTrue((C.Companion::class.java.kotlinClass as KClass<C.Companion>).constructors.isEmpty())
+    assertTrue((Interface::class.java.kDeclarationContainer as KClass<Interface>).constructors.isEmpty())
+    assertTrue((Obj::class.java.kDeclarationContainer as KClass<Obj>).constructors.isEmpty())
+    assertTrue((C.Companion::class.java.kDeclarationContainer as KClass<C.Companion>).constructors.isEmpty())
     assertTrue(object {}::class.java.toLiteKClass().constructors.isEmpty())
 
     return "OK"

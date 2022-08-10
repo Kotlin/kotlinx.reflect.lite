@@ -11,6 +11,6 @@ open class A {
 class B : A()
 
 fun box(): String {
-    val foo = ((B::class.java).kotlinClass as KClass<B>).getMemberByName("foo")
+    val foo = (B::class.java).kotlin.getMemberByName("foo")
     return foo.call(B()) as String
 }

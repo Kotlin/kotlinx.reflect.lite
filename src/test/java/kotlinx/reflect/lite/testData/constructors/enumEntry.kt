@@ -20,7 +20,7 @@ enum class TestEnum(val id: String? = null) {
 
 fun box(): String {
     assertEquals(listOf("fun <init>(kotlin.String?): tests.constructors.enumEntry.TestEnum"), TestEnum.ENUM1::class.java.toLiteKClass().constructors.map { it.toString() })
-    assertEquals(listOf(), (TestEnum.ENUM2::class.java.kotlinClass as KClass<*>).constructors.map { it.toString() })
+    assertEquals(listOf(), (TestEnum.ENUM2::class.java.kotlin).constructors.map { it.toString() })
 
     return "OK"
 }

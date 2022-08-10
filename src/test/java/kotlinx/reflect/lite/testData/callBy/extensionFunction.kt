@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 fun String.sum(other: String = "b") = this + other
 
 fun box(): String {
-    val f = Class.forName("tests.callBy.extensionFunction.ExtensionFunctionKt").kotlinClass.getMemberByName("sum")
+    val f = Class.forName("tests.callBy.extensionFunction.ExtensionFunctionKt").kDeclarationContainer.getMemberByName("sum")
     assertEquals("ab", f.callBy(mapOf(f.parameters.first() to "a")))
     return "OK"
 }

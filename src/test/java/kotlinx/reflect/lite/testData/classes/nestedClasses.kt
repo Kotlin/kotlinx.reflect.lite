@@ -15,10 +15,10 @@ fun nestedNames(c: KClass<*>) = c.nestedClasses.map { it.simpleName ?: throw Ass
 
 fun box(): String {
     // Kotlin class without nested classes
-    assertEquals(emptyList<String>(), nestedNames((A.Inner::class.java.kotlinClass as KClass<A.Inner>)))
+    assertEquals(emptyList<String>(), nestedNames((A.Inner::class.java.kDeclarationContainer as KClass<A.Inner>)))
     // Kotlin class with nested classes
     assertEquals(listOf("Companion", "Inner", "Nested", "PrivateNested"),
-        nestedNames((A::class.java.kotlinClass as KClass<A>)))
+        nestedNames((A::class.java.kotlin)))
 
     // Java class without nested classes
     //assertEquals(emptyList<String>(), nestedNames(Error::class.java.toLiteKClass()))

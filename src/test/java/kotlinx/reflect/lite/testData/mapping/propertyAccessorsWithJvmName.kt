@@ -11,7 +11,7 @@ var state: String = "value"
     set
 
 fun box(): String {
-    val clazz = Class.forName("tests.mapping.propertyAccessorsWithJvmName.PropertyAccessorsWithJvmNameKt").kotlinClass
+    val clazz = Class.forName("tests.mapping.propertyAccessorsWithJvmName.PropertyAccessorsWithJvmNameKt").kDeclarationContainer
     val p = clazz.getMemberByName("state") as KMutableProperty0<String>
 
     if (p.name != "state") return "Fail name: ${p.name}"

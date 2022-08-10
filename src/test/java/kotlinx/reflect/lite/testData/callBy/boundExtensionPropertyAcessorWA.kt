@@ -16,7 +16,7 @@ val String.plusK: String
     get() = this + "K"
 
 fun box(): String {
-    val plusK = Class.forName("tests.callBy.boundExtensionPropertyAcessorWA.BoundExtensionPropertyAcessorWAKt").kotlinClass.
+    val plusK = Class.forName("tests.callBy.boundExtensionPropertyAcessorWA.BoundExtensionPropertyAcessorWAKt").kDeclarationContainer.
         getMemberByName("plusK") as KProperty1<String, String>
     return plusK.getter.callBy(mapOf(
             plusK.parameters[0] to "O"

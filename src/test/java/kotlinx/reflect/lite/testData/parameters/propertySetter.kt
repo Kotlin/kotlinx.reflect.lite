@@ -20,7 +20,7 @@ fun checkPropertySetterParam(property: KMutableProperty0<*>, name: String?) {
 }
 
 fun box(): String {
-    val clazz = Class.forName("tests.parameters.propertySetter.PropertySetterKt").kotlinClass
+    val clazz = Class.forName("tests.parameters.propertySetter.PropertySetterKt").kDeclarationContainer
     checkPropertySetterParam(clazz.getMemberByName("default") as KMutableProperty0<Int>, null)
     checkPropertySetterParam(clazz.getMemberByName("defaultAnnotated") as KMutableProperty0<Int>, null)
     checkPropertySetterParam(clazz.getMemberByName("custom") as KMutableProperty0<Int>, "myName")

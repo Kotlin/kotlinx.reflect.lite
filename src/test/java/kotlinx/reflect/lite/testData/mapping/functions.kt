@@ -22,8 +22,8 @@ fun check(f: KFunction<Int>) {
 }
 
 fun box(): String {
-    check((K::class.java.kotlinClass).getMemberByName("foo") as KFunction<Int>)
-    val clazz = Class.forName("tests.mapping.functions.FunctionsKt").kotlinClass
+    check((K::class.java.kDeclarationContainer).getMemberByName("foo") as KFunction<Int>)
+    val clazz = Class.forName("tests.mapping.functions.FunctionsKt").kDeclarationContainer
     check(clazz.getMemberByName("bar") as KFunction<Int>)
     check(clazz.getMemberByName("baz") as KFunction<Int>)
 

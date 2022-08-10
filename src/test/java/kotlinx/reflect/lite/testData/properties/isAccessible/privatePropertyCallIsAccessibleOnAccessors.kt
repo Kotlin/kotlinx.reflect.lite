@@ -9,7 +9,7 @@ class A(private var foo: String)
 
 fun box(): String {
     val a = A("")
-    val foo = (A::class.java).kotlinClass.getMemberByName("foo") as KMutableProperty1<A, String>
+    val foo = (A::class.java).kDeclarationContainer.getMemberByName("foo") as KMutableProperty1<A, String>
 
     assertTrue(!foo.isAccessible)
     assertTrue(!foo.getter.isAccessible)

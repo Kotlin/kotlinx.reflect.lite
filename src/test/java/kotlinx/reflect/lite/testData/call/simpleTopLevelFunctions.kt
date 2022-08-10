@@ -12,7 +12,7 @@ fun bar(result: String) {
 }
 
 fun box(): String {
-    val clazz = Class.forName("tests.call.simpleTopLevelFunctions.SimpleTopLevelFunctionsKt").kotlinClass
+    val clazz = Class.forName("tests.call.simpleTopLevelFunctions.SimpleTopLevelFunctionsKt").kDeclarationContainer
     val foo = clazz.getMemberByName("foo")
     val f = foo.call("abc")
     if (f != 3) return "Fail: $f"

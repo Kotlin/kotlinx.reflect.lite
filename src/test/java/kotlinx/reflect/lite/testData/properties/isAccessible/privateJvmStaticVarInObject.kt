@@ -9,7 +9,7 @@ object Obj {
 }
 
 fun box(): String {
-    val p = (Obj::class.java).kotlinClass.members.single { it.name == "result" } as KMutableProperty1<Any?, String>
+    val p = (Obj::class.java).kDeclarationContainer.members.single { it.name == "result" } as KMutableProperty1<Any?, String>
     p.isAccessible = true
 
     try {

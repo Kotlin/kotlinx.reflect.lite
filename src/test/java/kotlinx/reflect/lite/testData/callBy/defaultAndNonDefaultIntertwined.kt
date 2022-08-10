@@ -9,7 +9,7 @@ fun foo(a: String, b: String = "b", c: String, d: String = "d", e: String) =
         a + b + c + d + e
 
 fun box(): String {
-    val foo = Class.forName("tests.callBy.defaultAndNonDefaultIntertwined.DefaultAndNonDefaultIntertwinedKt").kotlinClass
+    val foo = Class.forName("tests.callBy.defaultAndNonDefaultIntertwined.DefaultAndNonDefaultIntertwinedKt").kDeclarationContainer
         .getMemberByName("foo") as KFunction<String>
     val p = foo.parameters
     assertEquals("abcde", foo.callBy(mapOf(

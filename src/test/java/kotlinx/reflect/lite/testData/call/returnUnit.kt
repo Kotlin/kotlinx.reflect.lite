@@ -18,12 +18,12 @@ object O {
 fun nullableUnit(unit: Boolean): Unit? = if (unit) Unit else null
 
 fun box(): String {
-    val clazz = Class.forName("tests.call.returnUnit.ReturnUnitKt").kotlinClass
+    val clazz = Class.forName("tests.call.returnUnit.ReturnUnitKt").kDeclarationContainer
     val foo = clazz.getMemberByName("foo")
     assertEquals(Unit, foo.call())
-    val bar = (A::class.java.kotlinClass as KClass<A>).getMemberByName("bar")
+    val bar = (A::class.java.kotlin).getMemberByName("bar")
     assertEquals(Unit, bar.call(A()))
-    assertEquals(Unit, ((O::class.java.kotlinClass as KClass<O>)).members.single { it.name == "baz" }.call(O))
+    assertEquals(Unit, ((O::class.java.kotlin)).members.single { it.name == "baz" }.call(O))
 
     val nullableUnit = clazz.getMemberByName("nullableUnit")
     assertEquals(Unit, nullableUnit.call(true))

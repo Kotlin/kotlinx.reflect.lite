@@ -14,7 +14,7 @@ class A(param: String) {
 }
 
 fun box(): String {
-    val props = (A::class.java).kotlinClass.members.filterIsInstance<KProperty<*>>()
+    val props = (A::class.java).kDeclarationContainer.members.filterIsInstance<KProperty<*>>()
 
     val names = props.map { it.name }.sorted()
     assert(names == listOf("anyVar", "extensionToList", "int", "string")) { "Fail names: $props" }

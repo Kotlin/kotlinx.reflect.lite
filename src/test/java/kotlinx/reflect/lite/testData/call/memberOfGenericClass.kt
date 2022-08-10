@@ -13,7 +13,7 @@ class A<T> {
 }
 
 fun box(): String {
-    val a = ((A::class.java).kotlinClass as KClass<A<*>>)
+    val a = ((A::class.java).kotlin)
     val foo = a.getMemberByName("foo")
     foo.call(a.getPrimaryConstructor().call(), "OK")
     return result

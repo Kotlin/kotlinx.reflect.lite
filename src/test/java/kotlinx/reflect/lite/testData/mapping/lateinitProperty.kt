@@ -10,7 +10,7 @@ class K {
 }
 
 fun box(): String {
-    val p = K::class.java.kotlinClass.getMemberByName("value") as KMutableProperty1<K, String>
+    val p = K::class.java.kDeclarationContainer.getMemberByName("value") as KMutableProperty1<K, String>
 
     assertNotNull(p.javaField, "Fail p field")
 

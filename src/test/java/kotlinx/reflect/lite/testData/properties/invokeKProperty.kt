@@ -7,5 +7,5 @@ import kotlinx.reflect.lite.tests.*
 class A(val foo: String)
 
 fun box(): String {
-    return ((A::class.java).kotlinClass.getMemberByName("foo") as KProperty1<A, String>).invoke(A("OK")) as String
+    return ((A::class.java).kotlin.getMemberByName("foo") as KProperty1<A, String>).invoke(A("OK")) as String
 }

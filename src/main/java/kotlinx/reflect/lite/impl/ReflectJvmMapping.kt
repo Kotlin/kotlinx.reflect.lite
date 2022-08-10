@@ -3,6 +3,7 @@
 // Some logic copied from: https://github.com/JetBrains/kotlin/blob/26cdb2f928982dad7f0c9ab8e3bd509665d9d537/core/reflection.jvm/src/kotlin/reflect/jvm/ReflectJvmMapping.kt
 package kotlinx.reflect.lite.impl
 
+import kotlinx.metadata.jvm.KotlinClassHeader
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.descriptors.impl.*
 import java.lang.reflect.*
@@ -50,12 +51,6 @@ val <T> KFunction<T>.javaConstructor: Constructor<T>?
     }
 
 /**
- * Returns a Java [Class] instance corresponding to the given [KClass] instance.
- */
-public val <T> KClass<T>.java: Class<T>
-    get() = (this as KClassImpl<T>).descriptor.jClass as Class<T>
-
-/**
  * Returns a [KClass] instance representing the companion object of a given class,
  * or `null` if the class doesn't have a companion object.
  */
@@ -81,13 +76,12 @@ val KType.javaType: Type
 /**
  * Returns a [KDeclarationContainer] instance representing a Kotlin class or package.
  */
-val <T : Any> Class<T>.kotlinClass: KDeclarationContainer
-    @JvmName("getKotlinClass")
+internal val <T : Any> Class<T>.kDeclarationContainer: KDeclarationContainer
     get() = ReflectionLiteImpl.loadClassMetadata(this)
 
 private fun Member.getKPackage(): KDeclarationContainer? =
     when (declaringClass.getAnnotation(Metadata::class.java)?.kind) {
-        2, 4, 5 -> KPackageImpl(PackageDescriptorImpl(declaringClass))
+        KotlinClassHeader.FILE_FACADE_KIND, KotlinClassHeader.MULTI_FILE_CLASS_PART_KIND -> KPackageImpl(PackageDescriptorImpl(declaringClass))
         else -> null
     }
 
@@ -103,7 +97,7 @@ val Field.kotlinProperty: KProperty<*>?
         if (kotlinPackage != null) {
             return kotlinPackage.members.filterIsInstance<KProperty<*>>().firstOrNull { it.name == this.name }
         }
-        return declaringClass.kotlinClass.members.filterIsInstance<KProperty<*>>().firstOrNull { it.name == this.name }
+        return declaringClass.kDeclarationContainer.members.filterIsInstance<KProperty<*>>().firstOrNull { it.name == this.name }
     }
 
 /**
@@ -119,14 +113,14 @@ val Method.kotlinFunction: KFunction<*>?
             }
 
             // For static bridge method generated for a @JvmStatic function in the companion object, also try to find the latter
-            val companion = declaringClass.kotlinClass.companionObject
+            val companion = declaringClass.kDeclarationContainer.companionObject
             if (companion != null) {
                 companion.members.filterIsInstance<KFunction<*>>().firstOrNull {
                     it.name == this.name
                 }?.let { return it }
             }
         }
-        return declaringClass.kotlinClass.members.filterIsInstance<KFunction<*>>().firstOrNull { it.name == this.name }
+        return declaringClass.kDeclarationContainer.members.filterIsInstance<KFunction<*>>().firstOrNull { it.name == this.name }
     }
 
 /**
@@ -136,5 +130,5 @@ val Method.kotlinFunction: KFunction<*>?
  */
 val <T : Any> Constructor<T>.kotlinFunction: KFunction<T>?
     get() {
-        return (declaringClass.kotlinClass as KClass<T>).constructors.firstOrNull { it.javaConstructor == this }
+        return (declaringClass.kotlin).constructors.firstOrNull { it.javaConstructor == this }
     }

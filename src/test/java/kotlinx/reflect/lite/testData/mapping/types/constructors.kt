@@ -12,13 +12,13 @@ class A(d: Double, s: String, parent: A?) {
 enum class E(val i: Int) { ENTRY(1) }
 
 fun box(): String {
-    val aCons = (A::class.java.kotlinClass as KClass<A>).constructors.first()
+    val aCons = (A::class.java.kotlin).constructors.first()
     assertEquals(listOf(java.lang.Double.TYPE, String::class.java, A::class.java), aCons.parameters.map { it.type.javaType })
-    val aNestedCons = (A::class.java.kotlinClass as KClass<A>).nestedClasses.single { it.simpleName == "Nested" }.constructors.first()
+    val aNestedCons = (A::class.java.kotlin).nestedClasses.single { it.simpleName == "Nested" }.constructors.first()
     assertEquals(listOf(A::class.java), aNestedCons.parameters.map { it.type.javaType })
-    val aInnerCons = (A::class.java.kotlinClass as KClass<A>).nestedClasses.single { it.simpleName == "Inner" }.constructors.first()
+    val aInnerCons = (A::class.java.kotlin).nestedClasses.single { it.simpleName == "Inner" }.constructors.first()
     assertEquals(listOf(A::class.java, A.Nested::class.java), aInnerCons.parameters.map { it.type.javaType })
-    val eCons = (E::class.java.kotlinClass as KClass<E>).constructors.single()
+    val eCons = (E::class.java.kotlin).constructors.single()
     assertEquals(listOf(java.lang.Integer.TYPE), eCons.parameters.map { it.type.javaType })
 
     assertEquals(A::class.java, aCons.returnType.javaType)

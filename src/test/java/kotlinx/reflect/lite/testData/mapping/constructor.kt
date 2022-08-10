@@ -24,10 +24,10 @@ fun check(f: KFunction<Any>) {
 }
 
 fun box(): String {
-    check((K::class.java.kotlinClass as KClass<K>).constructors.first())
-    check(((K::class.java.kotlinClass as KClass<K>).nestedClasses.first() as KClass<K.Nested>).constructors.first())
-    check(((K::class.java.kotlinClass as KClass<K>).nestedClasses.first() as KClass<K.Inner>).constructors.first())
-    check((Secondary::class.java.kotlinClass as KClass<Secondary>).constructors.first())
+    check((K::class.java.kotlin).constructors.first())
+    check(((K::class.java.kotlin).nestedClasses.first() as KClass<K.Nested>).constructors.first())
+    check(((K::class.java.kotlin).nestedClasses.first() as KClass<K.Inner>).constructors.first())
+    check((Secondary::class.java.kDeclarationContainer as KClass<Secondary>).constructors.first())
 
     return "OK"
 }

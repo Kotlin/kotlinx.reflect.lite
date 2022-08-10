@@ -16,7 +16,7 @@ fun box(): String {
 //    suspend {
 //        x = f()
 //    }.startCoroutine(EmptyContinuation)
-    val clazz = Class.forName("tests.lambdaClasses.reflectOnLambdaInSuspend.ReflectOnLambdaInSuspendKt").kotlinClass
+    val clazz = Class.forName("tests.lambdaClasses.reflectOnLambdaInSuspend.ReflectOnLambdaInSuspendKt").kDeclarationContainer
     val f = clazz.getMemberByName("f") as KFunction<(String) -> Unit>
     suspend {
         f.callSuspend()

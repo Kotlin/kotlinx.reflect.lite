@@ -1,6 +1,5 @@
 package tests.classes.classMembers
 
-import kotlinx.reflect.lite.tests.*
 import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.*
 
@@ -24,7 +23,7 @@ class Derived : Base() {
 fun Derived.extFun() {}
 
 fun box(): String {
-    (Derived::class.java.kotlinClass as KClass<Derived>).members.forEach {
+    (Derived::class.java.kDeclarationContainer as KClass<Derived>).members.forEach {
         println(it.name)
     }
     return "OK"

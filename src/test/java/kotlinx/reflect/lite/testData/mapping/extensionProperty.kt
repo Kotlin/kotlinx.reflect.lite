@@ -16,7 +16,7 @@ var K.ext: Double
 val fileFacadeClass = object {}::class.java.enclosingClass
 
 fun box(): String {
-    val clazz = Class.forName("tests.mapping.extensionProperty.ExtensionPropertyKt").kotlinClass
+    val clazz = Class.forName("tests.mapping.extensionProperty.ExtensionPropertyKt").kDeclarationContainer
     val p = clazz.getMemberByName("ext") as KMutableProperty1<K, Double>
 
     val getter = p.javaGetter!!

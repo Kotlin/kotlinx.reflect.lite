@@ -8,7 +8,7 @@ import kotlin.test.*
 var foo: String = ""
 
 class A(private var bar: String = "") {
-    fun getBar() = ((A::class.java).kotlinClass as KClass<A>).getMemberByName("bar")
+    fun getBar() = ((A::class.java).kotlin).getMemberByName("bar")
 }
 
 object O {
@@ -16,9 +16,9 @@ object O {
     private var baz: String = ""
 
     @JvmStatic
-    fun getBaz() = (((O::class.java).kotlinClass as KClass<O>).getMemberByName("baz") as KMutableProperty<*>).apply { isAccessible = true }
+    fun getBaz() = ((O::class.java).kotlin.getMemberByName("baz") as KMutableProperty<*>).apply { isAccessible = true }
 
-    fun getGetBaz() = ((O::class.java).kotlinClass as KClass<O>).getMemberByName("getBaz") as KFunction<*>
+    fun getGetBaz() = ((O::class.java).kotlin).getMemberByName("getBaz") as KFunction<*>
 }
 
 fun check(callable: KCallable<*>, vararg args: Any?) {
@@ -45,26 +45,26 @@ fun check(callable: KCallable<*>, vararg args: Any?) {
 }
 
 private fun testBox() {
-    val clazz = Class.forName("tests.call.incorrectNumberOfArguments.IncorrectNumberOfArgumentsKt").kotlinClass
+    val clazz = Class.forName("tests.call.incorrectNumberOfArguments.IncorrectNumberOfArgumentsKt").kDeclarationContainer
     val box = clazz.getMemberByName("box")
     check(box, null)
     check(box, "")
 }
 
 private fun testAConstructor() {
-    val aCons = (A::class.java.kotlinClass as KClass<A>).getPrimaryConstructor()
+    val aCons = (A::class.java.kotlin).getPrimaryConstructor()
     check(aCons)
     check(aCons, null, "")
 }
 
 private fun testGetBaz() {
-    val getGetBaz = ((O::class.java).kotlinClass as KClass<O>).getMemberByName("getGetBaz")
+    val getGetBaz = ((O::class.java).kotlin).getMemberByName("getGetBaz")
     check(getGetBaz)
     check(getGetBaz, null, "")
 }
 
 private fun testFoo() {
-    val clazz = Class.forName("tests.call.incorrectNumberOfArguments.IncorrectNumberOfArgumentsKt").kotlinClass
+    val clazz = Class.forName("tests.call.incorrectNumberOfArguments.IncorrectNumberOfArgumentsKt").kDeclarationContainer
     val f = clazz.getMemberByName("foo") as KMutableProperty0<String>
     check(f, null)
     // TODO: args array of size 2 is wrapped into another array of size 1
@@ -83,7 +83,7 @@ private fun testFoo() {
 
 private fun testAccessPrivateBarProperty() {
     val b = A().getBar() as KMutableProperty1<A, String>
-    val bar = (A::class.java.kotlinClass as KClass<A>).getMemberByName("bar")
+    val bar = (A::class.java.kotlin).getMemberByName("bar")
     bar.isAccessible = true
     // TODO: kotlinx.reflect.lite.calls.CallerImpl$FieldGetter cannot access a member of class tests.call.incorrectNumberOfArguments.A with modifiers "private"
     b.call(A())

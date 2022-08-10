@@ -14,7 +14,7 @@ fun fooOfInBar(): Foo<in Bar> = null!!
 fun fooOfOutBar(): Foo<out Bar> = null!!
 
 fun box(): String {
-    val clazz = Class.forName("tests.mapping.types.parameterizedTypeArgument.ParameterizedTypeArgumentKt").kotlinClass
+    val clazz = Class.forName("tests.mapping.types.parameterizedTypeArgument.ParameterizedTypeArgumentKt").kDeclarationContainer
     val listOfStrings = clazz.getMemberByName("listOfStrings") as KFunction<List<String>>
     assertEquals(String::class.java, listOfStrings.returnType.arguments.single().type!!.javaType)
 

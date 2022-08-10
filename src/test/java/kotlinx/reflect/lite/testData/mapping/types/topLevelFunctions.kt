@@ -10,7 +10,7 @@ fun free(s: String): Int = s.length
 fun Any.extension() {}
 
 fun box(): String {
-    val clazz = Class.forName("tests.mapping.types.topLevelFunctions.TopLevelFunctionsKt").kotlinClass
+    val clazz = Class.forName("tests.mapping.types.topLevelFunctions.TopLevelFunctionsKt").kDeclarationContainer
     val free = clazz.getMemberByName("free") as KFunction<Int>
     val extension = clazz.getMemberByName("extension") as KFunction<Unit>
     assertEquals(java.lang.Integer.TYPE, free.returnType.javaType)

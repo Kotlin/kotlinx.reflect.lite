@@ -21,9 +21,9 @@ interface MyCloneable : Cloneable
 fun KClass<*>.functions() = members.filterIsInstance<KFunction<*>>().map { it.javaMethod!!.name }.sorted()
 
 fun box(): String {
-    assertEquals(listOf("equals", "hashCode", "toString"), (A::class.java.kotlinClass as KClass<*>).functions())
-    assertEquals(listOf("equals", "hashCode", "toString"), (I::class.java.kotlinClass as KClass<*>).functions())
-    assertEquals(listOf("equals", "hashCode", "toString"), (C::class.java.kotlinClass as KClass<*>).functions())
+    assertEquals(listOf("equals", "hashCode", "toString"), (A::class.java.kotlin).functions())
+    assertEquals(listOf("equals", "hashCode", "toString"), (I::class.java.kotlin).functions())
+    assertEquals(listOf("equals", "hashCode", "toString"), (C::class.java.kotlin).functions())
 
     // Now we can get only declared functions: equals(), hashCode(), toString()
 //    assertEquals(
@@ -31,7 +31,7 @@ fun box(): String {
 //        (MyCustomMembers::class.java.kotlinClass as KClass<*>).functions()
 //    )
 
-    assertEquals(listOf("clone", "equals", "hashCode", "toString"), (MyCloneable::class.java.kotlinClass as KClass<*>).functions())
+    assertEquals(listOf("clone", "equals", "hashCode", "toString"), (MyCloneable::class.java.kotlin).functions())
 
     return "OK"
 }

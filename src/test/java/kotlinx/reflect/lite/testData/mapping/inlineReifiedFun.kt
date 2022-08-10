@@ -14,10 +14,10 @@ class Foo {
 }
 
 fun box(): String {
-    val g = Class.forName("tests.mapping.inlineReifiedFun.InlineReifiedFunKt").kotlinClass.getMemberByName("g") as KFunction<*>
+    val g = Class.forName("tests.mapping.inlineReifiedFun.InlineReifiedFunKt").kDeclarationContainer.getMemberByName("g") as KFunction<*>
     assertEquals(g as Any?, g.javaMethod!!.kotlinFunction)
 
-    val h = Foo::class.java.kotlinClass.members.single { it.name == "h" } as KFunction<*>
+    val h = Foo::class.java.kDeclarationContainer.members.single { it.name == "h" } as KFunction<*>
     assertEquals(h, h.javaMethod!!.kotlinFunction as Any?)
 
     return "OK"

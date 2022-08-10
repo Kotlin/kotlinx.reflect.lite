@@ -16,7 +16,7 @@ class A {
 
 fun box(): String {
     val a = A()
-    val foo = ((A::class.java).kotlinClass as KClass<A>).getMemberByName("foo")
+    val foo = ((A::class.java).kotlin).getMemberByName("foo")
     val o = foo.call(
         a,
         a,

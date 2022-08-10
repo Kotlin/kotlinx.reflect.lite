@@ -10,7 +10,7 @@ var topLevel = "123"
 val fileFacadeClass = object {}::class.java.enclosingClass
 
 fun box(): String {
-    val p = Class.forName("tests.mapping.topLevelProperty.TopLevelPropertyKt").kotlinClass.getMemberByName("topLevel") as KMutableProperty0<String>
+    val p = Class.forName("tests.mapping.topLevelProperty.TopLevelPropertyKt").kDeclarationContainer.getMemberByName("topLevel") as KMutableProperty0<String>
 
     assertNotNull(p.javaField, "Fail p field")
     assertEquals(p.javaField!!.getDeclaringClass(), fileFacadeClass)

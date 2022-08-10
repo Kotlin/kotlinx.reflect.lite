@@ -8,7 +8,7 @@ import kotlin.test.*
 class Result {
     private val value = "OK"
 
-    fun ref() = (Result::class.java).kotlinClass.getMemberByName("value") as KProperty1<Result, String>
+    fun ref() = (Result::class.java).kDeclarationContainer.getMemberByName("value") as KProperty1<Result, String>
 }
 
 fun box(): String {

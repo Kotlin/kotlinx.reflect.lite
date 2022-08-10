@@ -6,6 +6,6 @@ import kotlinx.reflect.lite.impl.*
 class A(val result: String = "OK")
 
 fun box(): String {
-    val aCons = (A::class.java.kotlinClass as KClass<A>).constructors.first()
+    val aCons = (A::class.java.kotlin).constructors.first()
     return aCons.callBy(mapOf()).result
 }

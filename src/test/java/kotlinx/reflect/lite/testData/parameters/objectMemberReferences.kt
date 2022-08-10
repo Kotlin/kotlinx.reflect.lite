@@ -9,7 +9,7 @@ object Host {
 }
 
 fun box(): String {
-    val fooParams = (Host::class.java).kotlinClass.getMemberByName("foo").parameters
+    val fooParams = (Host::class.java).kDeclarationContainer.getMemberByName("foo").parameters
 
     assertEquals(3, fooParams.size)
 

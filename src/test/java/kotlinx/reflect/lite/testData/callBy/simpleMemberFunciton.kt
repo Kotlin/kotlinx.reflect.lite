@@ -12,6 +12,6 @@ class A {
 }
 
 fun box(): String {
-    val foo = (A::class.java).kotlinClass.getMemberByName("foo") as KFunction<String>
+    val foo = (A::class.java).kDeclarationContainer.getMemberByName("foo") as KFunction<String>
     return foo.callBy(mapOf(foo.parameters[0] to A(), foo.parameters[1] to 42))
 }

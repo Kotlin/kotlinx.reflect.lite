@@ -19,7 +19,7 @@ fun KParameter.check(name: String?, kind: KParameter.Kind) {
 }
 
 fun box(): String {
-    (A::class.java).kotlinClass.getMemberByName("memExt").let {
+    (A::class.java).kDeclarationContainer.getMemberByName("memExt").let {
         assertEquals(3, it.parameters.size)
         it.parameters[0].check(null, KParameter.Kind.INSTANCE)
         it.parameters[1].check(null, KParameter.Kind.EXTENSION_RECEIVER)
@@ -27,12 +27,12 @@ fun box(): String {
     }
 
     Class.forName("tests.parameters.instanceExtensionReceiverAndValueParameters.InstanceExtensionReceiverAndValueParametersKt")
-        .kotlinClass.getMemberByName("topLevel").let {
+        .kDeclarationContainer.getMemberByName("topLevel").let {
             assertEquals(0, it.parameters.size)
         }
 
     Class.forName("tests.parameters.instanceExtensionReceiverAndValueParameters.InstanceExtensionReceiverAndValueParametersKt")
-        .kotlinClass.getMemberByName("ext").let {
+        .kDeclarationContainer.getMemberByName("ext").let {
             assertEquals(2, it.parameters.size)
             it.parameters[0].check(null, KParameter.Kind.EXTENSION_RECEIVER)
             it.parameters[1].check("o", KParameter.Kind.VALUE)

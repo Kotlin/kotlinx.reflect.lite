@@ -8,7 +8,7 @@ import kotlin.test.*
 class K(var value: Long)
 
 fun box(): String {
-    val p = K::class.java.kotlinClass.getMemberByName("value") as KMutableProperty1<K, Long>
+    val p = K::class.java.kDeclarationContainer.getMemberByName("value") as KMutableProperty1<K, Long>
 
     assertNotNull(p.javaField, "Fail p field")
 

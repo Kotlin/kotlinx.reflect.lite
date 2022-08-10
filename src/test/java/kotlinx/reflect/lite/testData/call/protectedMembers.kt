@@ -2,7 +2,6 @@ package tests.call.protectedMembers
 
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.impl.*
-import kotlinx.reflect.lite.tests.*
 import kotlin.test.*
 
 abstract class Base {
@@ -18,7 +17,7 @@ abstract class Base {
 class Derived : Base()
 
 fun member(name: String): KCallable<*> =
-    ((Derived::class.java).kotlinClass as KClass<Derived>).members.single { it.name == name }
+    ((Derived::class.java).kDeclarationContainer as KClass<Derived>).members.single { it.name == name }
         .apply { isAccessible = true }
 
 fun box(): String {

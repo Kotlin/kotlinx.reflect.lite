@@ -13,7 +13,7 @@ open class A {
 class B : A()
 
 fun box(): String {
-    val f = (B::class.java).kotlinClass.getMemberByName("foo")
+    val f = (B::class.java).kDeclarationContainer.getMemberByName("foo")
 
     assertEquals("ba", f.callBy(mapOf(
         f.parameters.first() to B(),

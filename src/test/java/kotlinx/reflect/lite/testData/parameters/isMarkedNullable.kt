@@ -12,10 +12,10 @@ class A {
 fun Any?.ext() {}
 
 fun box(): String {
-    val ps = (A::class.java).kotlinClass.getMemberByName("foo").parameters.map { it.type.isMarkedNullable }
+    val ps = (A::class.java).kDeclarationContainer.getMemberByName("foo").parameters.map { it.type.isMarkedNullable }
     assertEquals(listOf(false, false, true, false, false, true), ps)
 
-    val ext = Class.forName("tests.parameters.isMarkedNullable.IsMarkedNullableKt").kotlinClass.getMemberByName("ext")
+    val ext = Class.forName("tests.parameters.isMarkedNullable.IsMarkedNullableKt").kDeclarationContainer.getMemberByName("ext")
     assertTrue(ext.parameters.single().type.isMarkedNullable)
 
     return "OK"

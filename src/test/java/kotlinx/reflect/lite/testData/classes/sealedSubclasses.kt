@@ -29,11 +29,11 @@ fun sealedSubclassNames(c: KClass<*>) = c.sealedSubclasses.map { it.simpleName ?
 
 fun box(): String {
     assertEquals(listOf("TL1", "TL2"),
-        sealedSubclassNames((SealedClassWithTopLevelSubclasses::class.java.kotlinClass as KClass<SealedClassWithTopLevelSubclasses>)))
+        sealedSubclassNames((SealedClassWithTopLevelSubclasses::class.java.kDeclarationContainer as KClass<SealedClassWithTopLevelSubclasses>)))
     assertEquals(listOf("N1", "N2"),
-        sealedSubclassNames((SealedClassWithNestedSubclasses::class.java.kotlinClass as KClass<SealedClassWithNestedSubclasses>)))
+        sealedSubclassNames((SealedClassWithNestedSubclasses::class.java.kDeclarationContainer as KClass<SealedClassWithNestedSubclasses>)))
     assertEquals(emptyList(),
-        sealedSubclassNames((SealedClassWithNoSubclasses::class.java.kotlinClass as KClass<SealedClassWithNoSubclasses>)))
+        sealedSubclassNames((SealedClassWithNoSubclasses::class.java.kDeclarationContainer as KClass<SealedClassWithNoSubclasses>)))
 
 //    assertEquals(emptyList(), sealedSubclassNames(String::class.java.toLiteKClass()))
 //    assertEquals(emptyList(), sealedSubclassNames(Thread::class.java.toLiteKClass()))

@@ -9,7 +9,7 @@ class A {
 }
 
 fun box(): String {
-    val foo = ((A::class.java).kotlinClass as KClass<A>).getMemberByName("foo")
+    val foo = ((A::class.java).kotlin).getMemberByName("foo")
 
     val x = foo.call(A(), 42, 239)
     if (x != 281) return "Fail: $x"

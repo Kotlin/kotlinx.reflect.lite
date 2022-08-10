@@ -11,14 +11,14 @@ class A<T : CharSequence> {
 }
 
 fun box(): String {
-    val f = A::class.java.kotlinClass.getMemberByName("foo") as KFunction<Unit>
+    val f = A::class.java.kDeclarationContainer.getMemberByName("foo") as KFunction<Unit>
     val t = f.parameters.last().type.javaType
     if (t !is TypeVariable<*>) return "Fail, t should be a type variable: $t"
 
     assertEquals("T", t.name)
     assertEquals(A::class.java, (t.genericDeclaration as Class<*>))
 
-    val tp = (A::class.java.kotlinClass as KClass<A<*>>).typeParameters
+    val tp = (A::class.java.kDeclarationContainer as KClass<A<*>>).typeParameters
     assertEquals(CharSequence::class.java, tp.single().upperBounds.single().javaType)
 
     return "OK"

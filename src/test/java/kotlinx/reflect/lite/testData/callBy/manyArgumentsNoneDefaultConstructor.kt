@@ -89,7 +89,7 @@ class A(
 }
 
 fun box(): String {
-    val aClass = (A::class.java).kotlinClass as KClass<A>
+    val aClass = (A::class.java).kotlin
     val f = aClass.constructors.single()
     val parameters = f.parameters
 

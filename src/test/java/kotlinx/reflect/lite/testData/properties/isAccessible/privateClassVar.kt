@@ -8,7 +8,7 @@ import kotlin.test.*
 class A {
     private var value = 0
 
-    fun ref() = (A::class.java).kotlinClass.getMemberByName("value") as KMutableProperty1<A, Int>
+    fun ref() = (A::class.java).kDeclarationContainer.getMemberByName("value") as KMutableProperty1<A, Int>
 }
 
 fun box(): String {

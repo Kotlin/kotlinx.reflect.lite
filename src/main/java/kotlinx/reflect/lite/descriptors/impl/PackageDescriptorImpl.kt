@@ -19,6 +19,7 @@ internal class PackageDescriptorImpl<T : Any?>(
             } ?: error("@Metadata annotation was not found for ${jClass.name} ")
             return when (val metadata = KotlinClassMetadata.read(header)) {
                 is KotlinClassMetadata.FileFacade -> metadata.toKmPackage()
+                is KotlinClassMetadata.MultiFileClassPart -> metadata.toKmPackage()
                 else -> error("Can not create PackageDescriptor for metadata of type $metadata")
             }
         }

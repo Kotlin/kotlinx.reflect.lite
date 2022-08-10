@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
 var state: String = ""
 
 fun box(): String {
-    val clazz = Class.forName("tests.properties.accessors.topLevelPropertyAccessors.TopLevelPropertyAccessorsKt").kotlinClass
+    val clazz = Class.forName("tests.properties.accessors.topLevelPropertyAccessors.TopLevelPropertyAccessorsKt").kDeclarationContainer
     val state = clazz.getMemberByName("state") as KMutableProperty0<String>
 
     assertEquals("", state.getter.invoke())

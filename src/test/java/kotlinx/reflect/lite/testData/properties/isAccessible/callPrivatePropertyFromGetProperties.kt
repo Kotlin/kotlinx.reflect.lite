@@ -8,7 +8,7 @@ import kotlin.test.*
 class K(private val value: String)
 
 fun box(): String {
-    val p = (K::class.java).kotlinClass.getMemberByName("value") as KProperty1<K, String>
+    val p = (K::class.java).kDeclarationContainer.getMemberByName("value") as KProperty1<K, String>
 
     try {
         return p.get(K("Fail: private property should not be accessible by default"))
