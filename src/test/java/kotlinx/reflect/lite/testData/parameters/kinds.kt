@@ -12,7 +12,7 @@ class A {
 }
 
 fun box(): String {
-    val foo = A::class.java.kDeclarationContainer.getMemberByName("foo")
+    val foo = A::class.java.kotlin.getMemberByName("foo")
     val inner = (A::class.java.kotlin).nestedClasses.single { it.simpleName == "Inner" }
     assertEquals(listOf(KParameter.Kind.INSTANCE, KParameter.Kind.EXTENSION_RECEIVER, KParameter.Kind.VALUE), foo.parameters.map { it.kind })
     assertEquals(listOf(KParameter.Kind.INSTANCE, KParameter.Kind.VALUE), inner.constructors.first().parameters.map { it.kind })

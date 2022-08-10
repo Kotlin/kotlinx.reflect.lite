@@ -28,19 +28,19 @@ fun box(): String {
     assert(dHashCode.call(D("foo")) == D::hashCode.call(D("foo")))
     assert(dToString.call(D("foo")) == "D(s=foo)")
 
-    val intEquals = ((Int::class.java).kDeclarationContainer as KClass<Int>).getMemberByName("equals") as KFunction<Boolean>
-    val intHashCode = ((Int::class.java).kDeclarationContainer as KClass<Int>).getMemberByName("hashCode") as KFunction<Int>
-    val intToString = ((Int::class.java).kDeclarationContainer as KClass<Int>).getMemberByName("toString") as KFunction<String>
+    val intEquals = (Int::class.java).kotlin.getMemberByName("equals") as KFunction<Boolean>
+    val intHashCode = (Int::class.java).kotlin.getMemberByName("hashCode") as KFunction<Int>
+    val intToString = (Int::class.java).kotlin.getMemberByName("toString") as KFunction<String>
     assert(intEquals.call(-1, -1))
     assert(intHashCode.call(0) != Int::hashCode.call(1))
     assert(intToString.call(42) == "42")
 
     val stringEquals =
-        ((String::class.java).kDeclarationContainer as KClass<String>).getMemberByName("equals") as KFunction<Boolean>
+        (String::class.java).kotlin.getMemberByName("equals") as KFunction<Boolean>
     val stringHashcode =
-        ((String::class.java).kDeclarationContainer as KClass<String>).getMemberByName("hashCode") as KFunction<Int>
+        (String::class.java).kotlin.getMemberByName("hashCode") as KFunction<Int>
     val stringToString =
-        ((String::class.java).kDeclarationContainer as KClass<String>).getMemberByName("toString") as KFunction<String>
+        (String::class.java).kotlin.getMemberByName("toString") as KFunction<String>
     assert(stringEquals.call("beer", "beer"))
     stringHashcode.call("beer")
 

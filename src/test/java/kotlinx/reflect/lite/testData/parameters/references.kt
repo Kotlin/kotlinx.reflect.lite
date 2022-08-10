@@ -18,9 +18,9 @@ fun KParameter.check(name: String?, kind: KParameter.Kind) {
 }
 
 fun box(): String {
-    val cFoo = (C::class.java).kDeclarationContainer.getMemberByName("foo")
-    val cBar = (C::class.java).kDeclarationContainer.getMemberByName("bar") as KMutableProperty1<C, String>
-    val cExtFun = Class.forName("tests.parameters.references.ReferencesKt").kDeclarationContainer.getMemberByName("extFun")
+    val cFoo = (C::class.java).kotlin.getMemberByName("foo")
+    val cBar = (C::class.java).kotlin.getMemberByName("bar") as KMutableProperty1<C, String>
+    val cExtFun = Class.forName("tests.parameters.references.ReferencesKt").kotlinPackage.getMemberByName("extFun")
 
     assertEquals(1, cFoo.parameters.size)
     assertEquals(1, cBar.getter.parameters.size)

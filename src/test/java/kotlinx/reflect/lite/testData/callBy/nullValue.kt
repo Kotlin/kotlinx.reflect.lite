@@ -9,7 +9,7 @@ fun foo(x: String? = "Fail") {
 }
 
 fun box(): String {
-    val foo = Class.forName("tests.callBy.nullValue.NullValueKt").kDeclarationContainer.getMemberByName("foo")
+    val foo = Class.forName("tests.callBy.nullValue.NullValueKt").kotlinPackage.getMemberByName("foo")
     foo.callBy(mapOf(foo.parameters.single() to null))
     return "OK"
 }

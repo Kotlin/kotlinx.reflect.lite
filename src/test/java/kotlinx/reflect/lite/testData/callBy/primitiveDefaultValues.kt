@@ -25,7 +25,7 @@ fun primitives(
 }
 
 fun box(): String {
-    val clazz = Class.forName("tests.callBy.primitiveDefaultValues.PrimitiveDefaultValuesKt").kDeclarationContainer
+    val clazz = Class.forName("tests.callBy.primitiveDefaultValues.PrimitiveDefaultValuesKt").kotlinPackage
     val primitives = clazz.getMemberByName("primitives")
     primitives.callBy(mapOf())
     return "OK"

@@ -8,7 +8,7 @@ import kotlin.test.*
 class A(param: String) {
     protected var v: String = param
 
-    fun ref() = (A::class.java).kDeclarationContainer.getMemberByName("v") as KMutableProperty1<A, String>
+    fun ref() = (A::class.java).kotlin.getMemberByName("v") as KMutableProperty1<A, String>
 }
 
 fun box(): String {

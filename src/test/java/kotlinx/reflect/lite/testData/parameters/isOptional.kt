@@ -20,9 +20,9 @@ class C : A()
 fun Int.extFun() {}
 
 fun box(): String {
-    assertEquals(listOf(false, false, true), (A::class.java).kDeclarationContainer.getMemberByName("foo").parameters.map { it.isOptional })
+    assertEquals(listOf(false, false, true), (A::class.java).kotlin.getMemberByName("foo").parameters.map { it.isOptional })
 
-    assertFalse(Class.forName("tests.parameters.isOptional.IsOptionalKt").kDeclarationContainer.getMemberByName("extFun").parameters.single().isOptional)
+    assertFalse(Class.forName("tests.parameters.isOptional.IsOptionalKt").kotlinPackage.getMemberByName("extFun").parameters.single().isOptional)
 
     return "OK"
 }

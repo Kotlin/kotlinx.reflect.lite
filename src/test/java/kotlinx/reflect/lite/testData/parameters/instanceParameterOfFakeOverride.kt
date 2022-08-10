@@ -14,11 +14,11 @@ open class A {
 class B : A()
 
 fun box(): String {
-    val bProperty = (B::class.java).kDeclarationContainer.getMemberByName("property")
+    val bProperty = (B::class.java).kotlin.getMemberByName("property")
     assertEquals(KParameter.Kind.INSTANCE, bProperty.parameters[0].kind)
     assertEquals(B::class.java, bProperty.parameters[0].type.javaType)
 
-    val bFunction = (B::class.java).kDeclarationContainer.getMemberByName("function")
+    val bFunction = (B::class.java).kotlin.getMemberByName("function")
     assertEquals(KParameter.Kind.INSTANCE, bFunction.parameters[0].kind)
     assertEquals(B::class.java, bFunction.parameters[0].type.javaType)
 

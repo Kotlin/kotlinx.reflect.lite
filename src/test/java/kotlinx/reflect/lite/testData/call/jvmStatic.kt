@@ -17,9 +17,9 @@ class C {
 }
 
 fun box(): String {
-    val foo = ((Obj::class.java).kDeclarationContainer as KClass<Obj>).getMemberByName("foo")
+    val foo = (Obj::class.java).kotlin.getMemberByName("foo")
     foo.call(Obj)
-    val bar = (C.Companion::class.java.kDeclarationContainer as KClass<C.Companion>).getMemberByName("bar")
+    val bar = C.Companion::class.java.kotlin.getMemberByName("bar")
     bar.call(C.Companion)
     return "OK"
 }

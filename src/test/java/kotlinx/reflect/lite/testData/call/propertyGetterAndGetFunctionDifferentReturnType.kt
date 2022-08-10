@@ -9,7 +9,7 @@ data class Foo(val id: String) {
 }
 
 fun box(): String {
-    val id = (Foo::class.java.kDeclarationContainer as KClass<Foo>).getMemberByName("id") as KProperty1<Foo, String>
+    val id = Foo::class.java.kotlin.getMemberByName("id") as KProperty1<Foo, String>
     // TODO: `id.call(Foo("abs"))` fails with the error: "object is not an instance of declaring class", expected the same as `id.invoke(Foo("abc))`
     // id.call(Foo("abc"))
     id.invoke(Foo("dfdc"))

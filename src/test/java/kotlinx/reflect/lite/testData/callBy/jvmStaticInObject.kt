@@ -9,7 +9,7 @@ object Obj {
 }
 
 fun box(): String {
-    val f = (Obj::class.java).kDeclarationContainer.members.single { it.name == "foo" }
+    val f = (Obj::class.java).kotlin.members.single { it.name == "foo" }
 
     // Any object method currently requires the object instance passed
     try {

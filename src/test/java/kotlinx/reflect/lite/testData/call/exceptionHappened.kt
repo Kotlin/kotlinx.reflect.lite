@@ -9,7 +9,7 @@ fun fail(message: String) {
 }
 
 fun box(): String {
-    val clazz = Class.forName("tests.call.exceptionHappened.ExceptionHappenedKt").kDeclarationContainer
+    val clazz = Class.forName("tests.call.exceptionHappened.ExceptionHappenedKt").kotlinPackage
     val fail = clazz.getMemberByName("fail")
     try {
         fail.call("OK")

@@ -10,7 +10,7 @@ class C {
 }
 
 fun box(): String {
-    val f = (C.Companion::class.java).kDeclarationContainer.members.single { it.name == "foo" }
+    val f = (C.Companion::class.java).kotlin.members.single { it.name == "foo" }
 
     // Any object method currently requires the object instance passed
     try {

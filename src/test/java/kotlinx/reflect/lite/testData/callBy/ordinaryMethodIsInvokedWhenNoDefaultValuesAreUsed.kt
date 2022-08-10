@@ -17,7 +17,7 @@ fun foo(result: String = "foo") {
 }
 
 fun box(): String {
-    val clazz = Class.forName("tests.callBy.ordinaryMethodIsInvokedWhenNoDefaultValuesAreUsed.OrdinaryMethodIsInvokedWhenNoDefaultValuesAreUsedKt").kDeclarationContainer
+    val clazz = Class.forName("tests.callBy.ordinaryMethodIsInvokedWhenNoDefaultValuesAreUsed.OrdinaryMethodIsInvokedWhenNoDefaultValuesAreUsedKt").kotlinPackage
     val foo = clazz.getMemberByName("foo")
     foo.callBy(mapOf(foo.parameters.single() to "box"))
     return "OK"

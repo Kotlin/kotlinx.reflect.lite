@@ -27,7 +27,7 @@ fun box(): String {
     check((K::class.java.kotlin).constructors.first())
     check(((K::class.java.kotlin).nestedClasses.first() as KClass<K.Nested>).constructors.first())
     check(((K::class.java.kotlin).nestedClasses.first() as KClass<K.Inner>).constructors.first())
-    check((Secondary::class.java.kDeclarationContainer as KClass<Secondary>).constructors.first())
+    check((Secondary::class.java.kotlin).constructors.first())
 
     return "OK"
 }

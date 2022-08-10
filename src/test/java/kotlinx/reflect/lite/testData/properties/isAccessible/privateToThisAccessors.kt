@@ -10,7 +10,7 @@ class K<in T : String> {
         set(value) {}
 
     fun run(): String {
-        val p = (K::class.java).kDeclarationContainer.getMemberByName("t") as KMutableProperty1<K<String>, String>
+        val p = (K::class.java).kotlin.getMemberByName("t") as KMutableProperty1<K<String>, String>
         p.isAccessible = true
         p.set(this as K<String>, "")
         return p.get(this) as String

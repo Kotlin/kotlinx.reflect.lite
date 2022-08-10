@@ -9,7 +9,7 @@ fun box(): String {
         fun result(s: String) = s
     }
 
-    val localCons = ((Local::class.java).kDeclarationContainer as KClass<Local>).getPrimaryConstructor()
-    val result = ((Local::class.java).kDeclarationContainer as KClass<Local>).getMemberByName("result") as KFunction<String>
+    val localCons = (Local::class.java).kotlin.getPrimaryConstructor()
+    val result = (Local::class.java).kotlin.getMemberByName("result") as KFunction<String>
     return result.call(localCons.call(), "OK")
 }
