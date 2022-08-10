@@ -27,17 +27,20 @@ class KClassTest {
 
     // constructors
     @Test
-    fun testClassesWithoutConstructors() = test("classes.classesWithoutConstructors") { tests.constructors.classesWithoutConstructors.box() }
+    fun testClassesWithoutConstructors() = test("constructors.classesWithoutConstructors") { tests.constructors.classesWithoutConstructors.box() }
 
     @Test
-    fun testConstructorName() = test("classes.constructorName") { tests.constructors.constructorName.box() }
+    fun testConstructorName() = test("constructors.constructorName") { tests.constructors.constructorName.box() }
 
     @Ignore
     @Test
-    fun testEnumEntry() = test("classes.enumEntry") { tests.constructors.enumEntry.box() }
+    fun testEnumEntry() = test("constructors.enumEntry") { tests.constructors.enumEntry.box() }
 
     @Test
-    fun testSimpleGetConstructors() = test("classes.simpleGetConstructors") { tests.constructors.simpleGetConstructors.box() }
+    fun testSimpleGetConstructors() = test("constructors.simpleGetConstructors") { tests.constructors.simpleGetConstructors.box() }
+
+    @Test
+    fun testPrimaryConstructor() = test("constructors.primaryConstructor") { tests.constructors.primaryConstructor.box() }
 
     // members
     @Test

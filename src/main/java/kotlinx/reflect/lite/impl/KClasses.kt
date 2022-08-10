@@ -12,4 +12,4 @@ import kotlinx.reflect.lite.descriptors.*
  */
 @SinceKotlin("1.1")
 val <T : Any> KClass<T>.primaryConstructor: KFunction<T>?
-    get() = constructors.firstOrNull { it is ConstructorDescriptor && it.isPrimary }
+    get() = constructors.firstOrNull { ((it as KFunctionImpl).descriptor as ConstructorDescriptor).isPrimary }
