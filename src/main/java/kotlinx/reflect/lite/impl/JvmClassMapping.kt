@@ -8,14 +8,14 @@ import kotlinx.reflect.lite.*
  * Returns a [KClass] instance corresponding to the given Java [Class] instance.
  */
 val <T : Any> Class<T>.kotlin: KClass<T>
-    @JvmName("getKotlinClass")
+    @JvmName("getLiteKClass")
     get() = ReflectionLiteImpl.createKotlinClass(this)
 
 /**
  * Returns a [KPackage] instance corresponding to the given Java [Class] instance.
  */
 val <T : Any> Class<T>.kotlinPackage: KPackage<T>
-    @JvmName("getKotlinClass")
+    @JvmName("getLiteKPackage")
     get() = ReflectionLiteImpl.createKotlinPackage(this)
 
 

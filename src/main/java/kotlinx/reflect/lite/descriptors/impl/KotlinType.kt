@@ -2,6 +2,8 @@ package kotlinx.reflect.lite.descriptors.impl
 
 import kotlinx.metadata.*
 import kotlinx.reflect.lite.KVariance
+import kotlinx.reflect.lite.builtins.*
+import kotlinx.reflect.lite.builtins.KotlinBuiltInsImpl
 import kotlinx.reflect.lite.descriptors.*
 import kotlinx.reflect.lite.descriptors.Annotated
 import kotlinx.reflect.lite.descriptors.ClassDescriptor
@@ -18,7 +20,6 @@ internal class KotlinType(
 ) : Annotated
 
 internal fun KotlinType.isNullableType(): Boolean =
-    // TODO: check if this is correct
     isMarkedNullable || (descriptor is TypeParameterDescriptor && descriptor.upperBounds.any { it.isNullableType() })
 
 internal class TypeParameterTable(
@@ -50,7 +51,8 @@ internal fun KmType.toKotlinType(module: ModuleDescriptor, typeParameterTable: T
         classifier,
         generateSequence(this, KmType::outerType).flatMap(KmType::arguments).map { (variance, type) ->
             TypeProjection(
-                type?.toKotlinType(module, typeParameterTable) ?: TODO("Any type"),
+                // if the projected type is null, then this is a star projection, use anyType
+                type?.toKotlinType(module, typeParameterTable) ?: KotlinBuiltInsImpl.anyType,
                 variance == null,
                 variance?.toVariance() ?: KVariance.OUT
             )

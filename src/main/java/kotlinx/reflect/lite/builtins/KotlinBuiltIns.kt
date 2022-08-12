@@ -1,6 +1,8 @@
 // Partially copied from: https://github.com/JetBrains/kotlin/blob/b573532d8cbf9bf5347adb40d0774c21c2d35dc0/core/compiler.common/src/org/jetbrains/kotlin/builtins/StandardNames.kt
 package kotlinx.reflect.lite.builtins
 
+import kotlinx.reflect.lite.descriptors.impl.*
+import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.name.*
 
 internal object StandardNames {
@@ -43,4 +45,9 @@ internal object StandardNames {
     class ClassIds {
         val any = ClassId(BUILT_INS_PACKAGE_FQ_NAME, "Any")
     }
+}
+
+internal object KotlinBuiltInsImpl {
+    val anyType: KotlinType = KotlinType((Any::class.java.kDeclarationContainer as KClassImpl<*>).descriptor, emptyList(), false)
+    val anyNType: KotlinType = KotlinType((Any::class.java.kDeclarationContainer as KClassImpl<*>).descriptor, emptyList(), true)
 }
