@@ -37,9 +37,7 @@ internal fun createKCallable(descriptor: CallableDescriptor): KCallableImpl<*> {
 }
 
 internal val CallableDescriptor.instanceReceiverParameter: ReceiverParameterDescriptor?
-    get() =
-        if (dispatchReceiverParameter != null) containingClass?.let { ReceiverParameterDescriptorImpl(it.defaultType, this) }
-        else null
+    get() = if (dispatchReceiverParameter != null) containingClass?.thisAsReceiverParameter else null
 
 internal fun <D : CallableDescriptor> overrides(derived: D, base: D): Boolean {
     require(derived.name == base.name) { "Names should be equal: $derived, $base" }
@@ -137,7 +135,7 @@ internal abstract class FakeOverrideCallableMemberDescriptor(
         get() = containingClass
 
     override val dispatchReceiverParameter: ReceiverParameterDescriptor?
-        get() = ReceiverParameterDescriptorImpl(containingClass.defaultType, this)
+        get() = containingClass.thisAsReceiverParameter
 
     override val isFinal: Boolean
         get() = overridden.any(CallableDescriptor::isFinal)

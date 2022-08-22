@@ -37,7 +37,7 @@ internal class ConstructorDescriptorImpl(
         get() = emptyList()
 
     override val dispatchReceiverParameter: ReceiverParameterDescriptor?
-        get() = if (containingClass.isInner) ReceiverParameterDescriptorImpl(containingClass.containingClass!!.defaultType, this) else null
+        get() = if (containingClass.isInner) containingClass.containingClass!!.thisAsReceiverParameter else null
 
     override val extensionReceiverParameter: ReceiverParameterDescriptor?
         get() = null

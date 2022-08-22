@@ -111,11 +111,11 @@ internal class FunctionDescriptorImpl(
         get() = typeParameterTable.typeParameters
 
     override val dispatchReceiverParameter: ReceiverParameterDescriptor?
-        get() = containingClass?.let { ReceiverParameterDescriptorImpl(it.defaultType, this) }
+        get() = containingClass?.thisAsReceiverParameter
 
     override val extensionReceiverParameter: ReceiverParameterDescriptor?
         get() = kmFunction.receiverParameterType?.let {
-            ReceiverParameterDescriptorImpl(it.toKotlinType(module, typeParameterTable), this)
+            ReceiverParameterDescriptorImpl(it.toKotlinType(module, typeParameterTable))
         }
 
     override val returnType: KotlinType

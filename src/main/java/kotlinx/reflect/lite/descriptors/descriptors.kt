@@ -12,7 +12,7 @@ import kotlinx.reflect.lite.name.*
 import java.lang.reflect.*
 
 internal interface ModuleDescriptor {
-    fun <T> findClass(name: ClassName): ClassDescriptor<*>
+    fun <T> findClass(name: ClassName): ClassDescriptor<*>?
 }
 
 internal interface Annotated {
@@ -50,7 +50,6 @@ internal interface ClassBasedDeclarationContainerDescriptor {
 }
 
 internal interface ClassDescriptor<out T> : ClassBasedDeclarationContainerDescriptor, ClassifierDescriptor {
-    val kmClass: KmClass
     val classId: ClassId
 
     val simpleName: String?
@@ -64,6 +63,7 @@ internal interface ClassDescriptor<out T> : ClassBasedDeclarationContainerDescri
     val memberScope: MemberScope
 
     val containingClass: ClassDescriptor<*>?
+    val thisAsReceiverParameter: ReceiverParameterDescriptor
 
     val typeParameterTable: TypeParameterTable
     val typeParameters: List<TypeParameterDescriptor>
@@ -136,7 +136,7 @@ internal interface FunctionDescriptor : CallableDescriptor {
 }
 
 internal interface ParameterDescriptor : DeclarationDescriptor {
-    val containingDeclaration: CallableDescriptor
+    val containingDeclaration: CallableDescriptor?
     val type: KotlinType
 }
 

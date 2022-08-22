@@ -46,13 +46,11 @@ internal class PropertyDescriptorImpl(
         get() = JvmFlag.Property.IS_MOVED_FROM_INTERFACE_COMPANION(kmProperty.jvmFlags)
 
     override val dispatchReceiverParameter: ReceiverParameterDescriptor?
-        get() = containingClass?.let {
-            ReceiverParameterDescriptorImpl(it.defaultType, this)
-        }
+        get() = containingClass?.thisAsReceiverParameter
 
     override val extensionReceiverParameter: ReceiverParameterDescriptor?
         get() = kmProperty.receiverParameterType?.let {
-            ReceiverParameterDescriptorImpl(it.toKotlinType(module, typeParameterTable), this)
+            ReceiverParameterDescriptorImpl(it.toKotlinType(module, typeParameterTable))
         }
 
     override val signature: JvmFieldSignature?
