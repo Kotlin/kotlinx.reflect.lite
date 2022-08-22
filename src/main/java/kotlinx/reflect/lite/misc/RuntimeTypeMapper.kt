@@ -41,27 +41,29 @@ internal sealed class JvmPropertySignature {
 internal object RuntimeTypeMapper {
     private val JAVA_LANG_VOID = ClassId.topLevel(FqName("java.lang.Void"))
 
-    fun mapJvmClassToKotlinClassId(klass: Class<*>): ClassId {
-        if (klass.isArray) {
-            klass.componentType.primitiveType?.let {
+    fun getKotlinBuiltInClassId(jClass: Class<*>): ClassId? {
+        if (jClass.isArray) {
+            jClass.componentType.primitiveType?.let {
                 return ClassId(FqName("kotlin"), it.arrayTypeName)
             }
             return ClassId.topLevel(StandardNames.FQ_NAMES.array)
         }
 
-        if (klass == Void.TYPE) return JAVA_LANG_VOID
+        if (jClass == Void.TYPE) return JAVA_LANG_VOID
 
-        klass.primitiveType?.let {
+        jClass.primitiveType?.let {
             return ClassId(StandardNames.BUILT_INS_PACKAGE_FQ_NAME, it.typeName)
         }
 
-        val classId = klass.classId
+        val classId = jClass.classId
         if (!classId.isLocal) {
             JavaToKotlinClassMap.mapJavaToKotlin(classId.asSingleFqName())?.let { return it }
         }
-
-        return classId
+        return null
     }
+
+    fun mapJvmClassToKotlinClassId(jClass: Class<*>): ClassId =
+        getKotlinBuiltInClassId(jClass)?.let { return it } ?: jClass.classId
 
     private val Class<*>.primitiveType: PrimitiveType?
         get() = if (isPrimitive) JvmPrimitiveType.get(simpleName).primitiveType else null

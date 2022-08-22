@@ -6,13 +6,14 @@ import kotlinx.metadata.jvm.*
 import kotlinx.reflect.lite.builtins.*
 import kotlinx.reflect.lite.descriptors.ClassDescriptor
 import kotlinx.reflect.lite.descriptors.ModuleDescriptor
+import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.misc.*
 import kotlinx.reflect.lite.name.*
 
 internal class ModuleDescriptorImpl(internal val classLoader: ClassLoader) : ModuleDescriptor {
-    override fun <T> findClass (name: ClassName): ClassDescriptor<T> {
+    override fun <T> findClass (name: ClassName): ClassDescriptor<T>? {
         val fqName = (JavaToKotlinClassMap.mapKotlinToJava(FqName(name.replace('/', '.'))) ?: ClassId(name)).asJavaLookupFqName()
-        val jClass = when (fqName) {
+        val jClass = when (fqName) { // todo why arrays are hardcoded
             "kotlin.BooleanArray" -> BooleanArray::class.java
             "kotlin.ByteArray" -> ByteArray::class.java
             "kotlin.CharArray" -> CharArray::class.java
@@ -22,8 +23,8 @@ internal class ModuleDescriptorImpl(internal val classLoader: ClassLoader) : Mod
             "kotlin.LongArray" -> LongArray::class.java
             "kotlin.ShortArray" -> ShortArray::class.java
             "kotlin.Array" -> Array<Any>::class.java
-            else -> classLoader.tryLoadClass(fqName) ?: error("Failed to load the class: $fqName")
+            else -> classLoader.tryLoadClass(fqName)
         }
-        return ClassDescriptorImpl(jClass as Class<T>)
+        return (jClass?.kotlin as KClassImpl<T>?)?.descriptor
     }
 }

@@ -42,7 +42,7 @@ internal class TypeProjection(
 internal fun KmType.toKotlinType(module: ModuleDescriptor, typeParameterTable: TypeParameterTable): KotlinType {
     val classifier = classifier.let { classifier ->
         when (classifier) {
-            is KmClassifier.Class -> module.findClass<Any?>(classifier.name)
+            is KmClassifier.Class -> module.findClass<Any?>(classifier.name) ?: error ("Could not find class $classifier")
             is KmClassifier.TypeParameter -> typeParameterTable.get(classifier.id)
             is KmClassifier.TypeAlias -> TODO("Support KmClassifier.TypeAlias")
         }
