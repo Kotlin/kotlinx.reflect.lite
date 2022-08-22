@@ -13,7 +13,6 @@ class KClassTest {
     @Test
     fun testQualifiedName() = test("classes.qualifiedName") { tests.classes.qualifiedName.box() }
 
-    @Ignore
     @Test
     fun testQualifiedNameOfStandardClasses() = test("classes.qualifiedNameOfStandardClasses") { tests.classes.qualifiedNameOfStandardClasses.box() }
 
@@ -31,10 +30,6 @@ class KClassTest {
 
     @Test
     fun testConstructorName() = test("constructors.constructorName") { tests.constructors.constructorName.box() }
-
-    @Ignore
-    @Test
-    fun testEnumEntry() = test("constructors.enumEntry") { tests.constructors.enumEntry.box() }
 
     @Test
     fun testSimpleGetConstructors() = test("constructors.simpleGetConstructors") { tests.constructors.simpleGetConstructors.box() }

@@ -7,7 +7,7 @@ import kotlin.test.*
 fun foo(x: Int, y: Int = 2) = x + y
 
 fun box(): String {
-    val foo = Class.forName("tests.callBy.nonDefaultParameterOmitted.NonDefaultParameterOmittedKt").kotlinClass.getMemberByName("foo")
+    val foo = Class.forName("tests.callBy.nonDefaultParameterOmitted.NonDefaultParameterOmittedKt").kotlinPackage.getMemberByName("foo")
     try {
         foo.callBy(mapOf())
         return "Fail: IllegalArgumentException must have been thrown"
