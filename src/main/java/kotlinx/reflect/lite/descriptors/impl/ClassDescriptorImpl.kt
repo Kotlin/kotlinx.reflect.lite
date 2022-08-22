@@ -54,53 +54,59 @@ internal class ClassDescriptorImpl<T : Any?> internal constructor(
     override val jClass: Class<T>
 ) : AbstractClassDescriptor<T>, ClassBasedDeclarationContainerDescriptorImpl(jClass) {
 
-    private val kmClass: KmClass
-        get() {
-            val builtinClassId = RuntimeTypeMapper.getKotlinBuiltInClassId(jClass)
-            if (builtinClassId != null) {
-                val packageName = builtinClassId.packageFqName
-                // kotlin.collections -> kotlin/collections/collections.kotlin_builtins
-                val resourcePath = packageName.asString().replace('.', '/') + '/' + packageName.shortName() + ".kotlin_builtins"
-                val bytes = Unit::class.java.classLoader.getResourceAsStream(resourcePath)?.readBytes()
-                    ?: error("No builtins metadata file found: $resourcePath")
-                val packageFragment = KotlinCommonMetadata.read(bytes)?.toKmModuleFragment()
-                    ?: error("Incompatible metadata version: $resourcePath")
-                packageFragment.classes.find { it.name == builtinClassId.asClassName() }?.let { return it }
-            }
-            val header = jClass.getAnnotation(Metadata::class.java)?.let {
-                KotlinClassHeader(it.kind, it.metadataVersion, it.data1, it.data2, it.extraString, it.packageName, it.extraInt)
-            } ?: error("@Metadata annotation was not found for ${jClass.name} ")
-            return when (val metadata = KotlinClassMetadata.read(header)) {
-                is KotlinClassMetadata.Class -> metadata.toKmClass()
-                else -> error("Can not create ClassDescriptor for metadata of type $metadata")
-            }
+    private val kmClass: KmClass by lazy {
+        val builtinClassId = RuntimeTypeMapper.getKotlinBuiltInClassId(jClass)
+        if (builtinClassId != null) {
+            val packageName = builtinClassId.packageFqName
+            // kotlin.collections -> kotlin/collections/collections.kotlin_builtins
+            val resourcePath = packageName.asString().replace('.', '/') + '/' + packageName.shortName() + ".kotlin_builtins"
+            val bytes = Unit::class.java.classLoader.getResourceAsStream(resourcePath)?.readBytes()
+                ?: error("No builtins metadata file found: $resourcePath")
+            val packageFragment = KotlinCommonMetadata.read(bytes)?.toKmModuleFragment()
+                ?: error("Incompatible metadata version: $resourcePath")
+            packageFragment.classes.find { it.name == builtinClassId.asClassName() }?.let { return@lazy it }
         }
+        val header = jClass.getAnnotation(Metadata::class.java)?.let {
+            KotlinClassHeader(it.kind, it.metadataVersion, it.data1, it.data2, it.extraString, it.packageName, it.extraInt)
+        } ?: error("@Metadata annotation was not found for ${jClass.name} ")
+        return@lazy when (val metadata = KotlinClassMetadata.read(header)) {
+            is KotlinClassMetadata.Class -> metadata.toKmClass()
+            else -> error("Can not create ClassDescriptor for metadata of type $metadata")
+        }
+    }
 
-    override val module
-        get() = ModuleDescriptorImpl(jClass.safeClassLoader)
+    override val module by lazy {
+        ModuleDescriptorImpl(jClass.safeClassLoader)
+    }
 
-    override val name: Name
-        get() = kmClass.name.substringAfterLast('.').substringAfterLast('/')
+    override val name: Name by lazy {
+        kmClass.name.substringAfterLast('.').substringAfterLast('/')
+    }
 
-    override val constructors: List<ConstructorDescriptor>
-        get() = kmClass.constructors.map { ConstructorDescriptorImpl(it, module, this, this) }
+    override val constructors: List<ConstructorDescriptor> by lazy {
+        kmClass.constructors.map { ConstructorDescriptorImpl(it, module, this, this) }
+    }
 
-    override val nestedClasses: List<ClassDescriptor<*>>
-        get() = kmClass.nestedClasses.mapNotNull { module.findClass<Any?>(classId.createNestedClassId(it).asClassName()) }
+    override val nestedClasses: List<ClassDescriptor<*>> by lazy {
+        kmClass.nestedClasses.mapNotNull { module.findClass<Any?>(classId.createNestedClassId(it).asClassName()) }
+    }
 
-    override val sealedSubclasses: List<ClassDescriptor<T>>
-        get() = kmClass.sealedSubclasses.mapNotNull { module.findClass(it) }
+    override val sealedSubclasses: List<ClassDescriptor<T>> by lazy {
+        kmClass.sealedSubclasses.mapNotNull { module.findClass(it) }
+    }
 
-    override val properties: List<PropertyDescriptor>
-        get() = kmClass.properties.map { PropertyDescriptorImpl(it, module, this, this) }
+    override val properties: List<PropertyDescriptor> by lazy {
+        kmClass.properties.map { PropertyDescriptorImpl(it, module, this, this) }
+    }
 
-    override val functions: List<FunctionDescriptor>
-        get() = kmClass.functions.map {
+    override val functions: List<FunctionDescriptor> by lazy {
+        kmClass.functions.map {
             FunctionDescriptorImpl(it, module, this, this)
         }
+    }
 
-    override val memberScope: MemberScope
-        get() = MemberScope(
+    override val memberScope: MemberScope by lazy {
+        MemberScope(
             kmClass.properties.map { PropertyDescriptorImpl(it, module, this, this) }.let { realProperties ->
                 realProperties + addPropertyFakeOverrides(this, realProperties)
             },
@@ -108,28 +114,34 @@ internal class ClassDescriptorImpl<T : Any?> internal constructor(
                 realFunctions + addFunctionFakeOverrides(this, realFunctions)
             }
         )
+    }
 
     // TODO: static scope
-    override val staticScope: MemberScope
-        get() = MemberScope(emptyList(), emptyList())
+    override val staticScope: MemberScope by lazy {
+        MemberScope(emptyList(), emptyList())
+    }
 
     override val visibility: KVisibility?
         get() = kmClass.flags.toVisibility()
 
-    override val typeParameterTable: TypeParameterTable =
+    override val typeParameterTable: TypeParameterTable by lazy {
         kmClass.typeParameters.toTypeParameters(this, module, containingClass?.typeParameterTable)
-
-    override val containingClass: ClassDescriptor<*>?
-        get() = classId.getOuterClassId()?.let { module.findClass<Any?>(it.asClassName()) }
-
-    override val thisAsReceiverParameter: ReceiverParameterDescriptor =
-        ReceiverParameterDescriptorImpl(defaultType)
+    }
 
     override val typeParameters: List<TypeParameterDescriptor>
         get() = typeParameterTable.typeParameters
 
-    override val supertypes: List<KotlinType>
-        get() = kmClass.supertypes.map { it.toKotlinType(module, typeParameterTable) }
+    override val supertypes: List<KotlinType> by lazy {
+        kmClass.supertypes.map { it.toKotlinType(module, typeParameterTable) }
+    }
+
+    override val containingClass: ClassDescriptor<*>? by lazy {
+        classId.getOuterClassId()?.let { module.findClass<Any?>(it.asClassName()) }
+    }
+
+    override val thisAsReceiverParameter: ReceiverParameterDescriptor by lazy {
+        ReceiverParameterDescriptorImpl(defaultType)
+    }
 
     override val isInterface: Boolean
         get() = Flag.Class.IS_INTERFACE(kmClass.flags)
@@ -281,7 +293,7 @@ internal class JavaFunctionDescriptor(
 internal class JavaTypeParameterDescriptor(
     private val typeVariable: TypeVariable<*>,
     private val module: ModuleDescriptor,
-    override val containingDeclaration: DeclarationDescriptor,
+    override val containingDeclaration: DeclarationDescriptor
 ) : TypeParameterDescriptor {
     override val name: Name
         get() = typeVariable.name
