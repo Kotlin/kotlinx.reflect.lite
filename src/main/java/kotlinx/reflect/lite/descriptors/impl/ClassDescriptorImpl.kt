@@ -194,7 +194,7 @@ internal class JavaClassDescriptor<T : Any?> internal constructor(
     override val typeParameterTable: TypeParameterTable
         get() = TODO("Not yet implemented")
     override val typeParameters: List<TypeParameterDescriptor>
-        get() = TODO("Not yet implemented")
+        get() = jClass.typeParameters.map { JavaTypeParameterDescriptor(it, module, this) }
     override val supertypes: List<KotlinType>
         get() = TODO("Not yet implemented")
     override val visibility: KVisibility?

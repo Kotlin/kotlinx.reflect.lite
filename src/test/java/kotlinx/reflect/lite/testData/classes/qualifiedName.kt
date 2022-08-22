@@ -25,9 +25,9 @@ fun box(): String {
         "tests.classes.qualifiedName.Klass.Companion",
         Klass.Companion::class.java.kotlin.qualifiedName
     )
-    // TODO ClassDescriptors for java classes are not supported
-    //assertEquals("java.util.Date", java.util.Date::class.java.toLiteKClass().qualifiedName)
-    //assertEquals("kotlin.jvm.internal.Ref.ObjectRef", kotlin.jvm.internal.Ref.ObjectRef::class.java.toLiteKClass().qualifiedName)
+
+    assertEquals("java.util.Date", java.util.Date::class.java.kotlin.qualifiedName)
+    assertEquals("kotlin.jvm.internal.Ref.ObjectRef", kotlin.jvm.internal.Ref.ObjectRef::class.java.kotlin.qualifiedName)
 
     class Local
     assertEquals(null, Local::class.java.kotlin.qualifiedName)
