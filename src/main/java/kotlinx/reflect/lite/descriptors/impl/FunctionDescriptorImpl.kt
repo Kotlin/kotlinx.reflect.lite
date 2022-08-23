@@ -2,6 +2,7 @@ package kotlinx.reflect.lite.descriptors.impl
 
 import kotlinx.metadata.*
 import kotlinx.metadata.jvm.*
+import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.calls.*
 import kotlinx.reflect.lite.descriptors.*
 import kotlinx.reflect.lite.impl.KotlinReflectionInternalError
@@ -140,4 +141,67 @@ internal class FunctionDescriptorImpl(
 
     override fun hashCode(): Int =
         (container.hashCode() * 31 + name.hashCode()) * 31 + signature.hashCode()
+}
+
+internal class JavaFunctionDescriptorImpl(
+    val method: Method,
+    override val module: ModuleDescriptor,
+    override val containingClass: JavaClassDescriptor<*>
+): FunctionDescriptor {
+    override val name: Name
+        get() = TODO("Not yet implemented")
+
+    override val container: ClassBasedDeclarationContainerDescriptor
+        get() = TODO("Not yet implemented")
+
+    override val dispatchReceiverParameter: ReceiverParameterDescriptor?
+        get() = containingClass.thisAsReceiverParameter
+
+    override val extensionReceiverParameter: ReceiverParameterDescriptor?
+        get() = null
+
+    override val valueParameters: List<ValueParameterDescriptor>
+        get() = method.genericParameterTypes.withIndex().map { (index, type) ->
+            JavaValueParameterDescriptorImpl(this, index, type.javaToKotlinType(module))
+        }
+
+    override val typeParameters: List<TypeParameterDescriptor>
+        get() = method.typeParameters.map {
+            JavaTypeParameterDescriptorImpl(it, module, this)
+        }
+    override val returnType: KotlinType
+        get() = method.genericReturnType.javaToKotlinType(module)
+
+    override val visibility: KVisibility?
+        get() = TODO("Not yet implemented")
+    override val isFinal: Boolean
+        get() = TODO("Not yet implemented")
+    override val isOpen: Boolean
+        get() = TODO("Not yet implemented")
+    override val isAbstract: Boolean
+        get() = TODO("Not yet implemented")
+    override val isReal: Boolean
+        get() = TODO("Not yet implemented")
+    override val caller: Caller<*>
+        get() = TODO("Not yet implemented")
+    override val defaultCaller: Caller<*>?
+        get() = TODO("Not yet implemented")
+    override val isInline: Boolean
+        get() = TODO("Not yet implemented")
+    override val isExternal: Boolean
+        get() = TODO("Not yet implemented")
+    override val isOperator: Boolean
+        get() = TODO("Not yet implemented")
+    override val isInfix: Boolean
+        get() = TODO("Not yet implemented")
+    override val isSuspend: Boolean
+        get() = TODO("Not yet implemented")
+    override val isAnnotationConstructor: Boolean
+        get() = TODO("Not yet implemented")
+    override val signature: JvmMethodSignature?
+        get() = TODO("Not yet implemented")
+    override val member: Member?
+        get() = TODO("Not yet implemented")
+    override val defaultMember: Member?
+        get() = TODO("Not yet implemented")
 }

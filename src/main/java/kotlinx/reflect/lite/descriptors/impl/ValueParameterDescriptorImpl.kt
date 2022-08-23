@@ -22,6 +22,20 @@ internal class ValueParameterDescriptorImpl(
         get() = kmValueParam.varargElementType?.toKotlinType(containingDeclaration.module, containingDeclaration.typeParameterTable)
 }
 
+internal class JavaValueParameterDescriptorImpl(
+    override val containingDeclaration: CallableDescriptor,
+    private val index: Int,
+    override val type: KotlinType,
+) : ValueParameterDescriptor {
+    override val name: Name
+        get() = "p$index"
+
+    override val declaresDefaultValue: Boolean
+        get() = false
+    override val varargElementType: KotlinType?
+        get() = null
+}
+
 internal class PropertySetterParameterDescriptor(
     private val kmSetterParam: KmValueParameter?,
     private val setter: PropertySetterDescriptorImpl,

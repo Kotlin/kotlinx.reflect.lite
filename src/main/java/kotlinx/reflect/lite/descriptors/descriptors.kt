@@ -58,8 +58,7 @@ internal interface ClassDescriptor<out T> : ClassBasedDeclarationContainerDescri
     val constructors: List<ConstructorDescriptor>
     val nestedClasses: List<ClassDescriptor<*>>
     val sealedSubclasses: List<ClassDescriptor<T>>
-    val properties: List<PropertyDescriptor>
-    val functions: List<FunctionDescriptor>
+
     val memberScope: MemberScope
 
     val containingClass: ClassDescriptor<*>?

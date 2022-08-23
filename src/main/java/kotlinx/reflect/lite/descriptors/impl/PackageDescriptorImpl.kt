@@ -10,8 +10,6 @@ internal class PackageDescriptorImpl<T : Any?>(
     override val jClass: Class<T>
 ) : PackageDescriptor<T>, ClassBasedDeclarationContainerDescriptorImpl(jClass) {
 
-    override val module = ModuleDescriptorImpl(jClass.safeClassLoader)
-
     override val kmPackage: KmPackage
         get() {
             val header = jClass.getAnnotation(Metadata::class.java)?.let {

@@ -7,6 +7,7 @@ import kotlinx.reflect.lite.descriptors.DeclarationDescriptor
 import kotlinx.reflect.lite.descriptors.ModuleDescriptor
 import kotlinx.reflect.lite.descriptors.TypeParameterDescriptor
 import kotlinx.reflect.lite.name.*
+import java.lang.reflect.*
 
 internal class TypeParameterDescriptorImpl(
     private val kmTypeParam: KmTypeParameter,
@@ -27,4 +28,27 @@ internal class TypeParameterDescriptorImpl(
 
     override val variance: KVariance
         get() = kmTypeParam.variance.toVariance()
+}
+
+internal class JavaTypeParameterDescriptorImpl(
+    private val typeVariable: TypeVariable<*>,
+    private val module: ModuleDescriptor,
+    override val containingDeclaration: DeclarationDescriptor
+) : TypeParameterDescriptor {
+    override val name: Name
+        get() = typeVariable.name
+
+    override val upperBounds: List<KotlinType>
+        get() = typeVariable.bounds.map { it.javaToKotlinType(module) }
+
+    override val variance: KVariance
+        get() = KVariance.INVARIANT
+    override val isReified: Boolean
+        get() = false
+
+    override fun equals(other: Any?): Boolean =
+        other is TypeParameterDescriptor && name == other.name && containingDeclaration == other.containingDeclaration
+
+    override fun hashCode(): Int =
+        name.hashCode() * 31 + containingDeclaration.hashCode()
 }

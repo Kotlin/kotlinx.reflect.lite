@@ -5,6 +5,7 @@ import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.descriptors.impl.*
 import kotlinx.reflect.lite.descriptors.impl.ClassDescriptorImpl
 import kotlinx.reflect.lite.impl.*
+import java.lang.reflect.*
 
 internal fun Flags.toVisibility(): KVisibility? =
     when {
@@ -23,3 +24,18 @@ internal fun KmVariance.toVariance(): KVariance =
         KmVariance.IN -> KVariance.IN
         KmVariance.OUT -> KVariance.OUT
     }
+
+internal fun Type.javaToKotlinType(module: ModuleDescriptor): KotlinType {
+    return when (this) {
+        is Class<*> -> KotlinType(
+            module.findClass<Any?>(className) ?: TODO(className),
+            emptyList(),
+            false
+        )
+        else -> TODO("Unsupported Java type: $this (${this::class.java})")
+    }
+}
+
+internal val Class<*>.className: ClassName
+    get() = name.replace('.', '/').replace('$', '.')
+

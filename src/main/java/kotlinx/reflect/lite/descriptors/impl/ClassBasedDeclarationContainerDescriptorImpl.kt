@@ -11,32 +11,48 @@ import java.lang.reflect.*
 internal abstract class ClassBasedDeclarationContainerDescriptorImpl(
     override val jClass: Class<*>
 ) : ClassBasedDeclarationContainerDescriptor {
-    protected open val methodOwner: Class<*>
-        get() = jClass.wrapperByPrimitive ?: jClass
+
+    protected open val methodOwner: Class<*> by lazy {
+        jClass.wrapperByPrimitive ?: jClass
+    }
+
+    override val module by lazy {
+        ModuleDescriptorImpl(jClass.safeClassLoader)
+    }
 
     abstract val memberScope: MemberScope
     abstract val staticScope: MemberScope
 
-    private val declaredNonStaticMembers: Collection<KCallableImpl<*>>
-        get() = getMembers(memberScope, MemberBelonginess.DECLARED)
+    private val declaredNonStaticMembers: Collection<KCallableImpl<*>> by lazy {
+        getMembers(memberScope, MemberBelonginess.DECLARED)
+    }
 
-    private val declaredStaticMembers: Collection<KCallableImpl<*>>
-        get() = getMembers(staticScope, MemberBelonginess.DECLARED)
+    private val declaredStaticMembers: Collection<KCallableImpl<*>> by lazy {
+        getMembers(staticScope, MemberBelonginess.DECLARED)
+    }
 
-    private val inheritedNonStaticMembers: Collection<KCallableImpl<*>>
-        get() = getMembers(memberScope, MemberBelonginess.INHERITED)
+    private val inheritedNonStaticMembers: Collection<KCallableImpl<*>> by lazy {
+        getMembers(memberScope, MemberBelonginess.INHERITED)
+    }
 
-    private val inheritedStaticMembers: Collection<KCallableImpl<*>>
-        get() = getMembers(staticScope, MemberBelonginess.INHERITED)
+    private val inheritedStaticMembers: Collection<KCallableImpl<*>> by lazy {
+        getMembers(staticScope, MemberBelonginess.INHERITED)
+    }
 
-    private val allNonStaticMembers: Collection<KCallableImpl<*>>
-            by lazy { declaredNonStaticMembers + inheritedNonStaticMembers }
-    private val allStaticMembers: Collection<KCallableImpl<*>>
-            by lazy { declaredStaticMembers + inheritedStaticMembers }
-    override val declaredMembers: Collection<KCallableImpl<*>>
-            by lazy { declaredNonStaticMembers + declaredStaticMembers }
-    override val allMembers: Collection<KCallableImpl<*>>
-            by lazy { allNonStaticMembers + allStaticMembers }
+    private val allNonStaticMembers: Collection<KCallableImpl<*>> by lazy {
+        declaredNonStaticMembers + inheritedNonStaticMembers
+
+    }
+    private val allStaticMembers: Collection<KCallableImpl<*>> by lazy {
+        declaredStaticMembers + inheritedStaticMembers
+
+    }
+    override val declaredMembers: Collection<KCallableImpl<*>> by lazy {
+        declaredNonStaticMembers + declaredStaticMembers
+    }
+    override val allMembers: Collection<KCallableImpl<*>> by lazy {
+        allNonStaticMembers + allStaticMembers
+    }
 
     private fun getMembers(scope: MemberScope, belonginess: MemberBelonginess): Collection<KCallableImpl<*>> =
         (scope.functions + scope.properties).mapNotNull { descriptor ->
@@ -143,8 +159,6 @@ internal abstract class ClassBasedDeclarationContainerDescriptorImpl(
         jClass.tryGetConstructor(arrayListOf<Class<*>>().also { parameterTypes ->
             addParametersAndMasks(parameterTypes, desc, true)
         })
-
-
 
     private fun addParametersAndMasks(result: MutableList<Class<*>>, desc: String, isConstructor: Boolean) {
         val valueParameters = loadParameterTypes(desc)
