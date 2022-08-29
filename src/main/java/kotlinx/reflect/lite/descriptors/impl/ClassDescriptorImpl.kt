@@ -4,7 +4,6 @@ import kotlinx.metadata.*
 import kotlinx.metadata.internal.common.*
 import kotlinx.metadata.jvm.*
 import kotlinx.reflect.lite.*
-import kotlinx.reflect.lite.calls.*
 import kotlinx.reflect.lite.descriptors.*
 import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.misc.*
@@ -50,7 +49,7 @@ internal interface AbstractClassDescriptor<T: Any?> : ClassDescriptor<T> {
     }
 }
 
-internal class ClassDescriptorImpl<T : Any?> internal constructor(
+internal class ClassDescriptorImpl<T : Any?>(
     override val jClass: Class<T>
 ) : AbstractClassDescriptor<T>, ClassBasedDeclarationContainerDescriptorImpl(jClass) {
 
@@ -75,10 +74,6 @@ internal class ClassDescriptorImpl<T : Any?> internal constructor(
         }
     }
 
-    override val module by lazy {
-        ModuleDescriptorImpl(jClass.safeClassLoader)
-    }
-
     override val name: Name by lazy {
         kmClass.name.substringAfterLast('.').substringAfterLast('/')
     }
@@ -93,16 +88,6 @@ internal class ClassDescriptorImpl<T : Any?> internal constructor(
 
     override val sealedSubclasses: List<ClassDescriptor<T>> by lazy {
         kmClass.sealedSubclasses.mapNotNull { module.findClass(it) }
-    }
-
-    override val properties: List<PropertyDescriptor> by lazy {
-        kmClass.properties.map { PropertyDescriptorImpl(it, module, this, this) }
-    }
-
-    override val functions: List<FunctionDescriptor> by lazy {
-        kmClass.functions.map {
-            FunctionDescriptorImpl(it, module, this, this)
-        }
     }
 
     override val memberScope: MemberScope by lazy {
@@ -121,15 +106,17 @@ internal class ClassDescriptorImpl<T : Any?> internal constructor(
         MemberScope(emptyList(), emptyList())
     }
 
-    override val visibility: KVisibility?
-        get() = kmClass.flags.toVisibility()
+    override val visibility: KVisibility? by lazy {
+        kmClass.flags.toVisibility()
+    }
 
     override val typeParameterTable: TypeParameterTable by lazy {
         kmClass.typeParameters.toTypeParameters(this, module, containingClass?.typeParameterTable)
     }
 
-    override val typeParameters: List<TypeParameterDescriptor>
-        get() = typeParameterTable.typeParameters
+    override val typeParameters: List<TypeParameterDescriptor> by lazy {
+        typeParameterTable.typeParameters
+    }
 
     override val supertypes: List<KotlinType> by lazy {
         kmClass.supertypes.map { it.toKotlinType(module, typeParameterTable) }
@@ -167,162 +154,91 @@ internal class ClassDescriptorImpl<T : Any?> internal constructor(
         get() = Flag.Class.IS_VALUE(kmClass.flags)
 }
 
-internal class JavaClassDescriptor<T : Any?> internal constructor(
+internal class JavaClassDescriptor<T : Any?>(
     override val jClass: Class<T>
 ): AbstractClassDescriptor<T>, ClassBasedDeclarationContainerDescriptorImpl(jClass) {
 
-    override val module: ModuleDescriptor
-        get() = ModuleDescriptorImpl(jClass.safeClassLoader)
+    override val name: Name by lazy {
+        jClass.simpleName
+    }
 
-    override val name: Name
-        get() = jClass.simpleName
+    override val constructors: List<ConstructorDescriptor> by lazy {
+        jClass.constructors.map { JavaConstructorDescriptorImpl(it, module, this, this) }
+    }
 
-    override val constructors: List<ConstructorDescriptor>
-        get() = TODO("kdcmd")
-    override val nestedClasses: List<ClassDescriptor<*>>
-        get() = TODO("Not yet implemented")
+    override val nestedClasses: List<ClassDescriptor<*>> by lazy {
+        jClass.declaredClasses.mapNotNull { module.findClass<Any?>(classId.createNestedClassId(it.simpleName).asClassName()) }
+    }
+
     override val sealedSubclasses: List<ClassDescriptor<T>>
-        get() = TODO("Not yet implemented")
-    override val properties: List<PropertyDescriptor>
-        get() = TODO("Not yet implemented")
-    override val functions: List<FunctionDescriptor>
-        get() = TODO("Not yet implemented")
+        get() = emptyList()
 
-
-    override val memberScope: MemberScope
-        get() = MemberScope(
+    override val memberScope: MemberScope by lazy {
+        MemberScope(
             emptyList(), // TODO: Java fields
-            jClass.declaredMethods.map { JavaFunctionDescriptor(it, module, this) }.let { realFunctions ->
+            jClass.declaredMethods.map { JavaFunctionDescriptorImpl(it, module, this) }.let { realFunctions ->
                 realFunctions // todo: add fake overrides
             }
         )
+    }
 
-    override val containingClass: ClassDescriptor<*>?
-        get() = TODO("Not yet implemented")
-
-    override val thisAsReceiverParameter: ReceiverParameterDescriptor =
-        ReceiverParameterDescriptorImpl(defaultType)
-
-    override val typeParameterTable: TypeParameterTable
-        get() = TODO("Not yet implemented")
-    override val typeParameters: List<TypeParameterDescriptor>
-        get() = jClass.typeParameters.map { JavaTypeParameterDescriptor(it, module, this) }
-    override val supertypes: List<KotlinType>
-        get() = TODO("Not yet implemented")
-    override val visibility: KVisibility?
-        get() = TODO("Not yet implemented")
-    override val isInterface: Boolean
-        get() = TODO("Not yet implemented")
-    override val isObject: Boolean
-        get() = TODO("Not yet implemented")
-    override val isCompanion: Boolean
-        get() = TODO("Not yet implemented")
-    override val isFinal: Boolean
-        get() = TODO("Not yet implemented")
-    override val isOpen: Boolean
-        get() = TODO("Not yet implemented")
-    override val isAbstract: Boolean
-        get() = TODO("Not yet implemented")
-    override val isSealed: Boolean
-        get() = TODO("Not yet implemented")
-    override val isData: Boolean
-        get() = TODO("Not yet implemented")
-    override val isInner: Boolean
-        get() = TODO("Not yet implemented")
-    override val isFun: Boolean
-        get() = TODO("Not yet implemented")
-    override val isValue: Boolean
-        get() = TODO("Not yet implemented")
     override val staticScope: MemberScope
         get() = TODO("Not yet implemented")
-}
 
-internal class JavaFunctionDescriptor(
-    val method: Method,
-    override val module: ModuleDescriptor,
-    override val containingClass: JavaClassDescriptor<*>
-): FunctionDescriptor {
-    override val name: Name
-        get() = TODO("Not yet implemented")
-    override val container: ClassBasedDeclarationContainerDescriptor
-        get() = TODO("Not yet implemented")
-    override val dispatchReceiverParameter: ReceiverParameterDescriptor?
-        get() = TODO("Not yet implemented")
-    override val extensionReceiverParameter: ReceiverParameterDescriptor?
-        get() = TODO("Not yet implemented")
-    override val valueParameters: List<ValueParameterDescriptor>
-        get() = TODO("Not yet implemented")
-    override val typeParameters: List<TypeParameterDescriptor>
-        get() = TODO("Not yet implemented")
-    override val returnType: KotlinType
-        get() = method.genericReturnType.javaToKotlinType(module)
+    override val containingClass: ClassDescriptor<*>? by lazy {
+        classId.getOuterClassId()?.let { module.findClass<Any?>(it.asClassName()) as JavaClassDescriptor? }
+    }
+
+    override val thisAsReceiverParameter: ReceiverParameterDescriptor by lazy {
+        ReceiverParameterDescriptorImpl(defaultType)
+    }
+
+    override val typeParameterTable: TypeParameterTable by lazy {
+        emptyList<KmTypeParameter>().toTypeParameters(this, module, containingClass?.typeParameterTable)
+    }
+
+    override val typeParameters: List<TypeParameterDescriptor> by lazy {
+        jClass.typeParameters.map { JavaTypeParameterDescriptorImpl(it, module, this) }
+    }
+
+    override val supertypes: List<KotlinType> by lazy {
+        (listOfNotNull(jClass.genericSuperclass) + jClass.genericInterfaces).map { it.javaToKotlinType(module) }
+    }
+
     override val visibility: KVisibility?
         get() = TODO("Not yet implemented")
-    override val isFinal: Boolean
-        get() = TODO("Not yet implemented")
-    override val isOpen: Boolean
-        get() = TODO("Not yet implemented")
-    override val isAbstract: Boolean
-        get() = TODO("Not yet implemented")
-    override val isReal: Boolean
-        get() = TODO("Not yet implemented")
-    override val caller: Caller<*>
-        get() = TODO("Not yet implemented")
-    override val defaultCaller: Caller<*>?
-        get() = TODO("Not yet implemented")
-    override val isInline: Boolean
-        get() = TODO("Not yet implemented")
-    override val isExternal: Boolean
-        get() = TODO("Not yet implemented")
-    override val isOperator: Boolean
-        get() = TODO("Not yet implemented")
-    override val isInfix: Boolean
-        get() = TODO("Not yet implemented")
-    override val isSuspend: Boolean
-        get() = TODO("Not yet implemented")
-    override val isAnnotationConstructor: Boolean
-        get() = TODO("Not yet implemented")
-    override val signature: JvmMethodSignature?
-        get() = TODO("Not yet implemented")
-    override val member: Member?
-        get() = TODO("Not yet implemented")
-    override val defaultMember: Member?
-        get() = TODO("Not yet implemented")
-}
 
-internal class JavaTypeParameterDescriptor(
-    private val typeVariable: TypeVariable<*>,
-    private val module: ModuleDescriptor,
-    override val containingDeclaration: DeclarationDescriptor
-) : TypeParameterDescriptor {
-    override val name: Name
-        get() = typeVariable.name
+    override val isInterface: Boolean
+        get() = jClass.isInterface && !jClass.isAnnotation
 
-    override val upperBounds: List<KotlinType>
-        get() = typeVariable.bounds.map { it.javaToKotlinType(module) }
-
-    override val variance: KVariance
-        get() = KVariance.INVARIANT
-    override val isReified: Boolean
+    override val isObject: Boolean
         get() = false
 
-//    override fun equals(other: Any?): Boolean =
-//        other is TypeParameterDescriptor && name == other.name && containingDeclaration == other.containingDeclaration
-//
-//    override fun hashCode(): Int =
-//        name.hashCode() * 31 + containingDeclaration.hashCode()
-}
+    override val isCompanion: Boolean
+        get() = false
 
-private fun Type.javaToKotlinType(module: ModuleDescriptor): KotlinType {
-    return when (this) {
-        is Class<*> -> KotlinType(
-            module.findClass<Any?>(className) ?: TODO(className),
-            emptyList(),
-            false
-        )
-        else -> TODO("Unsupported Java type: $this (${this::class.java})")
+    override val isFinal: Boolean
+        get() = Modifier.isFinal(jClass.modifiers)
+
+    override val isOpen: Boolean
+        get() = !isFinal && !isAbstract
+
+    override val isAbstract: Boolean
+        get() = Modifier.isAbstract(jClass.modifiers)
+
+    override val isSealed: Boolean
+        get() = false
+
+    override val isData: Boolean
+        get() = false
+
+    override val isInner: Boolean by lazy {
+        jClass.declaringClass != null && !Modifier.isStatic(jClass.modifiers)
     }
-}
 
-private val Class<*>.className: ClassName
-    get() = name.replace('.', '/').replace('$', '.')
+    override val isFun: Boolean
+        get() = false
+
+    override val isValue: Boolean
+        get() = false
+}

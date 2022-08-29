@@ -7,9 +7,8 @@ import kotlin.test.assertEquals
 class Klass
 
 fun box(): String {
-    assertEquals("Klass", (Klass::class.java.kDeclarationContainer as KClass<Klass>).simpleName)
-    // TODO ClassDescriptors for java classes are not supported
-    // assertEquals("Date", java.util.Date::class.java.toLiteKClass().simpleName)
-    //assertEquals("ObjectRef", kotlin.jvm.internal.Ref.ObjectRef::class.java.toLiteKClass().simpleName)
+    assertEquals("Klass", (Klass::class.java).kotlin.simpleName)
+    assertEquals("Date", (java.util.Date::class.java).kotlin.simpleName)
+    assertEquals("ObjectRef", (kotlin.jvm.internal.Ref.ObjectRef::class.java).kotlin.simpleName)
     return "OK"
 }

@@ -2,6 +2,7 @@ package tests.classes.classMembers
 
 import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.*
+import kotlin.test.*
 
 
 open class Base {
@@ -20,12 +21,12 @@ class Derived : Base() {
     }
 }
 
-fun Derived.extFun() {}
+
+fun members(c: KClass<*>) = c.members.map { it.name }.sorted()
 
 fun box(): String {
-    (Derived::class.java.kDeclarationContainer as KClass<Derived>).members.forEach {
-        println(it.name)
-    }
+    assertEquals(listOf("a", "b", "bar", "equals", "foo", "hashCode", "toString"), members((Derived::class.java).kotlin))
+    assertEquals(listOf("equals", "hashCode", "staticFun", "toString"), members((Derived.Companion::class.java).kotlin))
     return "OK"
 }
 

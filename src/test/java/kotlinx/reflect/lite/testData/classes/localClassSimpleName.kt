@@ -11,27 +11,27 @@ fun check(klass: KClass<*>, expectedName: String) {
 fun localInMethod() {
     fun localInMethod(unused: Any?) {
         class Local
-        check((Local::class.java.kDeclarationContainer as KClass<Local>), "Local")
+        check(Local::class.java.kotlin, "Local")
 
         class `Local$With$Dollars`
-        check((`Local$With$Dollars`::class.java.kDeclarationContainer as KClass<`Local$With$Dollars`>), "Local\$With\$Dollars")
+        check(`Local$With$Dollars`::class.java.kotlin, "Local\$With\$Dollars")
     }
     localInMethod(null)
 
     class Local
-    check((Local::class.java.kDeclarationContainer as KClass<Local>), "Local")
+    check(Local::class.java.kotlin, "Local")
 
     class `Local$With$Dollars`
-    check((`Local$With$Dollars`::class.java.kDeclarationContainer as KClass<`Local$With$Dollars`>), "Local\$With\$Dollars")
+    check(`Local$With$Dollars`::class.java.kotlin, "Local\$With\$Dollars")
 }
 
 class LocalInConstructor {
     init {
         class Local
-        check((Local::class.java.kDeclarationContainer as KClass<Local>), "Local")
+        check(Local::class.java.kotlin, "Local")
 
         class `Local$With$Dollars`
-        check((`Local$With$Dollars`::class.java.kDeclarationContainer as KClass<`Local$With$Dollars`>), "Local\$With\$Dollars")
+        check(`Local$With$Dollars`::class.java.kotlin, "Local\$With\$Dollars")
     }
 }
 

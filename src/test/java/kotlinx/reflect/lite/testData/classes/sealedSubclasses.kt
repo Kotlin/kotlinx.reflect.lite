@@ -35,9 +35,9 @@ fun box(): String {
     assertEquals(emptyList(),
         sealedSubclassNames((SealedClassWithNoSubclasses::class.java.kDeclarationContainer as KClass<SealedClassWithNoSubclasses>)))
 
-//    assertEquals(emptyList(), sealedSubclassNames(String::class.java.toLiteKClass()))
-//    assertEquals(emptyList(), sealedSubclassNames(Thread::class.java.toLiteKClass()))
-//    assertEquals(emptyList(), sealedSubclassNames(FloatArray::class.java.toLiteKClass()))
+    assertEquals(emptyList(), sealedSubclassNames(String::class.java.kotlin))
+    assertEquals(emptyList(), sealedSubclassNames(Thread::class.java.kotlin))
+    assertEquals(emptyList(), sealedSubclassNames(FloatArray::class.java.kotlin))
 
     return "OK"
 }

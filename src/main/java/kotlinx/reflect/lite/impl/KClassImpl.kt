@@ -13,28 +13,31 @@ internal class KClassImpl<T : Any?>(
     override val qualifiedName: String?
         get() = descriptor.qualifiedName
 
-    override val constructors: Collection<KFunction<T>>
-        get() =
-            if (descriptor.isInterface || descriptor.isObject || descriptor.isCompanion) {
-                emptyList()
-            } else {
-                descriptor.constructors.map {
-                    @Suppress("UNCHECKED_CAST")
-                    KFunctionImpl(it) as KFunction<T>
-                }
+    override val constructors: Collection<KFunction<T>> by lazy {
+        if (descriptor.isInterface || descriptor.isObject || descriptor.isCompanion) {
+            emptyList()
+        } else {
+            descriptor.constructors.map {
+                @Suppress("UNCHECKED_CAST")
+                KFunctionImpl(it) as KFunction<T>
             }
+        }
+    }
 
-    override val nestedClasses: Collection<KClass<*>>
-        get() = descriptor.nestedClasses.map(::KClassImpl)
+    override val nestedClasses: Collection<KClass<*>> by lazy {
+        descriptor.nestedClasses.map(::KClassImpl)
+    }
 
-    override val sealedSubclasses: List<KClass<T>>
-        get() = descriptor.sealedSubclasses.map(::KClassImpl)
+    override val sealedSubclasses: List<KClass<T>> by lazy {
+        descriptor.sealedSubclasses.map(::KClassImpl)
+    }
 
     override val visibility: KVisibility?
         get() = descriptor.visibility
 
-    override val typeParameters: List<KTypeParameter>
-        get() = descriptor.typeParameters.map { KTypeParameterImpl(it) }
+    override val typeParameters: List<KTypeParameter> by lazy {
+        descriptor.typeParameters.map { KTypeParameterImpl(it) }
+    }
 
     // Logic from: https://github.com/JetBrains/kotlin/blob/bfa3f89aeb727518703f0a167153cb048724a6d1/core/reflection.jvm/src/kotlin/reflect/jvm/internal/KClassImpl.kt#L124
     override val supertypes: List<KType> by lazy {
