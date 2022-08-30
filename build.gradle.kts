@@ -5,18 +5,17 @@ plugins {
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
     gradlePluginPortal()
+    mavenLocal()
 }
 
 dependencies {
     implementation("com.google.protobuf:protobuf-java:2.6.1")
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
-    testImplementation("org.jetbrains.kotlin:kotlin-stdlib")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     implementation("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.4.2")
-    testImplementation("junit:junit:4.12")
+    testImplementation("junit:junit:4.13")
 }
 
 java {
