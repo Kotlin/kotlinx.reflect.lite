@@ -1,6 +1,6 @@
 @file:JvmName("KCallables")
 
-package kotlinx.reflect.lite.impl
+package kotlinx.reflect.lite.full
 
 import kotlinx.reflect.lite.*
 import kotlin.coroutines.intrinsics.*
@@ -10,7 +10,7 @@ import kotlin.coroutines.intrinsics.*
  * Otherwise, calls the suspend function with current continuation.
  */
 @SinceKotlin("1.3")
-suspend fun <R> KCallable<R>.callSuspend(vararg args: Any?): R {
+public suspend fun <R> KCallable<R>.callSuspend(vararg args: Any?): R {
     if (!this.isSuspend) return call(*args)
     if (this !is KFunction<*>) throw IllegalArgumentException("Cannot callSuspend on a property $this: suspend properties are not supported yet")
     val result = suspendCoroutineUninterceptedOrReturn<R> { call(*args, it) }

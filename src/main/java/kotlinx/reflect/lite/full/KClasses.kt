@@ -1,9 +1,10 @@
 @file:JvmName("KClasses")
 
-package kotlinx.reflect.lite.impl
+package kotlinx.reflect.lite.full
 
 import kotlinx.reflect.lite.*
-import kotlinx.reflect.lite.descriptors.*
+import kotlinx.reflect.lite.descriptors.ConstructorDescriptor
+import kotlinx.reflect.lite.impl.KFunctionImpl
 
 /**
  * Returns the primary constructor of this class, or `null` if this class has no primary constructor.
@@ -11,6 +12,5 @@ import kotlinx.reflect.lite.descriptors.*
  * for more information.
  */
 @SinceKotlin("1.1")
-val <T : Any> KClass<T>.primaryConstructor: KFunction<T>?
+public val <T : Any> KClass<T>.primaryConstructor: KFunction<T>?
     get() = constructors.firstOrNull { ((it as KFunctionImpl).descriptor as ConstructorDescriptor).isPrimary }
-

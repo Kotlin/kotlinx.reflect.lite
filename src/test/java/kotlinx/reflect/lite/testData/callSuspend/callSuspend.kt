@@ -5,8 +5,7 @@ package tests.callSuspend.callSuspend
 // TARGET_BACKEND: JVM
 
 import helpers.*
-import kotlinx.reflect.lite.*
-import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.full.*
 import kotlinx.reflect.lite.jvm.*
 import kotlinx.reflect.lite.tests.*
 import kotlin.coroutines.*

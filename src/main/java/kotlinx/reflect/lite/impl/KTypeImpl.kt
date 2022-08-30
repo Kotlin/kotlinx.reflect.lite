@@ -98,7 +98,7 @@ fun KType.computeJavaType(): Type {
  * The returned list starts with the arguments to the innermost class, then continues with those of its outer class, and so on.
  * For example, for the type `Outer<A, B>.Inner<C, D>` the result would be `[C, D, A, B]`.
  */
-val Type.parameterizedTypeArguments: List<Type>
+internal val Type.parameterizedTypeArguments: List<Type>
     get() {
         if (this !is ParameterizedType) return emptyList()
         if (ownerType == null) return actualTypeArguments.toList()

@@ -1,7 +1,7 @@
 package tests.callSuspend.bigArity
 
 import helpers.*
-import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.full.*
 import kotlinx.reflect.lite.jvm.*
 import kotlin.coroutines.*
 

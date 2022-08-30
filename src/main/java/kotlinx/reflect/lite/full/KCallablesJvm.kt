@@ -1,10 +1,12 @@
-// Copied from: https://github.com/JetBrains/kotlin/blob/a7c80f2df1fb3efdb139914a36d37692574f0034/core/reflection.jvm/src/kotlin/reflect/jvm/KCallablesJvm.kt
 @file:JvmName("KCallablesJvm")
-package kotlinx.reflect.lite.impl
+
+package kotlinx.reflect.lite.full
 
 import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.impl.KCallableImpl
 import kotlinx.reflect.lite.jvm.*
-import java.lang.reflect.AccessibleObject
+import java.lang.reflect.*
 
 /**
  * Provides a way to suppress JVM access checks for a callable.
@@ -17,7 +19,7 @@ import java.lang.reflect.AccessibleObject
  *
  * @see [java.lang.reflect.AccessibleObject]
  */
-var KCallable<*>.isAccessible: Boolean
+public var KCallable<*>.isAccessible: Boolean
     get() {
         return when (this) {
             is KMutableProperty ->

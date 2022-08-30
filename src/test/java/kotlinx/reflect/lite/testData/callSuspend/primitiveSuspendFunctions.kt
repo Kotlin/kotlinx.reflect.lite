@@ -3,7 +3,7 @@ package tests.callSuspend.primitiveSuspendFunctions
 import kotlin.coroutines.startCoroutine
 import kotlin.test.assertEquals
 import helpers.*
-import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.full.*
 import kotlinx.reflect.lite.jvm.*
 
 

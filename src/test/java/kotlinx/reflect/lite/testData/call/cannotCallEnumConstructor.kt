@@ -1,7 +1,6 @@
 package tests.call.cannotCallEnumConstructor
 
-import kotlinx.reflect.lite.*
-import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.full.*
 import kotlinx.reflect.lite.jvm.*
 
 

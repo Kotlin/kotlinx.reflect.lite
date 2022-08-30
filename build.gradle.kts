@@ -23,6 +23,12 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+tasks.compileKotlin {
+    kotlinOptions {
+        freeCompilerArgs += listOf("-no-reflect")
+    }
+}
+
 publishing {
     publications.create<MavenPublication>("maven") {
         from(components["java"])
