@@ -22,6 +22,7 @@ val <T : Any> Class<T>.kotlinPackage: KPackage<T>
 /**
  * Returns a Java [Class] instance corresponding to the given [KClass] instance.
  */
+@Suppress("UNCHECKED_CAST")
 public val <T> KClass<T>.java: Class<T>
     @JvmName("getJavaClass")
     get() = (this as KClassImpl<T>).descriptor.jClass as Class<T>

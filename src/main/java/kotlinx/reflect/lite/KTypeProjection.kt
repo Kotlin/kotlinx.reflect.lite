@@ -38,9 +38,8 @@ public data class KTypeProjection constructor(
     }
 
     public companion object {
-        // provided for compiler access
+        // TODO: was provided for compiler access in kotlin.reflect
         @JvmField
-        @PublishedApi
         internal val star: KTypeProjection = KTypeProjection(null, null)
 
         /**

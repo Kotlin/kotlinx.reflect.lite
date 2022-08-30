@@ -46,7 +46,7 @@ internal object RuntimeTypeMapper {
             jClass.componentType.primitiveType?.let {
                 return ClassId(FqName("kotlin"), it.arrayTypeName)
             }
-            return ClassId.topLevel(StandardNames.FQ_NAMES.array)
+            return ClassId.topLevel(StandardNames.FqNames.array)
         }
 
         if (jClass == Void.TYPE) return JAVA_LANG_VOID

@@ -140,17 +140,15 @@ internal sealed class CallerImpl<out M : Member>(
         }
     }
 
-    companion object {
-        @Suppress("UNCHECKED_CAST")
-        inline fun <reified T> Array<out T>.dropFirst(): Array<T> =
-            if (size <= 1) emptyArray() else copyOfRange(1, size) as Array<T>
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified T> Array<out T>.dropFirst(): Array<T> =
+        if (size <= 1) emptyArray() else copyOfRange(1, size) as Array<T>
 
-        @Suppress("UNCHECKED_CAST")
-        inline fun <reified T> Array<out T>.dropLast(): Array<T> =
-            if (size <= 1) emptyArray() else copyOfRange(0, size - 1) as Array<T>
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified T> Array<out T>.dropLast(): Array<T> =
+        if (size <= 1) emptyArray() else copyOfRange(0, size - 1) as Array<T>
 
-        @Suppress("UNCHECKED_CAST")
-        inline fun <reified T> Array<out T>.dropFirstAndLast(): Array<T> =
-            if (size <= 2) emptyArray() else copyOfRange(1, size - 1) as Array<T>
-    }
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified T> Array<out T>.dropFirstAndLast(): Array<T> =
+        if (size <= 2) emptyArray() else copyOfRange(1, size - 1) as Array<T>
 }
