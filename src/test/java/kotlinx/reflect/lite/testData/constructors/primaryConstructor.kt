@@ -3,6 +3,8 @@ package tests.constructors.primaryConstructor
 import kotlin.test.*
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.jvm.*
+
 
 class OnlyPrimary
 

@@ -7,6 +7,7 @@ import kotlinx.reflect.lite.builtins.*
 import kotlinx.reflect.lite.descriptors.ClassDescriptor
 import kotlinx.reflect.lite.descriptors.ModuleDescriptor
 import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.jvm.*
 import kotlinx.reflect.lite.misc.*
 import kotlinx.reflect.lite.name.*
 

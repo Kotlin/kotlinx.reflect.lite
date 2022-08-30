@@ -2,9 +2,10 @@ package tests.callSuspend.primitiveSuspendFunctions
 
 import kotlin.coroutines.startCoroutine
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import helpers.*
 import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.jvm.*
+
 
 class Z(val value: Int)
 

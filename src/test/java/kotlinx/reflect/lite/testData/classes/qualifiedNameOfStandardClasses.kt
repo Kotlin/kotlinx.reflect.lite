@@ -3,6 +3,8 @@ package tests.classes.qualifiedNameOfStandardClasses
 import kotlinx.reflect.lite.tests.*
 import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.jvm.*
+
 import kotlin.test.assertEquals
 
 fun box(): String {

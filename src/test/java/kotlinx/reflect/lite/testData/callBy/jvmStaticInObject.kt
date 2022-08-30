@@ -1,6 +1,7 @@
 package tests.callBy.jvmStaticInObject
 
 import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.jvm.*
 import kotlin.test.assertEquals
 
 object Obj {

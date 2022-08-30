@@ -7,9 +7,11 @@ package tests.callSuspend.callSuspend
 import helpers.*
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.jvm.*
 import kotlinx.reflect.lite.tests.*
 import kotlin.coroutines.*
 import kotlin.coroutines.intrinsics.*
+
 
 fun builder(c: suspend () -> Unit) {
     c.startCoroutine(EmptyContinuation)

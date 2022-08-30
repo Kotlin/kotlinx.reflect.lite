@@ -3,6 +3,7 @@ package tests.call.simpleMemberFunction
 import kotlinx.reflect.lite.tests.*
 import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.jvm.*
 
 class A {
     fun foo(x: Int, y: Int) = x + y

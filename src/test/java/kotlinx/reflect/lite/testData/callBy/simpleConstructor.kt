@@ -1,6 +1,7 @@
 package tests.callBy.simpleConstructor
 
 import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.jvm.*
 import kotlinx.reflect.lite.impl.*
 
 class A(val result: String = "OK")

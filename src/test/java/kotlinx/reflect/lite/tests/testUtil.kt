@@ -2,6 +2,7 @@ package kotlinx.reflect.lite.tests
 
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.jvm.*
 
 @Deprecated(
     message = "Better use the <T : Any> Class<T>.kotlinClass: KDeclarationContainer extension",

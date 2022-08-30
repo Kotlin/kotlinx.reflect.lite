@@ -1,6 +1,6 @@
 package tests.call.simpleTopLevelFunctions
 
-import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.jvm.*
 import kotlinx.reflect.lite.tests.*
 
 fun String.foo(): Int = length

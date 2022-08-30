@@ -2,6 +2,7 @@ package tests.call.simpleConstructor
 
 import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.jvm.*
 
 class A(val result: String)
 

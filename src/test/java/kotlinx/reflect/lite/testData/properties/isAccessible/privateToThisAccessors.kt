@@ -2,7 +2,9 @@ package tests.properties.privateToThisAccessors
 
 import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.jvm.*
 import kotlinx.reflect.lite.tests.*
+
 
 class K<in T : String> {
     private var t: T

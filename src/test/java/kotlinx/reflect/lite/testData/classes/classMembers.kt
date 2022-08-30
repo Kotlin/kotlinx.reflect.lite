@@ -1,7 +1,8 @@
 package tests.classes.classMembers
 
-import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.jvm.*
 import kotlinx.reflect.lite.*
+
 import kotlin.test.*
 
 

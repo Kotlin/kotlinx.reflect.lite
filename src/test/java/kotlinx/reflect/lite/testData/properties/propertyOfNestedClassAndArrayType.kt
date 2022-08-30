@@ -1,7 +1,8 @@
 package tests.properties.propertyOfNestedClassAndArrayType
 
-import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.jvm.*
+
 
 class A {
     class B(val result: String)

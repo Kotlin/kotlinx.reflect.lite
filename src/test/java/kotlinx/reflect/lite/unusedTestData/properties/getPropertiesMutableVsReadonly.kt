@@ -1,5 +1,6 @@
 package tests.properties.getPropertiesMutableVsReadonly
 
+import kotlinx.reflect.lite.jvm.*
 import kotlinx.reflect.lite.impl.*
 import kotlin.reflect.*
 

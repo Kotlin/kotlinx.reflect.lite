@@ -2,6 +2,7 @@ package tests.classes.classSimpleName
 
 import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.jvm.*
 import kotlin.test.assertEquals
 
 class Klass

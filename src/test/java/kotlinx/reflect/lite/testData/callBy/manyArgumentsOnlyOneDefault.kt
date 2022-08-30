@@ -1,6 +1,7 @@
 package tests.callBy.manyArgumentsOnlyOneDefault
 
 import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.jvm.*
 import kotlin.test.assertEquals
 
 // Generate:

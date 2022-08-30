@@ -3,6 +3,7 @@ package tests.call.memberOfGenericClass
 import kotlinx.reflect.lite.tests.*
 import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.jvm.*
 
 var result = "Fail"
 

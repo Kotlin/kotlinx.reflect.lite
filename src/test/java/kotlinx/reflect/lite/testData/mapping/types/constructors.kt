@@ -2,6 +2,8 @@ package tests.mapping.types.constructors
 
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.jvm.*
+
 import kotlin.test.assertEquals
 
 class A(d: Double, s: String, parent: A?) {

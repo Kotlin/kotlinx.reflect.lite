@@ -1,7 +1,7 @@
 package tests.callBy.defaultAndNonDefaultIntertwined
 
 import kotlinx.reflect.lite.*
-import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.jvm.*
 import kotlinx.reflect.lite.tests.*
 import kotlin.test.assertEquals
 

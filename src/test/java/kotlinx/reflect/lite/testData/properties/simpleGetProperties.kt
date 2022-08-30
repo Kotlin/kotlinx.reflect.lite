@@ -2,6 +2,7 @@ package tests.properties.simpleGetProperties
 
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.jvm.*
 
 class A(param: String) {
     val int: Int get() = 42

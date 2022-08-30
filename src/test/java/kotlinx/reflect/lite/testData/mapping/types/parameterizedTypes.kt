@@ -4,6 +4,8 @@ import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.tests.*
 import java.lang.reflect.ParameterizedType
+import kotlinx.reflect.lite.jvm.*
+
 
 class A(private var foo: List<String>)
 
