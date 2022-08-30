@@ -160,7 +160,7 @@ internal class FakeOverrideFunctionDescriptor(
     module, containingClass, extensionReceiverParameter, valueParameters, typeParameters, returnType, overridden
 ), FunctionDescriptor {
     @Suppress("UNCHECKED_CAST")
-    val overriddenFunctions: List<FunctionDescriptor>
+    private val overriddenFunctions: List<FunctionDescriptor>
         get() = super.overridden as List<FunctionDescriptor>
 
     override val signature: JvmMethodSignature?

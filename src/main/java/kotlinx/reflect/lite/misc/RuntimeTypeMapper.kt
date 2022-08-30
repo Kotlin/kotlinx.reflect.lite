@@ -9,7 +9,7 @@ import kotlinx.reflect.lite.name.*
 internal sealed class JvmFunctionSignature {
     abstract fun asString(): String
 
-    class KotlinFunction(val signature: JvmMethodSignature) : JvmFunctionSignature() {
+    class KotlinFunction(private val signature: JvmMethodSignature) : JvmFunctionSignature() {
         private val _signature = signature.asString()
 
         val methodName: String get() = signature.name
@@ -18,7 +18,7 @@ internal sealed class JvmFunctionSignature {
         override fun asString(): String = _signature
     }
 
-    class KotlinConstructor(val signature: JvmMethodSignature) : JvmFunctionSignature() {
+    class KotlinConstructor(private val signature: JvmMethodSignature) : JvmFunctionSignature() {
         private val _signature = signature.asString()
 
         val constructorDesc: String get() = signature.desc

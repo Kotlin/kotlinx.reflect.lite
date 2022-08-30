@@ -7,7 +7,7 @@ import java.lang.reflect.*
 
 internal class KTypeImpl(
     val type: KotlinType,
-    val computeJavaType: (() -> Type)? = null
+    private val computeJavaType: (() -> Type)? = null
 ): KType {
     override val classifier: KClassifier?
         get() =

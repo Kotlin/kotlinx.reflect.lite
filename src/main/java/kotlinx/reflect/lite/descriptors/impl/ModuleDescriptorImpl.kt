@@ -10,7 +10,7 @@ import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.misc.*
 import kotlinx.reflect.lite.name.*
 
-internal class ModuleDescriptorImpl(internal val classLoader: ClassLoader) : ModuleDescriptor {
+internal class ModuleDescriptorImpl(private val classLoader: ClassLoader) : ModuleDescriptor {
     override fun <T> findClass (name: ClassName): ClassDescriptor<T>? {
         val fqName = (JavaToKotlinClassMap.mapKotlinToJava(FqName(name.replace('/', '.'))) ?: ClassId(name)).asJavaLookupFqName()
         val jClass = when (fqName) { // todo why arrays are hardcoded
@@ -25,6 +25,7 @@ internal class ModuleDescriptorImpl(internal val classLoader: ClassLoader) : Mod
             "kotlin.Array" -> Array<Any>::class.java
             else -> classLoader.tryLoadClass(fqName)
         }
+        @Suppress("UNCHECKED_CAST")
         return (jClass?.kotlin as KClassImpl<T>?)?.descriptor
     }
 }

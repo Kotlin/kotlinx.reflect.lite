@@ -7,7 +7,7 @@ internal class KParameterImpl(
     val descriptor: ParameterDescriptor,
     override val index: Int,
     override val kind: KParameter.Kind,
-    val containingCallable: CallableDescriptor
+    private val containingCallable: CallableDescriptor
 ): KParameter {
     override val name: String?
         get() = (descriptor as? ValueParameterDescriptor)?.let {

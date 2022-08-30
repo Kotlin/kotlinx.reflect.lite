@@ -70,7 +70,7 @@ internal class ConstructorDescriptorImpl(
 }
 
 internal class JavaConstructorDescriptorImpl(
-    val cons: Constructor<*>,
+    private val cons: Constructor<*>,
     override val module: ModuleDescriptor,
     override val containingClass: ClassDescriptor<*>,
     override val container: ClassBasedDeclarationContainerDescriptor
