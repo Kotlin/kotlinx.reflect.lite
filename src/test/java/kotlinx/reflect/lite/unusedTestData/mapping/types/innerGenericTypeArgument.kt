@@ -1,3 +1,7 @@
+/*
+ * Copyright 2016-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package tests.mapping.types.innerGenericTypeArgument
 
 // "IOOBE: Invalid index 4, size is 4" for java.lang.reflect.ParameterizedType on Android

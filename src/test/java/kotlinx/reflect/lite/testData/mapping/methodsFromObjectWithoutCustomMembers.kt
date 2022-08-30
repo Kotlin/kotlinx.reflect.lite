@@ -1,3 +1,7 @@
+/*
+ * Copyright 2016-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 // Part of the test: https://github.com/Kotlin/kotlinx.reflect.lite/blob/mvicsokolova/dev/src/test/java/kotlinx/reflect/lite/unusedTestData/mapping/methodsFromObject.kt
 
 package tests.mapping.methodsFromObjectWithoutCustomMembers

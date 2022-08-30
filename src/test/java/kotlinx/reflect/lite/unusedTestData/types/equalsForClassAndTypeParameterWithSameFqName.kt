@@ -1,4 +1,8 @@
 
+/*
+ * Copyright 2016-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 // FIR incorrectly resolves typeParameterType's return type to the nested class `A.T`.
 
 package tests.types.equalsForClassAndTypeParameterWithSameFqName

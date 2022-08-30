@@ -1,3 +1,7 @@
+/*
+ * Copyright 2016-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 @file:JvmName("ReflectJvmMapping")
 
 // Some logic copied from: https://github.com/JetBrains/kotlin/blob/26cdb2f928982dad7f0c9ab8e3bd509665d9d537/core/reflection.jvm/src/kotlin/reflect/jvm/ReflectJvmMapping.kt

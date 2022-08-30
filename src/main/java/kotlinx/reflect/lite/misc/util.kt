@@ -1,3 +1,7 @@
+/*
+ * Copyright 2016-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 // Most logic copied from: https://github.com/JetBrains/kotlin/blob/master/core/descriptors.runtime/src/org/jetbrains/kotlin/descriptors/runtime/structure/reflectClassUtil.kt
 package kotlinx.reflect.lite.misc
 

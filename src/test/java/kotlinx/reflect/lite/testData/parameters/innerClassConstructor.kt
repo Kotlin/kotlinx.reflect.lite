@@ -1,3 +1,7 @@
+/*
+ * Copyright 2016-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package tests.parameters.innerClassConstructor
 
 // Logic from this test, but inner class constructor has no bound receiver: https://github.com/Kotlin/kotlinx.reflect.lite/blob/mvicsokolova/dev/src/test/java/kotlinx/reflect/lite/unusedTestData/parameters/boundInnerClassConstructor.kt

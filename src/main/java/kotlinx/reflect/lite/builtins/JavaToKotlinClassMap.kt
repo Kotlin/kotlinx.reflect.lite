@@ -1,3 +1,7 @@
+/*
+ * Copyright 2016-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 // Partially copied from: https://github.com/JetBrains/kotlin/blob/9d09b9605fe5a32a40a84718aebeab6ca6234ab8/core/compiler.common.jvm/src/org/jetbrains/kotlin/builtins/jvm/JavaToKotlinClassMap.kt
 package kotlinx.reflect.lite.builtins
 

@@ -1,3 +1,7 @@
+/*
+ * Copyright 2016-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 // Partially copied from: https://github.com/JetBrains/kotlin/blob/b573532d8cbf9bf5347adb40d0774c21c2d35dc0/core/compiler.common/src/org/jetbrains/kotlin/builtins/StandardNames.kt
 package kotlinx.reflect.lite.builtins
 
