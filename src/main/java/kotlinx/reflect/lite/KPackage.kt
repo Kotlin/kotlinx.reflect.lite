@@ -1,4 +1,8 @@
 package kotlinx.reflect.lite
 
-// TODO document it
+/**
+ * Represents a Kotlin class file that is a compiled Kotlin file facade or multi-file class part.
+ *
+ * @param T the type of the class.
+ */
 public interface KPackage<out T> : KDeclarationContainer
