@@ -1,3 +1,4 @@
 package kotlinx.reflect.lite
 
-interface KPackage<out T> : KDeclarationContainer
+// TODO document it
+public interface KPackage<out T> : KDeclarationContainer

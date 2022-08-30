@@ -10,7 +10,7 @@ package kotlinx.reflect.lite
  * for more information.
  */
 @SinceKotlin("1.1")
-public data class KTypeProjection constructor(
+public data class KTypeProjection(
     /**
      * The use-site variance specified in the projection, or `null` if this is a star projection.
      */
