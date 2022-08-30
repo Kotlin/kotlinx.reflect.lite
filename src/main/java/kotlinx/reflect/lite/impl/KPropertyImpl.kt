@@ -20,7 +20,7 @@ internal abstract class KPropertyImpl<out T>(
     override val isSuspend: Boolean
         get() = false
 
-    override fun call(vararg args: Any?): T = getter.call(args)
+    override fun call(vararg args: Any?): T = getter.call(*args)
 
     abstract override val getter: KProperty.Getter<T>
 
