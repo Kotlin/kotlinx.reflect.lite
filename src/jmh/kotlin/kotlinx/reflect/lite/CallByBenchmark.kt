@@ -8,6 +8,7 @@ import java.util.concurrent.*
 @Warmup(iterations = 5, time = 1)
 @Measurement(iterations = 5, time = 1)
 @BenchmarkMode(Mode.Throughput)
+@OutputTimeUnit(TimeUnit.MICROSECONDS)
 @State(Scope.Benchmark)
 @Fork(1)
 open class CallByBenchmark {
@@ -22,13 +23,11 @@ open class CallByBenchmark {
     private val callableLite = callableLite()
 
     @Benchmark
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
     open fun callByLite(): Any? {
         return callableLite.callBy(mapOf(callableLite.parameters[0] to A(), callableLite.parameters[1] to 42))
     }
 
     @Benchmark
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     open fun callByLiteWithLookup(): Any? {
         val callable = callableLite()
         return callable.callBy(mapOf(callable.parameters[0] to A(), callable.parameters[1] to 42))
@@ -45,16 +44,13 @@ open class CallByBenchmark {
     private fun callableReflect() = A::class.java.reflectKotlin.members.single { it.name == "foo" }
 
     @Benchmark
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
     open fun callByReflect(): Any? {
         return callableReflect.callBy(mapOf(callableReflect.parameters[0] to A(), callableReflect.parameters[1] to 42))
     }
 
     @Benchmark
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     open fun callByReflectWithLookup(): Any? {
         val callable = callableReflect()
         return callable.callBy(mapOf(callable.parameters[0] to A(), callable.parameters[1] to 42))
     }
-
 }
