@@ -2,6 +2,7 @@ package tests.mapping.types.supertypes
 
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.jvm.*
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.TypeVariable
 import kotlin.test.assertEquals

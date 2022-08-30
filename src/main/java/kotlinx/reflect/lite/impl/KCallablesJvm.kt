@@ -3,6 +3,7 @@
 package kotlinx.reflect.lite.impl
 
 import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.jvm.*
 import java.lang.reflect.AccessibleObject
 
 /**

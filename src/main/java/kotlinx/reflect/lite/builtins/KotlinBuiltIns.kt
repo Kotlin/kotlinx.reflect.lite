@@ -3,6 +3,7 @@ package kotlinx.reflect.lite.builtins
 
 import kotlinx.reflect.lite.descriptors.impl.*
 import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.jvm.*
 import kotlinx.reflect.lite.name.*
 
 internal object StandardNames {

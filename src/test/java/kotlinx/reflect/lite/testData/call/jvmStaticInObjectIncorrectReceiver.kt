@@ -1,7 +1,7 @@
 package tests.call.jvmStaticInObjectIncorrectReceiver
 
 import kotlinx.reflect.lite.*
-import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.jvm.*
 
 object Obj {
     @JvmStatic

@@ -2,6 +2,7 @@ package tests.mapping.types.array
 
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.jvm.*
 import kotlinx.reflect.lite.tests.*
 import java.lang.reflect.GenericArrayType
 import java.lang.reflect.TypeVariable

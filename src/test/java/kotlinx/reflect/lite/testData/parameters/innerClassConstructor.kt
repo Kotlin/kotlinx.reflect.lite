@@ -4,7 +4,7 @@ package tests.parameters.innerClassConstructor
 // Bound receivers not supported for now
 
 import kotlinx.reflect.lite.*
-import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.jvm.*
 import kotlin.test.assertEquals
 
 class Outer(val s1: String) {

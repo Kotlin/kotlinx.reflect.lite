@@ -2,7 +2,7 @@ package tests.callBy.jvmStaticInCompanionObject
 
 // KT-12915 IAE on callBy of JvmStatic function with default arguments
 
-import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.jvm.*
 import kotlin.test.assertEquals
 
 class C {

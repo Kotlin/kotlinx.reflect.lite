@@ -1,7 +1,6 @@
 package tests.mapping.methodsFromObject
 
 import kotlinx.reflect.lite.*
-import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.jvm.*
 
 import kotlin.test.assertEquals

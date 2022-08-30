@@ -1,7 +1,6 @@
 package tests.parameters.functionParameterNameAndIndex
 
 import kotlinx.reflect.lite.*
-import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.tests.*
 import kotlin.test.assertEquals
 import kotlinx.reflect.lite.jvm.*

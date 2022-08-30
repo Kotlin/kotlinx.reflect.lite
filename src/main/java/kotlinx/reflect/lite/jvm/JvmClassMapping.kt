@@ -1,3 +1,5 @@
+@file:JvmName("JvmClassMappingKt")
+
 package kotlinx.reflect.lite.jvm
 
 import kotlinx.reflect.lite.*

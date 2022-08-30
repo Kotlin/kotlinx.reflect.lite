@@ -3,6 +3,7 @@ package kotlinx.reflect.lite.impl
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.descriptors.*
 import kotlinx.reflect.lite.descriptors.impl.*
+import kotlinx.reflect.lite.jvm.*
 import java.lang.reflect.*
 import java.util.ArrayList
 import kotlin.coroutines.*

@@ -1,7 +1,7 @@
 package tests.mapping.types.propertyAccessors
 
 import kotlinx.reflect.lite.*
-import kotlinx.reflect.lite.impl.*
+import kotlinx.reflect.lite.jvm.*
 import kotlin.test.assertEquals
 
 class A(private var foo: String)

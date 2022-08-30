@@ -1,12 +1,12 @@
 @file:JvmName("ReflectJvmMapping")
 
 // Some logic copied from: https://github.com/JetBrains/kotlin/blob/26cdb2f928982dad7f0c9ab8e3bd509665d9d537/core/reflection.jvm/src/kotlin/reflect/jvm/ReflectJvmMapping.kt
-package kotlinx.reflect.lite.impl
+package kotlinx.reflect.lite.jvm
 
-import kotlinx.metadata.jvm.KotlinClassHeader
+import kotlinx.metadata.jvm.*
 import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.descriptors.impl.*
-import kotlinx.reflect.lite.jvm.*
+import kotlinx.reflect.lite.impl.*
 import java.lang.reflect.*
 
 // Kotlin reflection -> Java reflection
@@ -51,6 +51,9 @@ val <T> KFunction<T>.javaConstructor: Constructor<T>?
         return it.descriptor.caller.member as? Constructor<T>
     }
 
+// Java reflection -> Kotlin reflection
+
+
 /**
  * Returns a [KClass] instance representing the companion object of a given class,
  * or `null` if the class doesn't have a companion object.
@@ -72,8 +75,6 @@ val KDeclarationContainer.companionObject: KClass<*>?
 val KType.javaType: Type
     get() = (this as KTypeImpl).javaType ?: this.computeJavaType()
 
-// Java reflection -> Kotlin reflection
-
 /**
  * Returns a [KDeclarationContainer] instance representing a Kotlin class or package.
  */
@@ -82,7 +83,9 @@ internal val <T : Any> Class<T>.kDeclarationContainer: KDeclarationContainer
 
 private fun Member.getKPackage(): KDeclarationContainer? =
     when (declaringClass.getAnnotation(Metadata::class.java)?.kind) {
-        KotlinClassHeader.FILE_FACADE_KIND, KotlinClassHeader.MULTI_FILE_CLASS_PART_KIND -> KPackageImpl(PackageDescriptorImpl(declaringClass))
+        KotlinClassHeader.FILE_FACADE_KIND, KotlinClassHeader.MULTI_FILE_CLASS_PART_KIND -> KPackageImpl(
+            PackageDescriptorImpl(declaringClass)
+        )
         else -> null
     }
 

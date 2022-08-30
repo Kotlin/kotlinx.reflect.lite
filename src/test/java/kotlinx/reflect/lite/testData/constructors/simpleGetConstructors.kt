@@ -1,6 +1,5 @@
 package tests.constructors.simpleGetConstructors
 
-import kotlinx.reflect.lite.impl.*
 import kotlinx.reflect.lite.jvm.*
 import kotlinx.reflect.lite.*
 import java.util.Collections
