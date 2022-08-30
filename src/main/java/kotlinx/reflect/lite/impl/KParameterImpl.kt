@@ -13,6 +13,8 @@ internal class KParameterImpl(
     override val kind: KParameter.Kind,
     private val containingCallable: CallableDescriptor
 ): KParameter {
+
+    // TODO  mvicsokolova explain in a comment what's going in 'name'
     override val name: String?
         get() = (descriptor as? ValueParameterDescriptor)?.let {
             if (it.name.startsWith("<")) null else it.name
