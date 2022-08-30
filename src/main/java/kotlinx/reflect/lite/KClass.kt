@@ -1,7 +1,5 @@
 package kotlinx.reflect.lite
 
-import kotlinx.reflect.lite.descriptors.*
-import kotlinx.reflect.lite.descriptors.ClassDescriptor
 import kotlinx.reflect.lite.misc.*
 
 /**

@@ -24,10 +24,10 @@ import kotlinx.reflect.lite.descriptors.impl.*
 import kotlinx.reflect.lite.misc.*
 
 internal object ReflectionLiteImpl {
-    fun <T : Any> loadClassMetadata(jClass: Class<T>): KDeclarationContainer {
-        return when (val kind = jClass.getMetadataAnnotation()?.kind) {
-            null, 1 -> KClassImpl(createClassDescriptor(jClass, kind))
-            2 -> KPackageImpl(PackageDescriptorImpl(jClass))
+    fun <T : Any> createKotlinDeclarationContainer(jClass: Class<T>): KDeclarationContainer {
+        return when (jClass.getMetadataAnnotation()?.kind) {
+            null, KotlinClassHeader.CLASS_KIND -> createKotlinClass(jClass)
+            KotlinClassHeader.FILE_FACADE_KIND, KotlinClassHeader.MULTI_FILE_CLASS_PART_KIND -> createKotlinPackage(jClass)
             else -> throw KotlinReflectionInternalError("Can not load class metadata for $jClass")
         }
     }
