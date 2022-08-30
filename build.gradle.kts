@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "1.7.10"
     `java-gradle-plugin`
     `maven-publish`
+    id("me.champeau.jmh") version "0.6.7"
 }
 
 repositories {
@@ -20,6 +21,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     implementation("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.4.2")
     testImplementation("junit:junit:4.13")
+    jmh("org.jetbrains.kotlin:kotlin-reflect:1.7.10")
 }
 
 java {
