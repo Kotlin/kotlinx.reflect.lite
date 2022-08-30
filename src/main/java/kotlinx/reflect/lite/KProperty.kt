@@ -1,5 +1,7 @@
 package kotlinx.reflect.lite
 
+import kotlinx.reflect.lite.misc.*
+
 /**
  * Represents a property, such as a named `val` or `var` declaration.
  *
@@ -74,7 +76,7 @@ public interface KProperty0<out V> : KProperty<V>, () -> V {
      * for more information.
      */
     @SinceKotlin("1.1")
-    private fun getDelegate(): Any? = TODO()
+    private fun getDelegate(): Any? = notImplemented()
 
     override val getter: Getter<V>
 
@@ -139,7 +141,7 @@ public interface KProperty1<T, out V> : KProperty<V>, (T) -> V {
      * @see [kotlin.reflect.full.getExtensionDelegate] // [KProperty1.getExtensionDelegate]
      */
     @SinceKotlin("1.1")
-    private fun getDelegate(receiver: T): Any? = TODO()
+    private fun getDelegate(receiver: T): Any? = notImplemented()
 
     override val getter: Getter<T, V>
 
@@ -210,7 +212,7 @@ public interface KProperty2<D, E, out V> : KProperty<V>, (D, E) -> V {
      * @see [kotlin.reflect.full.getExtensionDelegate] // [KProperty2.getExtensionDelegate]
      */
     @SinceKotlin("1.1")
-    private fun getDelegate(receiver1: D, receiver2: E): Any? = TODO()
+    private fun getDelegate(receiver1: D, receiver2: E): Any? = notImplemented()
 
     override val getter: Getter<D, E, V>
 

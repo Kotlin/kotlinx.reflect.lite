@@ -3,7 +3,7 @@ package kotlinx.reflect.lite.name
 import kotlinx.metadata.ClassName
 import kotlinx.metadata.isLocal
 
-typealias Name = String
+internal typealias Name = String
 
 internal data class FqName(val fqName: String) {
     val isRoot: Boolean get() = fqName.isEmpty()

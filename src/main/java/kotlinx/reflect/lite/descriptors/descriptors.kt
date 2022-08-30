@@ -7,7 +7,9 @@ import kotlinx.reflect.lite.calls.Caller
 import kotlinx.reflect.lite.descriptors.impl.KotlinType
 import kotlinx.reflect.lite.descriptors.impl.TypeParameterTable
 import kotlinx.reflect.lite.impl.KCallableImpl
+import kotlinx.reflect.lite.misc.*
 import kotlinx.reflect.lite.misc.JvmPropertySignature
+import kotlinx.reflect.lite.misc.notImplemented
 import kotlinx.reflect.lite.name.*
 import java.lang.reflect.*
 
@@ -17,7 +19,7 @@ internal interface ModuleDescriptor {
 
 internal interface Annotated {
     private val annotations: Annotations
-        get() = TODO()
+        get() = notImplemented()
 }
 
 interface Annotations {
@@ -109,7 +111,7 @@ internal interface CallableDescriptor : DeclarationDescriptor {
     val visibility: KVisibility?
 
     private val isBound: Boolean
-        get() = TODO()
+        get() = notImplemented()
 
     val isFinal: Boolean
     val isOpen: Boolean
@@ -151,7 +153,7 @@ internal interface PropertyDescriptor : CallableDescriptor {
     val isLateInit: Boolean
     val isConst: Boolean
     private val isDelegated: Boolean
-        get() = TODO()
+        get() = notImplemented()
 
     val isMovedFromInterfaceCompanion: Boolean
 

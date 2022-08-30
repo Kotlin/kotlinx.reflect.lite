@@ -37,3 +37,5 @@ internal fun ClassLoader.tryLoadClass(fqName: String) =
     } catch (e: ClassNotFoundException) {
         null
     }
+
+internal fun notImplemented(): Nothing = TODO("This functionality is not yet supported in kotlinx.reflect.lite")

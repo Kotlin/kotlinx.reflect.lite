@@ -2,6 +2,7 @@ package kotlinx.reflect.lite
 
 import kotlinx.reflect.lite.descriptors.*
 import kotlinx.reflect.lite.descriptors.ClassDescriptor
+import kotlinx.reflect.lite.misc.*
 
 /**
  * Represents a class and provides introspection capabilities.
@@ -35,13 +36,13 @@ public interface KClass<out T> : KDeclarationContainer, KAnnotatedElement, KClas
      * The instance of the object declaration, or `null` if this class is not an object declaration.
      */
     private val objectInstance: T?
-        get() = TODO()
+        get() = notImplemented()
 
     /**
      * Returns `true` if [value] is an instance of this class on a given platform.
      */
     @SinceKotlin("1.1")
-    private fun isInstance(value: Any?): Boolean = TODO()
+    private fun isInstance(value: Any?): Boolean = notImplemented()
 
     /**
      * The list of type parameters of this class. This list does *not* include type parameters of outer classes.
