@@ -62,6 +62,10 @@ class KCallableTest {
     @Test
     fun testReturnUnit() = test("call.returnUnit") { tests.call.returnUnit.box() }
 
+    // bound
+    @Test
+    fun testCompanionObjectPropertyAccessorsWA() = test("call.bound.companionObjectPropertyAccessorsWA") { tests.call.bound.companionObjectPropertyAccessorsWA.box() }
+
     // callBy
     @Test
     fun testSimpleMemberFunciton() = test("callBy.simpleMemberFunciton") { tests.callBy.simpleMemberFunciton.box() }
