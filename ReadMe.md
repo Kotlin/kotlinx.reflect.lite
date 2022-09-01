@@ -1,6 +1,14 @@
-<a href="http://slack.kotlinlang.org/"><img src="http://slack.kotlinlang.org/badge.svg" height="20"></a>
-[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0)
-[![Download](https://api.bintray.com/packages/kotlin/kotlinx.reflect.lite/kotlinx.reflect.lite/images/download.svg)](https://bintray.com/kotlin/kotlinx.reflect.lite/kotlinx.reflect.lite/_latestVersion)
+[![Kotlin Experimental](https://kotl.in/badges/experimental.svg)](https://kotlinlang.org/docs/components-stability.html)
+[![JetBrains incubator project](https://jb.gg/badges/incubator.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
+[![Kotlin](https://img.shields.io/badge/kotlin-1.0.0-blue.svg)](https://kotlinlang.org) 
+[![Kotlin Slack](https://img.shields.io/badge/chat-kotlin%20slack-orange.svg)](https://kotlinslackin.herokuapp.com)
+
+
+# kotlinx.reflect.lite
+
+This library provides an API to introspect Kotlin symbols at runtime. Its main feature is the small size which makes it possible to use it on memory-constrained devices.
+
+[Download](https://bintray.com/kotlin/kotlinx.reflect.lite/kotlinx.reflect.lite/_latestVersion)
 
 # kotlinx.reflect.lite
 
@@ -58,7 +66,7 @@ Add the jcenter repository:
     </snapshots>
     <id>central</id>
     <name>bintray</name>
-    <url>http://jcenter.bintray.com</url>
+    <url>https://jcenter.bintray.com</url>
 </repository>
 ```
 
