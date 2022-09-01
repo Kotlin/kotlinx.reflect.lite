@@ -32,8 +32,12 @@ java {
 
 tasks.compileKotlin {
     kotlinOptions {
-        freeCompilerArgs += listOf("-no-reflect", "-Xexplicit-api=strict")
+        freeCompilerArgs += listOf("-no-reflect")
     }
+}
+
+kotlin {
+    explicitApi()
 }
 
 publishing {
