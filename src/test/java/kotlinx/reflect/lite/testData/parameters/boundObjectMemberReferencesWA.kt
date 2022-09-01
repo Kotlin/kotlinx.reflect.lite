@@ -17,6 +17,7 @@ fun box(): String {
     val foo = Host::class.java.kotlin.getMemberByName("foo") as KFunction<Unit>
     val fooParams = foo.parameters
 
+    // foo has no bound receiver -> the first parameter is instance receiver
     assertEquals(3, fooParams.size)
 
     assertEquals("i", fooParams[1].name)
