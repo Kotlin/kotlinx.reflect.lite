@@ -19,7 +19,7 @@ class A {
 }
 
 fun box(): String {
-    val clazz = Class.forName("tests.modifiers.properties.PropertiesKt").kotlin
+    val clazz = Class.forName("tests.modifiers.properties.PropertiesKt").kotlinPackage
     assertTrue((clazz.getMemberByName("const") as KProperty0<String>).isConst)
     assertFalse((clazz.getMemberByName("nonConst") as KProperty0<String>).isConst)
 
