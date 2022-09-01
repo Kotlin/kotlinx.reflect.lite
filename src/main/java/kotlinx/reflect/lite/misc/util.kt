@@ -15,7 +15,7 @@ private val PRIMITIVE_CLASSES =
     listOf(Boolean::class, Byte::class, Char::class, Double::class, Float::class, Int::class, Long::class, Short::class)
 private val PRIMITIVE_TO_WRAPPER = PRIMITIVE_CLASSES.map { it.javaPrimitiveType to it.javaObjectType }.toMap()
 
-val Class<*>.wrapperByPrimitive: Class<*>?
+internal val Class<*>.wrapperByPrimitive: Class<*>?
     get() = PRIMITIVE_TO_WRAPPER[this]
 
 /**
