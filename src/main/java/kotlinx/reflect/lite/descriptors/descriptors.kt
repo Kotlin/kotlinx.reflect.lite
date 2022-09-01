@@ -26,7 +26,7 @@ internal interface Annotated {
         get() = notImplemented()
 }
 
-interface Annotations {
+internal interface Annotations {
     fun getAll(): List<Annotation>
 
     object Empty : Annotations {

@@ -9,4 +9,4 @@ package kotlinx.reflect.lite.impl
  * Signals that Kotlin reflection had reached an inconsistent state from which it cannot recover.
  * @suppress
  */
-class KotlinReflectionInternalError(message: String) : Error(message)
+public class KotlinReflectionInternalError(message: String) : Error(message)
