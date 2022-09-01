@@ -66,6 +66,8 @@ internal abstract class KCallableImpl<out R>: KCallable<R> {
     // Logic from: https://github.com/JetBrains/kotlin/blob/ea836fd46a1fef07d77c96f9d7e8d7807f793453/core/reflection.jvm/src/kotlin/reflect/jvm/internal/KCallableImpl.kt#L116
     private fun callDefaultMethod(args: Map<KParameter, Any?>, continuationArgument: Continuation<*>?): R {
         val parameters = parameters
+        // TODO here we can avoid extra arguments copy by allocating an array of precise size if
+        // varargs are not present and win some performance
         val arguments = ArrayList<Any?>(parameters.size)
         var mask = 0
         val masks = ArrayList<Int>(1)
@@ -83,7 +85,7 @@ internal abstract class KCallableImpl<out R>: KCallable<R> {
                     arguments.add(args[parameter])
                 }
                 parameter.isOptional -> {
-                    arguments.add(defaultPrimitiveValue(parameter.type?.javaType))
+                    arguments.add(defaultPrimitiveValue(parameter.type.javaType))
                     mask = mask or (1 shl (index % Integer.SIZE))
                     anyOptional = true
                 }

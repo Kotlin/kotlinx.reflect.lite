@@ -13,9 +13,13 @@ internal class KParameterImpl(
     override val kind: KParameter.Kind,
     private val containingCallable: CallableDescriptor
 ): KParameter {
+
     override val name: String?
-        get() = (descriptor as? ValueParameterDescriptor)?.let {
-            if (it.name.startsWith("<")) null else it.name
+        get() {
+            val valueParameter = descriptor as? ValueParameterDescriptor ?: return null
+            val name = valueParameter.name
+            // for special names (like the name of property setterParameter "<set-?>") return null
+            return if (name.startsWith("<")) null else name
         }
 
     // Logic from here: https://github.com/JetBrains/kotlin/blob/1f1790d60e837347d99921dd1fb4f00e6ec868d2/core/reflection.jvm/src/kotlin/reflect/jvm/internal/KParameterImpl.kt#L42

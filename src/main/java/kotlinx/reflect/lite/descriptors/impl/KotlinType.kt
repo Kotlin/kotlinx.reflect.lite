@@ -18,16 +18,16 @@ import kotlinx.reflect.lite.descriptors.TypeParameterDescriptor
 import java.lang.reflect.*
 
 internal class KotlinType(
-    val descriptor: ClassifierDescriptor,
-    val arguments: List<TypeProjection>,
-    val isMarkedNullable: Boolean // todo pass annotations
+    @JvmField val descriptor: ClassifierDescriptor,
+    @JvmField val arguments: List<TypeProjection>,
+    @JvmField val isMarkedNullable: Boolean // todo pass annotations
 ) : Annotated
 
 internal fun KotlinType.isNullableType(): Boolean =
     isMarkedNullable || (descriptor is TypeParameterDescriptor && descriptor.upperBounds.any { it.isNullableType() })
 
 internal class TypeParameterTable(
-    val typeParameters: List<TypeParameterDescriptorImpl>,
+    @JvmField val typeParameters: List<TypeParameterDescriptorImpl>,
     private val parent: TypeParameterTable? = null
 ) {
     private fun getOrNull(id: Int): TypeParameterDescriptor? =

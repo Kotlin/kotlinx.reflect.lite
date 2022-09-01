@@ -95,19 +95,20 @@ internal class FunctionDescriptorImpl(
     override val containingClass: ClassDescriptor<*>?,
     override val container: ClassBasedDeclarationContainerDescriptor
 ) : AbstractFunctionDescriptor() {
+
     override val flags: Flags
         get() = kmFunction.flags
 
     override val name: Name
         get() = kmFunction.name
 
-    override val signature: JvmMethodSignature?
-        get() = kmFunction.signature
+    override val signature: JvmMethodSignature? by lazy { kmFunction.signature }
 
-    override val valueParameters: List<ValueParameterDescriptor>
-        get() = kmFunction.valueParameters.mapIndexed { index, kmValueParam ->
+    override val valueParameters: List<ValueParameterDescriptor> by lazy {
+        kmFunction.valueParameters.mapIndexed { index, kmValueParam ->
             ValueParameterDescriptorImpl(kmValueParam, this, index)
         }
+    }
 
     override val typeParameterTable: TypeParameterTable =
         kmFunction.typeParameters.toTypeParameters(this, module, containingClass?.typeParameterTable)

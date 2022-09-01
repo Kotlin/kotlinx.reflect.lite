@@ -62,6 +62,25 @@ class KCallableTest {
     @Test
     fun testReturnUnit() = test("call.returnUnit") { tests.call.returnUnit.box() }
 
+    // bound
+    @Test
+    fun testCompanionObjectPropertyAccessorsWA() = test("call.bound.companionObjectPropertyAccessorsWA") { tests.call.bound.companionObjectPropertyAccessorsWA.box() }
+
+    @Test
+    fun testExtensionPropertyAccessorsWA() = test("call.bound.extensionPropertyAccessorsWA") { tests.call.bound.extensionPropertyAccessorsWA.box() }
+
+    @Test
+    fun testJvmStaticCompanionObjectPropertyAccessorsWA() = test("call.bound.jvmStaticCompanionObjectPropertyAccessorsWA") { tests.call.bound.jvmStaticCompanionObjectPropertyAccessorsWA.box() }
+
+    @Test
+    fun testJvmStaticObjectPropertyAccessorsWA() = test("call.bound.jvmStaticObjectPropertyAccessorsWA") { tests.call.bound.jvmStaticObjectPropertyAccessorsWA.box() }
+
+    @Test
+    fun testMemberPropertyAccessorsWA() = test("call.bound.memberPropertyAccessorsWA") { tests.call.bound.memberPropertyAccessorsWA.box() }
+
+    @Test
+    fun testObjectPropertyAccessorsWA() = test("call.bound.objectPropertyAccessorsWA") { tests.call.bound.objectPropertyAccessorsWA.box() }
+
     // callBy
     @Test
     fun testSimpleMemberFunciton() = test("callBy.simpleMemberFunciton") { tests.callBy.simpleMemberFunciton.box() }

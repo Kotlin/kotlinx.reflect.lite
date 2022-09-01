@@ -157,8 +157,6 @@ internal abstract class PropertyAccessorDescriptorImpl(
         }
     }
 
-
-
     protected abstract fun computeFieldCaller(field: Field): Caller<*>
 
     protected fun isJvmStaticProperty(): Boolean {

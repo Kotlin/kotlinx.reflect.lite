@@ -9,18 +9,26 @@ import kotlinx.reflect.lite.*
 import kotlinx.reflect.lite.descriptors.ClassDescriptor
 import kotlinx.reflect.lite.descriptors.PackageDescriptor
 import kotlinx.reflect.lite.descriptors.impl.*
+import kotlinx.reflect.lite.jvm.internal.*
+import kotlinx.reflect.lite.jvm.internal.createCache
 import kotlinx.reflect.lite.misc.*
 
 internal object ReflectionLiteImpl {
+
+    private val kClassCache = createCache { createKotlinClass(it) }
+
     fun <T : Any> createKotlinDeclarationContainer(jClass: Class<T>): KDeclarationContainer {
         return when (jClass.getMetadataAnnotation()?.kind) {
-            null, KotlinClassHeader.CLASS_KIND -> createKotlinClass(jClass)
+            null, KotlinClassHeader.CLASS_KIND -> getOrCreateKotlinClass(jClass)
             KotlinClassHeader.FILE_FACADE_KIND, KotlinClassHeader.MULTI_FILE_CLASS_PART_KIND -> createKotlinPackage(jClass)
             else -> throw KotlinReflectionInternalError("Can not load class metadata for $jClass")
         }
     }
 
-    fun <T: Any> createKotlinClass(jClass: Class<T>): KClass<T> {
+    @Suppress("UNCHECKED_CAST")
+    public fun <T: Any> getOrCreateKotlinClass(jClass: Class<T>): KClass<T> = kClassCache.get(jClass) as KClass<T>
+
+    private fun <T: Any> createKotlinClass(jClass: Class<T>): KClass<T> {
         val kind = jClass.getMetadataAnnotation()?.kind
         return KClassImpl(createClassDescriptor(jClass, kind))
     }

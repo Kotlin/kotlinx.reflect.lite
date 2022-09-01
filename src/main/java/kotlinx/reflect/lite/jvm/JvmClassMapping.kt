@@ -16,7 +16,7 @@ import kotlinx.reflect.lite.impl.ReflectionLiteImpl
  */
 public val <T : Any> Class<T>.kotlin: KClass<T>
     @JvmName("getLiteKClass")
-    get() = ReflectionLiteImpl.createKotlinClass(this)
+    get() = ReflectionLiteImpl.getOrCreateKotlinClass(this)
 
 /**
  * Returns a [KPackage] instance corresponding to the given Java [Class] instance.
