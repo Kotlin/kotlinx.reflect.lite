@@ -79,13 +79,13 @@ internal fun KType.computeJavaType(): Type {
             if (jClass.isArray) {
                 if (jClass.componentType.isPrimitive) return jClass
 
-                val (variance, elementType) = arguments.singleOrNull()
+                val typeProjection = arguments.singleOrNull()
                     ?: throw IllegalArgumentException("kotlin.Array must have exactly one type argument: $this")
-                return when (variance) {
+                return when (typeProjection.variance) {
                     // Array<in ...> is always erased to Object[], and Array<*> is Object[].
                     null, KVariance.IN -> jClass
                     KVariance.INVARIANT, KVariance.OUT -> {
-                        val javaElementType = elementType!!.computeJavaType()
+                        val javaElementType = typeProjection.type!!.computeJavaType()
                         if (javaElementType is Class<*>) jClass else TODO("GenericArrayTypeImpl(javaElementType)")
                     }
                 }

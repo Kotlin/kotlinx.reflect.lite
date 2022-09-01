@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm")
     `java-gradle-plugin`
     `maven-publish`
+    id("org.jetbrains.kotlinx.binary-compatibility-validator")
     id("me.champeau.jmh") version "0.6.7"
 }
 

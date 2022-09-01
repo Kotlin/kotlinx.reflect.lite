@@ -1,0 +1,230 @@
+public abstract interface class kotlinx/reflect/lite/KAnnotatedElement {
+}
+
+public abstract interface class kotlinx/reflect/lite/KCallable : kotlinx/reflect/lite/KAnnotatedElement {
+	public abstract fun call ([Ljava/lang/Object;)Ljava/lang/Object;
+	public abstract fun callBy (Ljava/util/Map;)Ljava/lang/Object;
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun getParameters ()Ljava/util/List;
+	public abstract fun getReturnType ()Lkotlinx/reflect/lite/KType;
+	public abstract fun getTypeParameters ()Ljava/util/List;
+	public abstract fun getVisibility ()Lkotlinx/reflect/lite/KVisibility;
+	public abstract fun isAbstract ()Z
+	public abstract fun isFinal ()Z
+	public abstract fun isOpen ()Z
+	public abstract fun isSuspend ()Z
+}
+
+public abstract interface class kotlinx/reflect/lite/KClass : kotlinx/reflect/lite/KAnnotatedElement, kotlinx/reflect/lite/KClassifier, kotlinx/reflect/lite/KDeclarationContainer {
+	public abstract fun getConstructors ()Ljava/util/Collection;
+	public abstract fun getNestedClasses ()Ljava/util/Collection;
+	public abstract fun getQualifiedName ()Ljava/lang/String;
+	public abstract fun getSealedSubclasses ()Ljava/util/List;
+	public abstract fun getSimpleName ()Ljava/lang/String;
+	public abstract fun getSupertypes ()Ljava/util/List;
+	public abstract fun getTypeParameters ()Ljava/util/List;
+	public abstract fun getVisibility ()Lkotlinx/reflect/lite/KVisibility;
+	public abstract fun isAbstract ()Z
+	public abstract fun isCompanion ()Z
+	public abstract fun isData ()Z
+	public abstract fun isFinal ()Z
+	public abstract fun isFun ()Z
+	public abstract fun isInner ()Z
+	public abstract fun isOpen ()Z
+	public abstract fun isSealed ()Z
+	public abstract fun isValue ()Z
+}
+
+public abstract interface class kotlinx/reflect/lite/KClassifier {
+}
+
+public abstract interface class kotlinx/reflect/lite/KDeclarationContainer {
+	public abstract fun getMembers ()Ljava/util/Collection;
+}
+
+public abstract interface class kotlinx/reflect/lite/KFunction : kotlin/Function, kotlinx/reflect/lite/KCallable {
+	public abstract fun isExternal ()Z
+	public abstract fun isInfix ()Z
+	public abstract fun isInline ()Z
+	public abstract fun isOperator ()Z
+	public abstract fun isSuspend ()Z
+}
+
+public abstract interface class kotlinx/reflect/lite/KMutableProperty : kotlinx/reflect/lite/KProperty {
+	public abstract fun getSetter ()Lkotlinx/reflect/lite/KMutableProperty$Setter;
+}
+
+public abstract interface class kotlinx/reflect/lite/KMutableProperty$Setter : kotlinx/reflect/lite/KFunction, kotlinx/reflect/lite/KProperty$Accessor {
+}
+
+public abstract interface class kotlinx/reflect/lite/KMutableProperty0 : kotlinx/reflect/lite/KMutableProperty, kotlinx/reflect/lite/KProperty0 {
+	public abstract fun getSetter ()Lkotlinx/reflect/lite/KMutableProperty0$Setter;
+	public abstract fun set (Ljava/lang/Object;)V
+}
+
+public abstract interface class kotlinx/reflect/lite/KMutableProperty0$Setter : kotlin/jvm/functions/Function1, kotlinx/reflect/lite/KMutableProperty$Setter {
+}
+
+public abstract interface class kotlinx/reflect/lite/KMutableProperty1 : kotlinx/reflect/lite/KMutableProperty, kotlinx/reflect/lite/KProperty1 {
+	public abstract fun getSetter ()Lkotlinx/reflect/lite/KMutableProperty1$Setter;
+	public abstract fun set (Ljava/lang/Object;Ljava/lang/Object;)V
+}
+
+public abstract interface class kotlinx/reflect/lite/KMutableProperty1$Setter : kotlin/jvm/functions/Function2, kotlinx/reflect/lite/KMutableProperty$Setter {
+}
+
+public abstract interface class kotlinx/reflect/lite/KMutableProperty2 : kotlinx/reflect/lite/KMutableProperty, kotlinx/reflect/lite/KProperty2 {
+	public abstract fun getSetter ()Lkotlinx/reflect/lite/KMutableProperty2$Setter;
+	public abstract fun set (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V
+}
+
+public abstract interface class kotlinx/reflect/lite/KMutableProperty2$Setter : kotlin/jvm/functions/Function3, kotlinx/reflect/lite/KMutableProperty$Setter {
+}
+
+public abstract interface class kotlinx/reflect/lite/KPackage : kotlinx/reflect/lite/KDeclarationContainer {
+}
+
+public abstract interface class kotlinx/reflect/lite/KParameter : kotlinx/reflect/lite/KAnnotatedElement {
+	public abstract fun getIndex ()I
+	public abstract fun getKind ()Lkotlinx/reflect/lite/KParameter$Kind;
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun getType ()Lkotlinx/reflect/lite/KType;
+	public abstract fun isOptional ()Z
+	public abstract fun isVararg ()Z
+}
+
+public final class kotlinx/reflect/lite/KParameter$Kind : java/lang/Enum {
+	public static final field EXTENSION_RECEIVER Lkotlinx/reflect/lite/KParameter$Kind;
+	public static final field INSTANCE Lkotlinx/reflect/lite/KParameter$Kind;
+	public static final field VALUE Lkotlinx/reflect/lite/KParameter$Kind;
+	public static fun valueOf (Ljava/lang/String;)Lkotlinx/reflect/lite/KParameter$Kind;
+	public static fun values ()[Lkotlinx/reflect/lite/KParameter$Kind;
+}
+
+public abstract interface class kotlinx/reflect/lite/KProperty : kotlinx/reflect/lite/KCallable {
+	public abstract fun getGetter ()Lkotlinx/reflect/lite/KProperty$Getter;
+	public abstract fun isConst ()Z
+	public abstract fun isLateInit ()Z
+}
+
+public abstract interface class kotlinx/reflect/lite/KProperty$Accessor {
+	public abstract fun getProperty ()Lkotlinx/reflect/lite/KProperty;
+}
+
+public abstract interface class kotlinx/reflect/lite/KProperty$Getter : kotlinx/reflect/lite/KFunction, kotlinx/reflect/lite/KProperty$Accessor {
+}
+
+public abstract interface class kotlinx/reflect/lite/KProperty0 : kotlin/jvm/functions/Function0, kotlinx/reflect/lite/KProperty {
+	public abstract fun get ()Ljava/lang/Object;
+	public abstract fun getGetter ()Lkotlinx/reflect/lite/KProperty0$Getter;
+}
+
+public abstract interface class kotlinx/reflect/lite/KProperty0$Getter : kotlin/jvm/functions/Function0, kotlinx/reflect/lite/KProperty$Getter {
+}
+
+public abstract interface class kotlinx/reflect/lite/KProperty1 : kotlin/jvm/functions/Function1, kotlinx/reflect/lite/KProperty {
+	public abstract fun get (Ljava/lang/Object;)Ljava/lang/Object;
+	public abstract fun getGetter ()Lkotlinx/reflect/lite/KProperty1$Getter;
+}
+
+public abstract interface class kotlinx/reflect/lite/KProperty1$Getter : kotlin/jvm/functions/Function1, kotlinx/reflect/lite/KProperty$Getter {
+}
+
+public abstract interface class kotlinx/reflect/lite/KProperty2 : kotlin/jvm/functions/Function2, kotlinx/reflect/lite/KProperty {
+	public abstract fun get (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public abstract fun getGetter ()Lkotlinx/reflect/lite/KProperty2$Getter;
+}
+
+public abstract interface class kotlinx/reflect/lite/KProperty2$Getter : kotlin/jvm/functions/Function2, kotlinx/reflect/lite/KProperty$Getter {
+}
+
+public abstract interface class kotlinx/reflect/lite/KType : kotlinx/reflect/lite/KAnnotatedElement {
+	public abstract fun getArguments ()Ljava/util/List;
+	public abstract fun getClassifier ()Lkotlinx/reflect/lite/KClassifier;
+	public abstract fun isMarkedNullable ()Z
+}
+
+public abstract interface class kotlinx/reflect/lite/KTypeParameter : kotlinx/reflect/lite/KClassifier {
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun getUpperBounds ()Ljava/util/List;
+	public abstract fun getVariance ()Lkotlinx/reflect/lite/KVariance;
+	public abstract fun isReified ()Z
+}
+
+public final class kotlinx/reflect/lite/KTypeProjection {
+	public static final field Companion Lkotlinx/reflect/lite/KTypeProjection$Companion;
+	public fun <init> (Lkotlinx/reflect/lite/KVariance;Lkotlinx/reflect/lite/KType;)V
+	public final fun component1 ()Lkotlinx/reflect/lite/KVariance;
+	public final fun component2 ()Lkotlinx/reflect/lite/KType;
+	public static final fun contravariant (Lkotlinx/reflect/lite/KType;)Lkotlinx/reflect/lite/KTypeProjection;
+	public final fun copy (Lkotlinx/reflect/lite/KVariance;Lkotlinx/reflect/lite/KType;)Lkotlinx/reflect/lite/KTypeProjection;
+	public static synthetic fun copy$default (Lkotlinx/reflect/lite/KTypeProjection;Lkotlinx/reflect/lite/KVariance;Lkotlinx/reflect/lite/KType;ILjava/lang/Object;)Lkotlinx/reflect/lite/KTypeProjection;
+	public static final fun covariant (Lkotlinx/reflect/lite/KType;)Lkotlinx/reflect/lite/KTypeProjection;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType ()Lkotlinx/reflect/lite/KType;
+	public final fun getVariance ()Lkotlinx/reflect/lite/KVariance;
+	public fun hashCode ()I
+	public static final fun invariant (Lkotlinx/reflect/lite/KType;)Lkotlinx/reflect/lite/KTypeProjection;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class kotlinx/reflect/lite/KTypeProjection$Companion {
+	public final fun contravariant (Lkotlinx/reflect/lite/KType;)Lkotlinx/reflect/lite/KTypeProjection;
+	public final fun covariant (Lkotlinx/reflect/lite/KType;)Lkotlinx/reflect/lite/KTypeProjection;
+	public final fun getSTAR ()Lkotlinx/reflect/lite/KTypeProjection;
+	public final fun invariant (Lkotlinx/reflect/lite/KType;)Lkotlinx/reflect/lite/KTypeProjection;
+}
+
+public final class kotlinx/reflect/lite/KVariance : java/lang/Enum {
+	public static final field IN Lkotlinx/reflect/lite/KVariance;
+	public static final field INVARIANT Lkotlinx/reflect/lite/KVariance;
+	public static final field OUT Lkotlinx/reflect/lite/KVariance;
+	public static fun valueOf (Ljava/lang/String;)Lkotlinx/reflect/lite/KVariance;
+	public static fun values ()[Lkotlinx/reflect/lite/KVariance;
+}
+
+public final class kotlinx/reflect/lite/KVisibility : java/lang/Enum {
+	public static final field INTERNAL Lkotlinx/reflect/lite/KVisibility;
+	public static final field PRIVATE Lkotlinx/reflect/lite/KVisibility;
+	public static final field PROTECTED Lkotlinx/reflect/lite/KVisibility;
+	public static final field PUBLIC Lkotlinx/reflect/lite/KVisibility;
+	public static fun valueOf (Ljava/lang/String;)Lkotlinx/reflect/lite/KVisibility;
+	public static fun values ()[Lkotlinx/reflect/lite/KVisibility;
+}
+
+public final class kotlinx/reflect/lite/full/KCallables {
+	public static final fun callSuspend (Lkotlinx/reflect/lite/KCallable;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class kotlinx/reflect/lite/full/KCallablesJvm {
+	public static final fun isAccessible (Lkotlinx/reflect/lite/KCallable;)Z
+	public static final fun setAccessible (Lkotlinx/reflect/lite/KCallable;Z)V
+}
+
+public final class kotlinx/reflect/lite/full/KClasses {
+	public static final fun getPrimaryConstructor (Lkotlinx/reflect/lite/KClass;)Lkotlinx/reflect/lite/KFunction;
+}
+
+public final class kotlinx/reflect/lite/impl/KotlinReflectionInternalError : java/lang/Error {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class kotlinx/reflect/lite/jvm/JvmClassMappingKt {
+	public static final fun getJavaClass (Lkotlinx/reflect/lite/KClass;)Ljava/lang/Class;
+	public static final fun getLiteKClass (Ljava/lang/Class;)Lkotlinx/reflect/lite/KClass;
+	public static final fun getLiteKPackage (Ljava/lang/Class;)Lkotlinx/reflect/lite/KPackage;
+}
+
+public final class kotlinx/reflect/lite/jvm/ReflectJvmMapping {
+	public static final fun getCompanionObject (Lkotlinx/reflect/lite/KDeclarationContainer;)Lkotlinx/reflect/lite/KClass;
+	public static final fun getJavaConstructor (Lkotlinx/reflect/lite/KFunction;)Ljava/lang/reflect/Constructor;
+	public static final fun getJavaField (Lkotlinx/reflect/lite/KProperty;)Ljava/lang/reflect/Field;
+	public static final fun getJavaGetter (Lkotlinx/reflect/lite/KProperty;)Ljava/lang/reflect/Method;
+	public static final fun getJavaMethod (Lkotlinx/reflect/lite/KFunction;)Ljava/lang/reflect/Method;
+	public static final fun getJavaSetter (Lkotlinx/reflect/lite/KMutableProperty;)Ljava/lang/reflect/Method;
+	public static final fun getJavaType (Lkotlinx/reflect/lite/KType;)Ljava/lang/reflect/Type;
+	public static final fun getKotlinFunction (Ljava/lang/reflect/Constructor;)Lkotlinx/reflect/lite/KFunction;
+	public static final fun getKotlinFunction (Ljava/lang/reflect/Method;)Lkotlinx/reflect/lite/KFunction;
+	public static final fun getKotlinProperty (Ljava/lang/reflect/Field;)Lkotlinx/reflect/lite/KProperty;
+}
+
