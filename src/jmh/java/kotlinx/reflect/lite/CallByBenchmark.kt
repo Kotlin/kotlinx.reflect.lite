@@ -1,9 +1,11 @@
 package kotlinx.reflect.lite
 
+import org.openjdk.jmh.annotations.*
+import java.lang.reflect.Field
+import java.util.*
+import java.util.concurrent.*
 import kotlinx.reflect.lite.jvm.kotlin as liteKotlin
 import kotlin.jvm.kotlin as reflectKotlin
-import org.openjdk.jmh.annotations.*
-import java.util.concurrent.*
 
 @Warmup(iterations = 5, time = 1)
 @Measurement(iterations = 5, time = 1)
