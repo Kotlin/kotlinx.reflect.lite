@@ -5,12 +5,10 @@
 rootProject.name = "kotlinx.reflect.lite"
 
 pluginManagement {
-    resolutionStrategy {
-        val kotlin_version: String by settings
-        eachPlugin {
-            if (requested.id.namespace?.startsWith("org.jetbrains.kotlin") == true) {
-                useVersion(kotlin_version)
-            }
-        }
+    val kotlin_version: String by settings
+    val binary_compatibility_validator_version: String by settings
+    plugins {
+        id("org.jetbrains.kotlin.jvm") version kotlin_version
+        id("org.jetbrains.kotlinx.binary-compatibility-validator") version binary_compatibility_validator_version
     }
 }
