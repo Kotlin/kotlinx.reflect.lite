@@ -10,12 +10,14 @@ publishing {
         PublishingKt.configureMavenPublication(delegate, project)
     }
 
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+
     publications.all {
         PublishingKt.configureMavenCentralMetadata(pom, project)
         PublishingKt.signPublicationIfKeyPresent(project, it)
-    }
-
-    publications.create<MavenPublication>("maven") {
-        from(components["java"])
     }
 }
