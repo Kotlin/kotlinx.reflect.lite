@@ -10,6 +10,8 @@ plugins {
     id("me.champeau.jmh") version "0.6.7"
 }
 
+apply(from= rootProject.file("gradle/publishing.gradle"))
+
 repositories {
     mavenCentral()
     gradlePluginPortal()
@@ -41,10 +43,4 @@ tasks.compileKotlin {
 
 kotlin {
     explicitApi()
-}
-
-publishing {
-    publications.create<MavenPublication>("maven") {
-        from(components["java"])
-    }
 }
