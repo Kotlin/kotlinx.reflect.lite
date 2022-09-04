@@ -10,8 +10,6 @@ plugins {
     id("me.champeau.jmh") version "0.6.7"
 }
 
-apply(from= rootProject.file("gradle/publishing.gradle"))
-
 repositories {
     mavenCentral()
     gradlePluginPortal()
@@ -43,4 +41,21 @@ tasks.compileKotlin {
 
 kotlin {
     explicitApi()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+            configureMavenCentralMetadata()
+            mavenCentralArtifacts(project, project.sourceSets.main.get().allSource)
+        }
+
+        mavenRepositoryPublishing(project)
+        configureMavenCentralMetadata()
+    }
+
+    publications.withType(MavenPublication::class).all {
+        signPublicationIfKeyPresent(this)
+    }
 }

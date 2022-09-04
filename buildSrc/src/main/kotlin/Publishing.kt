@@ -5,71 +5,75 @@
 @file:Suppress("UnstableApiUsage")
 
 import org.gradle.api.*
-import org.gradle.api.artifacts.dsl.*
-import org.gradle.api.provider.*
+import org.gradle.api.file.*
+import org.gradle.api.publish.*
 import org.gradle.api.publish.maven.*
+import org.gradle.jvm.tasks.*
+import org.gradle.kotlin.dsl.*
 import org.gradle.plugins.signing.*
 import java.net.*
 
-// Pom configuration
-
-infix fun <T> Property<T>.by(value: T) {
-    set(value)
-}
-
-fun MavenPom.configureMavenCentralMetadata(project: Project) {
-    name by project.name
-    description by "kotlinx.reflect.lite"
-    url by "https://github.com/Kotlin/kotlinx.reflect.lite"
-
-    licenses {
-        license {
-            name by "The Apache Software License, Version 2.0"
-            url by "https://www.apache.org/licenses/LICENSE-2.0.txt"
-            distribution by "repo"
-        }
-    }
-
-    developers {
-        developer {
-            id by "JetBrains"
-            name by "JetBrains Team"
-            organization by "JetBrains"
-            organizationUrl by "https://www.jetbrains.com"
-        }
-    }
-
-    scm {
-        url by "https://github.com/Kotlin/kotlinx.reflect.lite"
-    }
-}
-
-fun mavenRepositoryUri(): URI {
-    val repositoryId: String? = System.getenv("libs.repository.id")
-    return URI("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-//    return if (repositoryId == null) {
-//        URI("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-//    } else {
-//        URI("https://oss.sonatype.org/service/local/staging/deployByRepositoryId/$repositoryId")
-//    }
-}
-
-fun configureMavenPublication(rh: RepositoryHandler, project: Project) {
-    rh.maven {
-        url = mavenRepositoryUri()
-        credentials {
-            username = project.getSensitiveProperty("libs.sonatype.user")
-            password = project.getSensitiveProperty("libs.sonatype.password")
+fun PublishingExtension.configureMavenCentralMetadata() {
+    publications.withType(MavenPublication::class) {
+        pom {
+            if (!name.isPresent) {
+                name.set(artifactId)
+            }
+            description.set("Experimental lightweight library that replaces existing `kotlin-reflect` implementation")
+            url.set("https://github.com/Kotlin/kotlinx.reflect.lite")
+            licenses {
+                license {
+                    name.set("The Apache Software License, Version 2.0")
+                    url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                    distribution.set("repo")
+                }
+            }
+            developers {
+                developer {
+                    id.set("JetBrains")
+                    name.set("JetBrains Team")
+                    organization.set("JetBrains")
+                    organizationUrl.set("https://www.jetbrains.com")
+                }
+            }
+            scm {
+                url.set("https://github.com/Kotlin/kotlinx.reflect.lite")
+            }
         }
     }
 }
 
-fun signPublicationIfKeyPresent(project: Project, publication: MavenPublication) {
+fun MavenPublication.mavenCentralArtifacts(project: Project, sources: SourceDirectorySet) {
+    val sourcesJar by project.tasks.creating(Jar::class) {
+        archiveClassifier.set("sources")
+        from(sources)
+    }
+    val javadocJar by project.tasks.creating(Jar::class) {
+        archiveClassifier.set("javadoc")
+        // contents are deliberately left empty
+    }
+    artifact(sourcesJar)
+    artifact(javadocJar)
+}
+
+fun PublishingExtension.mavenRepositoryPublishing(project: Project) {
+    repositories {
+        maven {
+            url = URI("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+            credentials {
+                username = project.getSensitiveProperty("libs.sonatype.user")
+                password = project.getSensitiveProperty("libs.sonatype.password")
+            }
+        }
+    }
+}
+
+fun Project.signPublicationIfKeyPresent(publication: MavenPublication) {
     val keyId = project.getSensitiveProperty("libs.sign.key.id")
     val signingKey = project.getSensitiveProperty("libs.sign.key.private")
     val signingKeyPassphrase = project.getSensitiveProperty("libs.sign.passphrase")
     if (!signingKey.isNullOrBlank()) {
-        project.extensions.configure<SigningExtension>("signing") {
+        extensions.configure<SigningExtension>("signing") {
             useInMemoryPgpKeys(keyId, signingKey, signingKeyPassphrase)
             sign(publication)
         }
