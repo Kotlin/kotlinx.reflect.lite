@@ -62,15 +62,15 @@ fun box(): String {
     assertTrue(suspend.isSuspend)
 
     val externalGetter = clazz.getMemberByName("externalGetter") as KProperty0<Unit>
-    // TODO should be true
-    //assertTrue(externalGetter.getter.isExternal)
+    // TODO should be true, see KT-53863
+    // assertTrue(externalGetter.getter.isExternal)
     assertFalse(externalGetter.getter.isInline)
 
     val inlineProperty = clazz.getMemberByName("inlineProperty") as KMutableProperty0<Unit>
     assertFalse(inlineProperty.getter.isExternal)
-    // TODO should be true
+    // TODO should be true, see KT-53862
     //assertTrue(inlineProperty.getter.isInline)
-    // TODO should be true
+    // TODO should be true, see KT-53862
     //assertTrue(inlineProperty.setter.isInline)
     assertFalse(inlineProperty.isSuspend)
     return "OK"
