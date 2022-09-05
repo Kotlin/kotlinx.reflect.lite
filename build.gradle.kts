@@ -44,18 +44,20 @@ kotlin {
     explicitApi()
 }
 
+val deployVersion = properties["DeployVersion"] as? String
+
 publishing {
     publications {
+        //val deployVersion = properties["DeployVersion"] as? String
         create<MavenPublication>("maven") {
             from(components["java"])
             groupId = "org.jetbrains.kotlinx"
             artifactId = "kotlinx.reflect.lite"
-            version = "1.1.0-SHANPSHOT"
+            version = deployVersion
             configureMavenCentralMetadata()
             mavenCentralArtifacts(project, project.sourceSets.main.get().allSource)
         }
 
-        version = "1.1.0-SHANPSHOT"
         mavenRepositoryPublishing(project)
         configureMavenCentralMetadata()
     }
