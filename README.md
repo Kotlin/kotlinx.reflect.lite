@@ -4,7 +4,7 @@
 
 # kotlinx.reflect.lite
 
-`kotlinx-reflect-lite` is an experimental attemp to replace existing `kotlin-reflect` implementation 
+`kotlinx-reflect-lite` is an experimental attempt to replace existing `kotlin-reflect` implementation 
 with a new lightweight and fast library, while preserving the very same API shape.
 
 

@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm")
     `java-gradle-plugin`
     `maven-publish`
+    signing
     id("org.jetbrains.kotlinx.binary-compatibility-validator")
     id("me.champeau.jmh") version "0.6.7"
 }
@@ -43,8 +44,25 @@ kotlin {
     explicitApi()
 }
 
+val deployVersion = properties.get("DeployVersion")?.toString() ?: version.toString()
+
 publishing {
-    publications.create<MavenPublication>("maven") {
-        from(components["java"])
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+            groupId = "org.jetbrains.kotlinx"
+            artifactId = "kotlinx.reflect.lite"
+            version = deployVersion
+            configureMavenCentralMetadata()
+            mavenCentralArtifacts(project, project.sourceSets.main.get().allSource)
+        }
+
+        version = deployVersion
+        mavenRepositoryPublishing(project)
+        configureMavenCentralMetadata()
+    }
+
+    publications.withType(MavenPublication::class).all {
+        signPublicationIfKeyPresent(this)
     }
 }
