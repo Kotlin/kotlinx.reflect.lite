@@ -44,7 +44,7 @@ kotlin {
     explicitApi()
 }
 
-val deployVersion = project.getSensitiveProperty("DeployVersion")!!
+val deployVersion = properties.get("DeployVersion")?.toString() ?: version.toString()
 
 publishing {
     publications {
