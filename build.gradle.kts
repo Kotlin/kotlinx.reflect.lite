@@ -2,6 +2,8 @@
  * Copyright 2016-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
+import kotlinx.kover.api.DefaultJacocoEngine
+
 plugins {
     kotlin("jvm")
     `java-gradle-plugin`
@@ -9,6 +11,7 @@ plugins {
     signing
     id("org.jetbrains.kotlinx.binary-compatibility-validator")
     id("me.champeau.jmh") version "0.6.7"
+    id("org.jetbrains.kotlinx.kover") version "0.6.0"
 }
 
 repositories {
@@ -42,6 +45,18 @@ tasks.compileKotlin {
 
 kotlin {
     explicitApi()
+}
+
+kover {
+    verify {
+        // JaCoCo engine instead of IntelliJ for better integration with codecov.io
+        engine.set(DefaultJacocoEngine)
+        rule {
+            bound {
+                minValue = 60
+            }
+        }
+    }
 }
 
 val deployVersion = properties.get("DeployVersion")?.toString() ?: version.toString()
