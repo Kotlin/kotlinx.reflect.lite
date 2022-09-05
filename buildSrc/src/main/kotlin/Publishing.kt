@@ -19,7 +19,7 @@ fun PublishingExtension.configureMavenCentralMetadata() {
             if (!name.isPresent) {
                 name.set(artifactId)
             }
-            description.set("Experimental lightweight library that replaces existing `kotlin-reflect` implementation")
+            description.set("Experimental lightweight library that replaces existing 'kotlin-reflect' implementation")
             url.set("https://github.com/Kotlin/kotlinx.reflect.lite")
             licenses {
                 license {
