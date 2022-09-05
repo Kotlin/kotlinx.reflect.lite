@@ -39,4 +39,13 @@ class KParameterTest {
 
     @Test
     fun testPropertySetter() = test("parameters.propertySetter") { tests.parameters.propertySetter.box() }
+
+    @Test
+    fun testBoundInnerClassConstructorWA() = test("parameters.boundInnerClassConstructorWA") { tests.parameters.boundInnerClassConstructorWA.box() }
+
+    @Test
+    fun testBoundObjectMemberReferences() = test("parameters.boundObjectMemberReferencesWA") { tests.parameters.boundObjectMemberReferencesWA.box() }
+
+    @Test
+    fun testBoundReferencesWA() = test("parameters.boundReferencesWA") { tests.parameters.boundReferencesWA.box() }
 }

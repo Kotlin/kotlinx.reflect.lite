@@ -81,6 +81,21 @@ class KCallableTest {
     @Test
     fun testObjectPropertyAccessorsWA() = test("call.bound.objectPropertyAccessorsWA") { tests.call.bound.objectPropertyAccessorsWA.box() }
 
+    @Test
+    fun testExtensionFunctionWA() = test("call.bound.extensionFunctionWA") { tests.call.bound.extensionFunctionWA.box() }
+
+    @Test
+    fun testInnerClassConstructorWA() = test("call.bound.innerClassConstructorWA") { tests.call.bound.innerClassConstructorWA.box() }
+
+    @Test
+    fun testJvmStaticObjectFunctionWA() = test("call.bound.jvmStaticObjectFunctionWA") { tests.call.bound.jvmStaticObjectFunctionWA.box() }
+
+    @Test
+    fun testMemberFunctionWA() = test("call.bound.memberFunctionWA") { tests.call.bound.memberFunctionWA.box() }
+
+    @Test
+    fun testObjectFunctionWA() = test("call.bound.objectFunctionWA") { tests.call.bound.objectFunctionWA.box() }
+
     // callBy
     @Test
     fun testSimpleMemberFunciton() = test("callBy.simpleMemberFunciton") { tests.callBy.simpleMemberFunciton.box() }

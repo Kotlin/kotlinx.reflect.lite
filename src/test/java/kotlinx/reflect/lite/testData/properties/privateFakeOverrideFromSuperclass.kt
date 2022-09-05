@@ -4,11 +4,12 @@
 
 package tests.properties.privateFakeOverrideFromSuperclass
 
-import kotlin.reflect.full.*
+import kotlinx.reflect.lite.*
+import kotlinx.reflect.lite.jvm.*
 
 open class A(private val p: Int)
 class B : A(42)
 
 fun box() =
-        if (B::class.memberProperties.isEmpty()) "OK"
+        if (B::class.java.kotlin.members.filterIsInstance<KProperty<*>>().isEmpty()) "OK"
         else "Fail: invisible fake overrides should not appear in KClass.memberProperties"

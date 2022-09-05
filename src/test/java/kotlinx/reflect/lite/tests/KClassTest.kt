@@ -44,4 +44,7 @@ class KClassTest {
     // members
     @Test
     fun testClassMembers() = test("classes.classMembers") { tests.classes.classMembers.box() }
+
+    @Test
+    fun testPrivateFakeOverrideFromSuperclass() = test("properties.privateFakeOverrideFromSuperclass") { tests.properties.privateFakeOverrideFromSuperclass.box() }
 }
