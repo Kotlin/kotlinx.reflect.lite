@@ -1,18 +1,13 @@
 # CHANGELOG
 
-## 1.1.0 (TBD)
+## 1.1.0
 
-* Support property metadata with ClassMetadata.getProperty
-* Allow to enumerate all declarations in a class with ClassMetadata.{functions,constructors,properties}
-* Add CallableMetadata.{name,returnType,extensionReceiverType}
-* Add FunctionMetadata.{isInline,isExternal,isOperator,isInfix,isSuspend}
-* Add PropertyMetadata.{isLateinit,isConst}
-* Add ClassMetadata.isData
-* Add ClassMetadata.kind
-* Add ConstructorMetadata.isPrimary
-* Add DeclarationMetadata.visibility
-* Add ParameterMetadata.hasDefaultValue
-* Update to Kotlin 1.3
+* Support for basic introspection of `K*` reflection entities available in `kotlin.reflect`
+* Partial support of `reflect.full` API: `callSuspend`, `KCallable<*>.isAccessible`, `KClass<T>.primaryConstructor`
+* Bi-directional mappings between Java and Kotlin reflection
+* `KCallable` support
+* Update kotlinx.metadata to 0.5.0  
+* Update Kotlin to 1.7.10
 
 ## 1.0.0 (Feb 15, 2016)
 
