@@ -48,10 +48,14 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             from(components["java"])
+            groupId = "org.jetbrains.kotlinx"
+            artifactId = "kotlinx.reflect.lite"
+            version = "1.1.0-SHANPSHOT"
             configureMavenCentralMetadata()
             mavenCentralArtifacts(project, project.sourceSets.main.get().allSource)
         }
 
+        version = "1.1.0-SHANPSHOT"
         mavenRepositoryPublishing(project)
         configureMavenCentralMetadata()
     }
