@@ -49,11 +49,9 @@ kotlin {
 
 kover {
     verify {
-        // JaCoCo engine instead of IntelliJ for better integration with codecov.io
-        engine.set(DefaultJacocoEngine)
         rule {
             bound {
-                minValue = 60
+                minValue = 75
             }
         }
     }
