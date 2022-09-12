@@ -9,6 +9,7 @@ plugins {
     signing
     id("org.jetbrains.kotlinx.binary-compatibility-validator")
     id("me.champeau.jmh") version "0.6.7"
+    id("org.jetbrains.kotlinx.kover") version "0.6.0"
 }
 
 repositories {
@@ -42,6 +43,16 @@ tasks.compileKotlin {
 
 kotlin {
     explicitApi()
+}
+
+kover {
+    verify {
+        rule {
+            bound {
+                minValue = 75
+            }
+        }
+    }
 }
 
 val deployVersion = properties.get("DeployVersion")?.toString() ?: version.toString()
